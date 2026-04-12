@@ -1,0 +1,19 @@
+{
+    "name": "wp-impact-analyzer/wp-slow-plugin-scanner",
+    "description": "WordPress plugin to detect slow or broken plugins via safe loopback tests",
+    "type": "wordpress-plugin",
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PIA\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
