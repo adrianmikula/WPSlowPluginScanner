@@ -25,7 +25,31 @@ function pia_lock_scan() {
 }
 
 function pia_unlock_scan() {
-    return delete_transient( PIA_SCAN_LOCK_KEY );
+    delete_transient( PIA_SCAN_LOCK_KEY );
+}
+
+function pia_get_scan_progress() {
+    return get_transient( 'pia_scan_progress' );
+}
+
+function pia_set_scan_progress( $data ) {
+    set_transient( 'pia_scan_progress', $data, 600 );
+}
+
+function pia_clear_scan_progress() {
+    delete_transient( 'pia_scan_progress' );
+}
+
+function pia_get_scan_cancel_flag() {
+    return get_transient( 'pia_scan_cancel' );
+}
+
+function pia_set_scan_cancel_flag() {
+    set_transient( 'pia_scan_cancel', true, 300 );
+}
+
+function pia_clear_scan_cancel_flag() {
+    delete_transient( 'pia_scan_cancel' );
 }
 
 function pia_clear_temp_mu_plugin() {

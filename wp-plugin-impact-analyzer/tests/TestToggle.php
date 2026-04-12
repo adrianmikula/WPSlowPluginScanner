@@ -20,8 +20,7 @@ class TestToggle extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
-        // Create temp directory for mu-plugins if needed.
+
         $muDir = dirname( PIA_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             @mkdir( $muDir, 0755, true );
@@ -33,11 +32,10 @@ class TestToggle extends TestCase
      */
     protected function tearDown(): void
     {
-        // Remove temp file if it exists.
         if ( file_exists( PIA_TEMP_MU_PLUGIN ) ) {
             @unlink( PIA_TEMP_MU_PLUGIN );
         }
-        
+
         parent::tearDown();
     }
 
@@ -47,21 +45,19 @@ class TestToggle extends TestCase
     public function testCreateMuPluginsDirectory()
     {
         $muDir = WP_CONTENT_DIR . '/mu-plugins';
-        
-        // Clean up first.
+
         if ( file_exists( $muDir ) ) {
-            rmdir( $muDir );
+            $this->recursiveDelete( $muDir );
         }
-        
+
         $this->assertFalse( file_exists( $muDir ) );
-        
+
         pia_create_mu_plugins_directory();
-        
+
         $this->assertTrue( file_exists( $muDir ) );
         $this->assertTrue( is_dir( $muDir ) );
-        
-        // Clean up.
-        rmdir( $muDir );
+
+        $this->recursiveDelete( $muDir );
     }
 
     /**
@@ -70,15 +66,13 @@ class TestToggle extends TestCase
     public function testCreateMuPluginsDirectoryExisting()
     {
         $muDir = WP_CONTENT_DIR . '/mu-plugins';
-        
-        // Ensure directory exists.
+
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
-        
-        // Should not throw exception.
+
         pia_create_mu_plugins_directory();
-        
+
         $this->assertTrue( file_exists( $muDir ) );
     }
 
@@ -87,26 +81,23 @@ class TestToggle extends TestCase
      */
     public function testPrepareTempMuPluginCreatesFile()
     {
-        // Ensure directory exists.
         $muDir = dirname( PIA_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
-        
-        // Remove any existing file.
+
         if ( file_exists( PIA_TEMP_MU_PLUGIN ) ) {
             unlink( PIA_TEMP_MU_PLUGIN );
         }
-        
+
         $this->assertFalse( file_exists( PIA_TEMP_MU_PLUGIN ) );
-        
+
         pia_prepare_temp_mu_plugin();
-        
+
         $this->assertTrue( file_exists( PIA_TEMP_MU_PLUGIN ) );
-        
+
         $content = file_get_contents( PIA_TEMP_MU_PLUGIN );
-        
-        // Verify key parts of the generated MU plugin content.
+
         $this->assertStringContainsString( '<?php', $content );
         $this->assertStringContainsString( 'pia_test', $content );
         $this->assertStringContainsString( 'pia_disable', $content );
@@ -119,22 +110,20 @@ class TestToggle extends TestCase
      */
     public function testPrepareTempMuPluginGeneratesValidPhp()
     {
-        // Ensure directory exists.
         $muDir = dirname( PIA_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
-        
+
         pia_prepare_temp_mu_plugin();
-        
-        // Check PHP syntax.
+
         $content = file_get_contents( PIA_TEMP_MU_PLUGIN );
         $tempFile = tempnam( sys_get_temp_dir(), 'php_check_' );
         file_put_contents( $tempFile, $content );
-        
+
         $output = shell_exec( 'php -l ' . escapeshellarg( $tempFile ) . ' 2>&1' );
         unlink( $tempFile );
-        
+
         $this->assertStringContainsString( 'No syntax errors', $output );
     }
 
@@ -143,18 +132,36 @@ class TestToggle extends TestCase
      */
     public function testPrepareTempMuPluginSanitizesPluginPath()
     {
-        // Ensure directory exists.
         $muDir = dirname( PIA_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
-        
+
         pia_prepare_temp_mu_plugin();
-        
+
         $content = file_get_contents( PIA_TEMP_MU_PLUGIN );
-        
-        // Verify that the preg_replace sanitization is present.
+
         $this->assertStringContainsString( 'preg_replace', $content );
         $this->assertStringContainsString( '[^A-Za-z0-9_\\-\\/.]', $content );
+    }
+
+    /**
+     * Recursively delete a directory.
+     */
+    private function recursiveDelete( $dir )
+    {
+        if ( ! is_dir( $dir ) ) {
+            return;
+        }
+        $items = array_diff( scandir( $dir ), array( '.', '..' ) );
+        foreach ( $items as $item ) {
+            $path = "$dir/$item";
+            if ( is_dir( $path ) ) {
+                $this->recursiveDelete( $path );
+            } else {
+                @unlink( $path );
+            }
+        }
+        @rmdir( $dir );
     }
 }

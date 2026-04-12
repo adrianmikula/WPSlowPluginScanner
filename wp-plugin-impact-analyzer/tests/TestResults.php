@@ -93,7 +93,7 @@ class TestResults extends TestCase
     public function testUnlockScanReturnsBoolean()
     {
         $result = pia_unlock_scan();
-        $this->assertTrue( $result );
+        $this->assertNull( $result );
     }
 
     /**

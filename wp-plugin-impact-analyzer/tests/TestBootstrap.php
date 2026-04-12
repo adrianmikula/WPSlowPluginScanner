@@ -74,7 +74,9 @@ class TestBootstrap extends TestCase
     public function testPluginFunctionsAreLoadable()
     {
         $this->assertTrue( function_exists( 'pia_get_active_plugin_entries' ) );
-        $this->assertTrue( function_exists( 'pia_run_plugin_scan' ) );
+        $this->assertTrue( function_exists( 'pia_initiate_scan' ) );
+        $this->assertTrue( function_exists( 'pia_scan_next_plugin' ) );
+        $this->assertTrue( function_exists( 'pia_complete_scan' ) );
         $this->assertTrue( function_exists( 'pia_build_test_url' ) );
         $this->assertTrue( function_exists( 'pia_compute_response_hash' ) );
         $this->assertTrue( function_exists( 'pia_run_test' ) );
