@@ -1,0 +1,23 @@
+# Files to exclude from WordPress.org plugin zip
+# Hidden files
+.gitignore
+.distignore
+.phpunit.result.cache
+
+# Tests - run outside WordPress context, can't use WP_Filesystem
+tests/
+tests/bootstrap.php
+tests/TestSyntax.php
+tests/TestToggle.php
+
+# Composer setup - not part of plugin functionality
+composer-setup.php
+
+# Development files (included via vendor but excluded from plugin zip)
+.phpunit.xml
+composer.json
+composer.lock
+README.md
+
+# Vendor dependencies (WP tests use their own)
+vendor/

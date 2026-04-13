@@ -5,8 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function pia_admin_menu() {
     add_plugins_page(
-        __( 'Plugin Impact Scanner', 'wp-slow-plugin-scanner' ),
-        __( 'Scan Plugins', 'wp-slow-plugin-scanner' ),
+        __( 'Plugin Impact Scanner', 'slow-plugin-scanner' ),
+        __( 'Scan Plugins', 'slow-plugin-scanner' ),
         'manage_options',
         'pia-scan-plugins',
         'pia_render_admin_page'
@@ -86,22 +86,22 @@ function pia_render_admin_page() {
     $default_url = isset( $results['url'] ) ? esc_url( $results['url'] ) : esc_url( home_url() );
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e( 'Plugin Impact Scanner', 'wp-slow-plugin-scanner' ); ?></h1>
-        <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'wp-slow-plugin-scanner' ); ?></p>
+        <h1><?php esc_html_e( 'Plugin Impact Scanner', 'slow-plugin-scanner' ); ?></h1>
+        <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'slow-plugin-scanner' ); ?></p>
 
         <div id="pia-scan-controls">
             <p>
-                <label for="pia_scan_url"><?php esc_html_e( 'URL to scan', 'wp-slow-plugin-scanner' ); ?></label>
-                <input type="url" id="pia_scan_url" value="<?php echo $default_url; ?>" class="regular-text" />
+                <label for="pia_scan_url"><?php esc_html_e( 'URL to scan', 'slow-plugin-scanner' ); ?></label>
+                <input type="url" id="pia_scan_url" value="<?php echo esc_attr( $default_url ); ?>" class="regular-text" />
             </p>
             <p>
-                <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'wp-slow-plugin-scanner' ); ?></button>
-                <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'wp-slow-plugin-scanner' ); ?></button>
+                <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'slow-plugin-scanner' ); ?></button>
+                <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'slow-plugin-scanner' ); ?></button>
             </p>
         </div>
 
         <div id="pia-progress" style="display:none;">
-            <p><?php esc_html_e( 'Scanning...', 'wp-slow-plugin-scanner' ); ?></p>
+            <p><?php esc_html_e( 'Scanning...', 'slow-plugin-scanner' ); ?></p>
             <progress id="pia-progress-bar" value="0" max="100"></progress>
             <p id="pia-progress-text"></p>
         </div>
@@ -109,11 +109,11 @@ function pia_render_admin_page() {
         <div id="pia-message-area"></div>
 
         <div id="pia-results-area"<?php echo empty( $results ) || ! isset( $results['baseline'] ) ? ' style="display:none;"' : ''; ?>>
-            <h2><?php esc_html_e( 'Scan Results', 'wp-slow-plugin-scanner' ); ?></h2>
+            <h2><?php esc_html_e( 'Scan Results', 'slow-plugin-scanner' ); ?></h2>
             <?php if ( ! empty( $results ) && isset( $results['baseline'] ) ) { ?>
-                <p><strong><?php esc_html_e( 'URL:', 'wp-slow-plugin-scanner' ); ?></strong> <?php echo esc_html( $results['url'] ); ?></p>
-                <p><strong><?php esc_html_e( 'Baseline status:', 'wp-slow-plugin-scanner' ); ?></strong> <?php echo esc_html( $results['baseline']['status'] ); ?></p>
-                <p><strong><?php esc_html_e( 'Baseline time:', 'wp-slow-plugin-scanner' ); ?></strong> <?php echo esc_html( round( $results['baseline']['time'], 3 ) ); ?>s</p>
+                <p><strong><?php esc_html_e( 'URL:', 'slow-plugin-scanner' ); ?></strong> <?php echo esc_html( $results['url'] ); ?></p>
+                <p><strong><?php esc_html_e( 'Baseline status:', 'slow-plugin-scanner' ); ?></strong> <?php echo esc_html( $results['baseline']['status'] ); ?></p>
+                <p><strong><?php esc_html_e( 'Baseline time:', 'slow-plugin-scanner' ); ?></strong> <?php echo esc_html( round( $results['baseline']['time'], 3 ) ); ?>s</p>
                 <?php if ( ! empty( $results['errors'] ) ) { ?>
                     <div class="notice notice-warning"><p><?php echo esc_html( implode( ' ', $results['errors'] ) ); ?></p></div>
                 <?php } ?>
@@ -121,12 +121,12 @@ function pia_render_admin_page() {
                 <table class="widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e( 'Plugin', 'wp-slow-plugin-scanner' ); ?></th>
-                            <th><?php esc_html_e( 'Impact', 'wp-slow-plugin-scanner' ); ?></th>
-                            <th><?php esc_html_e( 'Status', 'wp-slow-plugin-scanner' ); ?></th>
-                            <th><?php esc_html_e( 'Delta', 'wp-slow-plugin-scanner' ); ?></th>
-                            <th><?php esc_html_e( 'Output Change', 'wp-slow-plugin-scanner' ); ?></th>
-                            <th><?php esc_html_e( 'Error', 'wp-slow-plugin-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Plugin', 'slow-plugin-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Impact', 'slow-plugin-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Status', 'slow-plugin-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Delta', 'slow-plugin-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Output Change', 'slow-plugin-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Error', 'slow-plugin-scanner' ); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,14 +136,14 @@ function pia_render_admin_page() {
                                 <td><?php echo esc_html( $plugin['impact'] ); ?></td>
                                 <td><?php echo esc_html( $plugin['status'] ); ?></td>
                                 <td><?php echo esc_html( $plugin['delta'] ); ?>s</td>
-                                <td><?php echo $plugin['hash_changed'] ? esc_html__( 'Yes', 'wp-slow-plugin-scanner' ) : esc_html__( 'No', 'wp-slow-plugin-scanner' ); ?></td>
+                                <td><?php echo $plugin['hash_changed'] ? esc_html__( 'Yes', 'slow-plugin-scanner' ) : esc_html__( 'No', 'slow-plugin-scanner' ); ?></td>
                                 <td><?php echo esc_html( $plugin['error'] ); ?></td>
                             </tr>
                         <?php } ?>
                     </tbody>
                 </table>
                 <?php if ( ! empty( $results['truncated'] ) ) { ?>
-                    <p><?php esc_html_e( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'wp-slow-plugin-scanner' ); ?></p>
+                    <p><?php esc_html_e( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'slow-plugin-scanner' ); ?></p>
                 <?php } ?>
             <?php } ?>
         </div>

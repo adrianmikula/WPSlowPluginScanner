@@ -54,6 +54,6 @@ function pia_clear_scan_cancel_flag() {
 
 function pia_clear_temp_mu_plugin() {
     if ( file_exists( PIA_TEMP_MU_PLUGIN ) ) {
-        @unlink( PIA_TEMP_MU_PLUGIN );
+        wp_delete_file( PIA_TEMP_MU_PLUGIN );
     }
 }

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Composer installer setup (for offline composer installation)
+ * This file is not part of the main plugin functionality
+ */
+if ( defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 /*
  * This file is part of Composer.

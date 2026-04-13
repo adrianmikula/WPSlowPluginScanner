@@ -1,18 +1,17 @@
-=== WP Slow Plugin Scanner ===
+=== Slow Plugin Scanner ===
 Contributors: wp-impact-analyzer
-Tags: debugging, performance, slow, plugin, scanner
+Tags: slow wordpress, plugin performance, plugin conflict, debug wordpress, wordpress speed
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.9
 Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Donate link: https://example.com/donate
 
-Detects the single plugin causing a slowdown or breakage on a specific page using safe loopback tests.
+Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.
 
 == Description ==
 
-WP Slow Plugin Scanner helps you identify which plugin is causing your site to be slow or broken. It runs safe loopback tests that temporarily disable individual plugins to measure their impact on page load time and output.
+Is your WordPress site slow? This plugin helps you find slow plugins, detect plugin conflicts, and measure performance impact safely without breaking your site.
 
 = How it works =
 
