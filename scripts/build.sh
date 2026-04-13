@@ -18,7 +18,7 @@ OUTPUT_DIR="$PROJECT_ROOT/build"
 OUTPUT_ZIP="$OUTPUT_DIR/slow-plugin-scanner-${MODE}.zip"
 
 EXCLUDE_DIRS="tests vendor .git"
-EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md"
+EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md .env"
 
 echo "Building WordPress plugin ZIP..."
 
@@ -36,6 +36,18 @@ done
 for file in $EXCLUDE_FILES; do
     rm -f "$temp_dir/$file"
 done
+
+if [ -f "$ENV_FILE" ]; then
+    CONFIG_CONTENT="<?php\n// Auto-generated config - do not commit to version control\n"
+    while IFS='=' read -r key value; do
+        key=$(echo "$key" | xargs)
+        value=$(echo "$value" | xargs)
+        if [[ "$key" == PIA_* && -n "$value" ]]; then
+            CONFIG_CONTENT+="define('$key', '$value');\n"
+        fi
+    done < "$ENV_FILE"
+    echo -e "$CONFIG_CONTENT" > "$temp_dir/config.php"
+fi
 
 cd "$temp_dir"
 zip -r "$OUTPUT_ZIP" . -q

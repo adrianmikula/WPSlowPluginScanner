@@ -13,7 +13,7 @@ class TestTelemetry extends TestCase
 {
     protected function setUp(): void
     {
-        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = false;
+        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = true;
         $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
         $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
         $GLOBALS['pia_mock_scheduled_hooks'] = array();
@@ -21,7 +21,7 @@ class TestTelemetry extends TestCase
 
     public function testTelemetryEnabledByDefault()
     {
-        $this->assertFalse( pia_is_telemetry_enabled() );
+        $this->assertTrue( pia_is_telemetry_enabled() );
     }
 
     public function testSetTelemetryEnabled()
@@ -68,6 +68,28 @@ class TestTelemetry extends TestCase
 
         $uuid = pia_get_site_uuid();
         $this->assertEquals( $existing_uuid, $uuid );
+    }
+
+    public function testSiteUuidIsConsistentPerSite()
+    {
+        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+
+        $uuid1 = pia_get_site_uuid();
+        $uuid2 = pia_get_site_uuid();
+
+        $this->assertEquals( $uuid1, $uuid2 );
+    }
+
+    public function testSiteUuidBasedOnSiteUrl()
+    {
+        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+
+        $uuid1 = pia_get_site_uuid();
+
+        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+        $uuid2 = pia_get_site_uuid();
+
+        $this->assertEquals( $uuid1, $uuid2 );
     }
 
     public function testErrorCategoryNone()

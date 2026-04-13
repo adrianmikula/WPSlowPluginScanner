@@ -132,23 +132,6 @@ function pia_render_admin_page() {
             <div class="notice notice-info"><p><?php echo esc_html( sprintf( __( 'Free Mode - Limited to %d plugins per scan.', 'slow-plugin-scanner' ), $free_limit ) ); ?></p></div>
         <?php } ?>
 
-        <?php if ( $supabase_configured ) { ?>
-        <div id="pia-telemetry-settings" class="notice notice-info">
-            <p>
-                <label for="pia-telemetry-toggle">
-                    <input type="checkbox" id="pia-telemetry-toggle" <?php checked( $telemetry_enabled ); ?> />
-                    <?php esc_html_e( 'Share anonymous plugin performance data to help build a shared plugin compatibility database.', 'slow-plugin-scanner' ); ?>
-                </label>
-            </p>
-            <p class="description">
-                <?php esc_html_e( 'Data sent: plugin slug, performance delta, PHP version, WordPress version. No personally identifiable information is collected.', 'slow-plugin-scanner' ); ?>
-            </p>
-        </div>
-        <?php } else { ?>
-            <div class="notice notice-warning">
-                <p><?php esc_html_e( 'Telemetry not configured. Add PIA_SUPABASE_URL and PIA_SUPABASE_ANON_KEY to your .env file to enable anonymous data sharing.', 'slow-plugin-scanner' ); ?></p>
-            </div>
-        <?php } ?>
         <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'slow-plugin-scanner' ); ?></p>
 
         <div id="pia-scan-controls">
@@ -182,17 +165,10 @@ function pia_render_admin_page() {
                     <span class="description"> (<?php esc_html_e( 'Free mode limited to homepage', 'slow-plugin-scanner' ); ?>)</span>
                 <?php } ?>
             </p>
-            <?php if ( $show_upgrade ) { ?>
-                <p>
-                    <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank" class="button button-primary"><?php esc_html_e( 'Upgrade to Pro', 'slow-plugin-scanner' ); ?></a>
-                    <span class="description"><?php esc_html_e( 'Scan unlimited plugins on any page', 'slow-plugin-scanner' ); ?></span>
-                </p>
-            <?php } else { ?>
-                <p>
-                    <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'slow-plugin-scanner' ); ?></button>
-                    <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'slow-plugin-scanner' ); ?></button>
-                </p>
-            <?php } ?>
+            <p>
+                <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'slow-plugin-scanner' ); ?></button>
+                <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'slow-plugin-scanner' ); ?></button>
+            </p>
         </div>
 
         <div id="pia-progress" style="display:none;">
@@ -257,6 +233,31 @@ function pia_render_admin_page() {
                 <?php } ?>
             <?php } ?>
         </div>
+
+        <?php if ( $show_upgrade ) { ?>
+            <p>
+                <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank" class="button button-secondary"><?php esc_html_e( 'Upgrade to Pro', 'slow-plugin-scanner' ); ?></a>
+                <span class="description"><?php esc_html_e( 'Scan unlimited plugins on any page', 'slow-plugin-scanner' ); ?></span>
+            </p>
+        <?php } ?>
+
+        <?php if ( $supabase_configured ) { ?>
+            <div id="pia-telemetry-settings" class="notice notice-info" style="margin-top: 20px;">
+                <p>
+                    <label for="pia-telemetry-toggle">
+                        <input type="checkbox" id="pia-telemetry-toggle" <?php checked( $telemetry_enabled ); ?> />
+                        <?php esc_html_e( 'Share anonymous plugin performance data to help build a shared plugin compatibility database.', 'slow-plugin-scanner' ); ?>
+                    </label>
+                </p>
+                <p class="description">
+                    <?php esc_html_e( 'Data sent: plugin slug, performance delta, PHP version, WordPress version. No personally identifiable information is collected.', 'slow-plugin-scanner' ); ?>
+                </p>
+            </div>
+        <?php } else { ?>
+            <div class="notice notice-warning" style="margin-top: 20px;">
+                <p><?php esc_html_e( 'Telemetry not configured. Add PIA_SUPABASE_URL and PIA_SUPABASE_ANON_KEY to your .env file to enable anonymous data sharing.', 'slow-plugin-scanner' ); ?></p>
+            </div>
+        <?php } ?>
     </div>
     <?php
 }

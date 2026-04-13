@@ -9,7 +9,7 @@ define( 'PIA_TELEMETRY_CRON_HOOK', 'pia_send_telemetry_cron' );
 define( 'PIA_SITE_UUID_OPTION', 'pia_site_uuid' );
 
 function pia_is_telemetry_enabled() {
-    return (bool) get_option( PIA_TELEMETRY_ENABLED, false );
+    return (bool) get_option( PIA_TELEMETRY_ENABLED, true );
 }
 
 function pia_set_telemetry_enabled( $enabled ) {
@@ -26,16 +26,17 @@ function pia_get_site_uuid() {
 }
 
 function pia_generate_site_uuid() {
+    $site_url = get_site_url();
+    $salt = 'pia-telemetry-v1';
+    $hash = md5( $site_url . $salt );
+
     return sprintf(
-        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        wp_rand( 0, 0xffff ),
-        wp_rand( 0, 0xffff ),
-        wp_rand( 0, 0xffff ),
-        wp_rand( 0, 0x0fff ) | 0x4000,
-        wp_rand( 0, 0x3fff ) | 0x8000,
-        wp_rand( 0, 0xffff ),
-        wp_rand( 0, 0xffff ),
-        wp_rand( 0, 0xffff )
+        '%s-%s-%s-%s-%s',
+        substr( $hash, 0, 8 ),
+        substr( $hash, 8, 4 ),
+        substr( $hash, 12, 4 ),
+        substr( $hash, 16, 4 ),
+        substr( $hash, 20, 12 )
     );
 }
 

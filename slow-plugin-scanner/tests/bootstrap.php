@@ -122,6 +122,12 @@ if ( ! function_exists( 'home_url' ) ) {
     }
 }
 
+if ( ! function_exists( 'get_site_url' ) ) {
+    function get_site_url( $blog_id = null, $path = '', $scheme = null ) {
+        return 'http://example.com';
+    }
+}
+
 if ( ! function_exists( 'esc_url_raw' ) ) {
     function esc_url_raw( $url, $protocols = null ) {
         return filter_var( $url, FILTER_SANITIZE_URL );

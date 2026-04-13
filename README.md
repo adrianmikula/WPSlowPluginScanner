@@ -49,7 +49,7 @@ This creates `build/wp-plugin-impact-analyzer.zip` with the configured mode bake
 
 ### Anonymous Telemetry
 
-When enabled, the plugin can share anonymous performance data to help build a shared plugin compatibility database. This is opt-in only and disabled by default.
+When enabled (default), the plugin shares anonymous performance data to help build a shared plugin compatibility database. Users can opt-out via the plugin settings.
 
 **Data shared:**
 - Plugin slugs (anonymized to folder name only)

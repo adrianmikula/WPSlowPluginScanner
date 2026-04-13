@@ -24,6 +24,11 @@ define( 'PIA_MAX_TEST_PLUGINS', 6 );
 define( 'PIA_PROGRESS_KEY', 'pia_scan_progress' );
 define( 'PIA_CANCEL_KEY', 'pia_scan_cancel' );
 
+$config_file = PIA_PLUGIN_DIR . 'config.php';
+if ( file_exists( $config_file ) ) {
+    require_once $config_file;
+}
+
 $env_file = PIA_PLUGIN_DIR . '.env';
 if ( file_exists( $env_file ) ) {
     $env_vars = parse_ini_file( $env_file );
