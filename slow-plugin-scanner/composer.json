@@ -1,6 +1,6 @@
 {
-    "name": "wp-impact-analyzer/wp-slow-plugin-scanner",
-    "description": "WordPress plugin to detect slow or broken plugins via safe loopback tests",
+    "name": "wp-impact-analyzer/slow-plugin-scanner",
+    "description": "Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.",
     "type": "wordpress-plugin",
     "require-dev": {
         "phpunit/phpunit": "^9.6",

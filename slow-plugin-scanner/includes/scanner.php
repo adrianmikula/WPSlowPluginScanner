@@ -117,7 +117,7 @@ function pia_scan_next_plugin() {
         $impact = 'Changes output';
     }
 
-    $progress['plugin_results'][] = array(
+    $plugin_result = array(
         'file'           => $plugin_file,
         'name'           => $plugin_name,
         'time'           => $test_result['time'],
@@ -129,6 +129,18 @@ function pia_scan_next_plugin() {
         'hash_changed'   => $hash_changed,
         'impact'         => $impact,
     );
+
+    $progress['plugin_results'][] = $plugin_result;
+
+    if ( pia_is_telemetry_enabled() ) {
+        $all_plugin_files = array_keys( $active_entries );
+        $telemetry_data = pia_prepare_telemetry_data(
+            $plugin_result,
+            $all_plugin_files,
+            $baseline['time']
+        );
+        pia_add_to_telemetry_queue( $telemetry_data );
+    }
 
     $progress['scanned']++;
     pia_set_scan_progress( $progress );
@@ -162,11 +174,6 @@ function pia_complete_scan() {
     );
 
     pia_store_scan_results( $results );
-
-    if ( pia_is_telemetry_enabled() ) {
-        $telemetry_data = pia_prepare_telemetry_data( $results );
-        pia_add_to_telemetry_queue( $telemetry_data );
-    }
 
     pia_clear_scan_progress();
     pia_unlock_scan();

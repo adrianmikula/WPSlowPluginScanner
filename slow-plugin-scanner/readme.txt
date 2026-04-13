@@ -13,6 +13,22 @@ Find which WordPress plugin is slowing down your site. Test plugin performance s
 
 Is your WordPress site slow? This plugin helps you find slow plugins, detect plugin conflicts, and measure performance impact safely without breaking your site.
 
+= Find Slow Plugins =
+
+Quickly identify which plugins are causing performance issues on your WordPress site.
+
+= Detect Plugin Conflicts =
+
+Discover conflicts between plugins that may be causing issues on your site.
+
+= Test Plugin Performance =
+
+Safely test individual plugin performance without affecting your visitors.
+
+= Fix Slow WordPress Sites =
+
+Get actionable insights to speed up your WordPress site.
+
 = How it works =
 
 1. Enter the URL of the page you want to test

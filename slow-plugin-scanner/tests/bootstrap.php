@@ -29,6 +29,7 @@ if ( ! defined( 'PIA_TELEMETRY_CRON_HOOK' ) ) {
 define( 'PIA_SUPABASE_URL', 'https://test.supabase.co' );
 define( 'PIA_SUPABASE_ANON_KEY', 'test-key' );
 define( 'PIA_SUPABASE_TABLE', 'telemetry' );
+define( 'PIA_SITE_UUID_OPTION', 'pia_site_uuid' );
 
 // Mock WordPress functions that are required.
 $GLOBALS['pia_mock_options'] = array();
@@ -320,6 +321,15 @@ if ( ! function_exists( 'register_activation_hook' ) ) {
 if ( ! function_exists( 'register_deactivation_hook' ) ) {
     function register_deactivation_hook( $file, $function ) {
         return true;
+    }
+}
+
+if ( ! function_exists( 'wp_rand' ) ) {
+    function wp_rand( $min = 0, $max = 0 ) {
+        if ( $min === 0 && $max === 0 ) {
+            return mt_rand();
+        }
+        return mt_rand( $min, $max );
     }
 }
 
