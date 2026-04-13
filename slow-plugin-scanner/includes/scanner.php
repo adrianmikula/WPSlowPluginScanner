@@ -47,8 +47,9 @@ function pia_initiate_scan( $url ) {
     } );
 
     $truncated = false;
-    if ( count( $plugin_files ) > PIA_MAX_TEST_PLUGINS ) {
-        $plugin_files = array_slice( $plugin_files, 0, PIA_MAX_TEST_PLUGINS );
+    $limit = pia_is_premium() ? PHP_INT_MAX : pia_get_free_limit();
+    if ( count( $plugin_files ) > $limit ) {
+        $plugin_files = array_slice( $plugin_files, 0, $limit );
         $truncated = true;
     }
 
@@ -161,6 +162,12 @@ function pia_complete_scan() {
     );
 
     pia_store_scan_results( $results );
+
+    if ( pia_is_telemetry_enabled() ) {
+        $telemetry_data = pia_prepare_telemetry_data( $results );
+        pia_add_to_telemetry_queue( $telemetry_data );
+    }
+
     pia_clear_scan_progress();
     pia_unlock_scan();
     pia_clear_temp_mu_plugin();

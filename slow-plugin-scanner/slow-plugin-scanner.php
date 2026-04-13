@@ -24,10 +24,105 @@ define( 'PIA_MAX_TEST_PLUGINS', 6 );
 define( 'PIA_PROGRESS_KEY', 'pia_scan_progress' );
 define( 'PIA_CANCEL_KEY', 'pia_scan_cancel' );
 
+$env_file = PIA_PLUGIN_DIR . '.env';
+if ( file_exists( $env_file ) ) {
+    $env_vars = parse_ini_file( $env_file );
+    if ( $env_vars ) {
+        $mode = isset( $env_vars['PIA_MODE'] ) ? strtolower( trim( $env_vars['PIA_MODE'] ) ) : 'free';
+        if ( ! defined( 'PIA_MODE' ) ) {
+            define( 'PIA_MODE', $mode );
+        }
+
+        $free_limit = isset( $env_vars['PIA_FREE_PLUGIN_LIMIT'] ) ? (int) $env_vars['PIA_FREE_PLUGIN_LIMIT'] : 3;
+        if ( ! defined( 'PIA_FREE_PLUGIN_LIMIT' ) ) {
+            define( 'PIA_FREE_PLUGIN_LIMIT', $free_limit );
+        }
+
+        $premium_url = isset( $env_vars['PIA_PREMIUM_URL'] ) ? trim( $env_vars['PIA_PREMIUM_URL'] ) : '';
+        if ( ! defined( 'PIA_PREMIUM_URL' ) ) {
+            define( 'PIA_PREMIUM_URL', $premium_url );
+        }
+    } else {
+        if ( ! defined( 'PIA_MODE' ) ) {
+            define( 'PIA_MODE', 'free' );
+        }
+        if ( ! defined( 'PIA_FREE_PLUGIN_LIMIT' ) ) {
+            define( 'PIA_FREE_PLUGIN_LIMIT', 3 );
+        }
+        if ( ! defined( 'PIA_PREMIUM_URL' ) ) {
+            define( 'PIA_PREMIUM_URL', '' );
+        }
+    }
+} else {
+    if ( ! defined( 'PIA_MODE' ) ) {
+        define( 'PIA_MODE', 'free' );
+    }
+    if ( ! defined( 'PIA_FREE_PLUGIN_LIMIT' ) ) {
+        define( 'PIA_FREE_PLUGIN_LIMIT', 3 );
+    }
+    if ( ! defined( 'PIA_PREMIUM_URL' ) ) {
+        define( 'PIA_PREMIUM_URL', '' );
+    }
+}
+
+$env_file = PIA_PLUGIN_DIR . '.env';
+if ( file_exists( $env_file ) ) {
+    $env_vars = parse_ini_file( $env_file );
+    if ( $env_vars ) {
+        $supabase_url = isset( $env_vars['PIA_SUPABASE_URL'] ) ? trim( $env_vars['PIA_SUPABASE_URL'] ) : '';
+        if ( ! defined( 'PIA_SUPABASE_URL' ) ) {
+            define( 'PIA_SUPABASE_URL', $supabase_url );
+        }
+
+        $supabase_key = isset( $env_vars['PIA_SUPABASE_ANON_KEY'] ) ? trim( $env_vars['PIA_SUPABASE_ANON_KEY'] ) : '';
+        if ( ! defined( 'PIA_SUPABASE_ANON_KEY' ) ) {
+            define( 'PIA_SUPABASE_ANON_KEY', $supabase_key );
+        }
+
+        $supabase_table = isset( $env_vars['PIA_SUPABASE_TABLE'] ) ? trim( $env_vars['PIA_SUPABASE_TABLE'] ) : 'telemetry';
+        if ( ! defined( 'PIA_SUPABASE_TABLE' ) ) {
+            define( 'PIA_SUPABASE_TABLE', $supabase_table );
+        }
+    } else {
+        if ( ! defined( 'PIA_SUPABASE_URL' ) ) {
+            define( 'PIA_SUPABASE_URL', '' );
+        }
+        if ( ! defined( 'PIA_SUPABASE_ANON_KEY' ) ) {
+            define( 'PIA_SUPABASE_ANON_KEY', '' );
+        }
+        if ( ! defined( 'PIA_SUPABASE_TABLE' ) ) {
+            define( 'PIA_SUPABASE_TABLE', 'telemetry' );
+        }
+    }
+} else {
+    if ( ! defined( 'PIA_SUPABASE_URL' ) ) {
+        define( 'PIA_SUPABASE_URL', '' );
+    }
+    if ( ! defined( 'PIA_SUPABASE_ANON_KEY' ) ) {
+        define( 'PIA_SUPABASE_ANON_KEY', '' );
+    }
+    if ( ! defined( 'PIA_SUPABASE_TABLE' ) ) {
+        define( 'PIA_SUPABASE_TABLE', 'telemetry' );
+    }
+}
+
+function pia_is_premium() {
+    return defined( 'PIA_MODE' ) && PIA_MODE === 'premium';
+}
+
+function pia_get_free_limit() {
+    return defined( 'PIA_FREE_PLUGIN_LIMIT' ) ? (int) PIA_FREE_PLUGIN_LIMIT : 3;
+}
+
+function pia_get_premium_url() {
+    return defined( 'PIA_PREMIUM_URL' ) ? PIA_PREMIUM_URL : '';
+}
+
 require_once PIA_PLUGIN_DIR . 'includes/results.php';
 require_once PIA_PLUGIN_DIR . 'includes/loopback.php';
 require_once PIA_PLUGIN_DIR . 'includes/scanner.php';
 require_once PIA_PLUGIN_DIR . 'includes/toggle.php';
+require_once PIA_PLUGIN_DIR . 'includes/telemetry.php';
 require_once PIA_PLUGIN_DIR . 'admin/ui.php';
 
 add_action( 'admin_menu', 'pia_admin_menu' );
@@ -76,6 +171,8 @@ function pia_admin_assets( $hook ) {
             'yesLabel'      => __( 'Yes', 'slow-plugin-scanner' ),
             'noLabel'      => __( 'No', 'slow-plugin-scanner' ),
             'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'slow-plugin-scanner' ),
+            'telemetryEnabled' => pia_is_telemetry_enabled(),
+            'supabaseConfigured' => defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL ),
         )
     );
 }

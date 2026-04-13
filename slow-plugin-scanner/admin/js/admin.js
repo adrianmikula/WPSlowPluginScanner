@@ -9,6 +9,11 @@
         init: function() {
             $('#pia-scan-btn').on('click', this.startScan.bind(this));
             $('#pia-cancel-btn').on('click', this.cancelScan.bind(this));
+            $('#pia_page_select').on('change', this.onPageSelectChange.bind(this));
+
+            if ( piaData.homeUrl && $('#pia_scan_url').val() === '' ) {
+                $('#pia_scan_url').val(piaData.homeUrl);
+            }
 
             if (piaData.isScanning && piaData.totalPlugins > 0) {
                 this.isScanning = true;
@@ -22,10 +27,7 @@
         startScan: function(e) {
             e.preventDefault();
 
-            var url = $('#pia_scan_url').val();
-            if (!url) {
-                url = piaData.homeUrl || '';
-            }
+            var url = this.getScanUrl();
 
             this.setControls(true);
             this.showMessage('', '');
@@ -126,9 +128,27 @@
             this.showMessage(error || piaData.errorText, 'error');
         },
 
+        onPageSelectChange: function() {
+            var selected = $('#pia_page_select').val();
+            if (selected === 'custom') {
+                $('#pia_scan_url').show().prop('disabled', false).focus();
+            } else {
+                $('#pia_scan_url').hide().prop('disabled', true);
+            }
+        },
+
+        getScanUrl: function() {
+            var pageSelect = $('#pia_page_select').val();
+            if (pageSelect === 'custom') {
+                return $('#pia_scan_url').val();
+            }
+            return pageSelect || piaData.homeUrl || '';
+        },
+
         setControls: function(scanning) {
             $('#pia-scan-btn').toggle(!scanning);
             $('#pia-cancel-btn').toggle(scanning);
+            $('#pia_page_select').prop('disabled', scanning);
             $('#pia_scan_url').prop('disabled', scanning);
 
             if (scanning) {
@@ -144,8 +164,8 @@
             $('#pia-progress-bar').val(percent);
             $('#pia-progress-text').text(
                 piaData.pluginText
-                    .replace('%d', current)
-                    .replace('%d', total)
+                    .replace('%1$d', current)
+                    .replace('%2$d', total)
             );
 
             if (pluginName) {
@@ -220,6 +240,24 @@
 
     $(document).ready(function() {
         piaScan.init();
+
+        if ( $('#pia-telemetry-toggle').length && piaData.supabaseConfigured ) {
+            $('#pia-telemetry-toggle').on('change', function() {
+                var enabled = $(this).is(':checked');
+                $.ajax({
+                    url: piaData.ajaxUrl,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'pia_toggle_telemetry',
+                        nonce: piaData.nonce,
+                        enabled: enabled
+                    }
+                }).fail(function() {
+                    $('#pia-telemetry-toggle').prop('checked', !enabled);
+                });
+            });
+        }
     });
 
 })(jQuery);

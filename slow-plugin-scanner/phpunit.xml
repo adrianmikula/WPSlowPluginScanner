@@ -27,11 +27,5 @@
         <env name="WP_PLUGIN_DIR" value="/tmp/wordpress/wp-content/plugins"/>
         <env name="WP_CONTENT_DIR" value="/tmp/wordpress/wp-content"/>
         <const name="ABSPATH" value="/tmp/wordpress/"/>
-        <const name="PIA_PLUGIN_FILE" value="/tmp/wordpress/wp-content/plugins/wp-plugin-impact-analyzer/plugin-impact-analyzer.php"/>
-        <const name="PIA_PLUGIN_DIR" value="/tmp/wordpress/wp-content/plugins/wp-plugin-impact-analyzer/"/>
-        <const name="PIA_TEMP_MU_PLUGIN" value="/tmp/wordpress/wp-content/mu-plugins/pia-temp-disable.php"/>
-        <const name="PIA_SCAN_LOCK_KEY" value="pia_scan_lock"/>
-        <const name="PIA_RESULTS_OPTION" value="pia_last_scan"/>
-        <const name="PIA_MAX_TEST_PLUGINS" value="6"/>
     </php>
 </phpunit>

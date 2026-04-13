@@ -16,6 +16,26 @@ function pia_admin_menu() {
 add_action( 'wp_ajax_pia_start_scan', 'pia_ajax_start_scan' );
 add_action( 'wp_ajax_pia_poll_scan', 'pia_ajax_poll_scan' );
 add_action( 'wp_ajax_pia_cancel_scan', 'pia_ajax_cancel_scan' );
+add_action( 'wp_ajax_pia_toggle_telemetry', 'pia_ajax_toggle_telemetry' );
+
+function pia_ajax_toggle_telemetry() {
+    check_ajax_referer( 'pia_scan_nonce', 'nonce' );
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( array( 'message' => 'Permission denied' ) );
+    }
+
+    $enabled = isset( $_POST['enabled'] ) ? (bool) $_POST['enabled'] : false;
+    pia_set_telemetry_enabled( $enabled );
+
+    if ( $enabled ) {
+        pia_schedule_telemetry_cron();
+    } else {
+        pia_unschedule_telemetry_cron();
+    }
+
+    wp_send_json_success();
+}
 
 function pia_ajax_start_scan() {
     check_ajax_referer( 'pia_scan_nonce', 'nonce' );
@@ -81,23 +101,98 @@ function pia_ajax_cancel_scan() {
     wp_send_json_success();
 }
 
+function pia_get_published_pages() {
+    $pages = get_posts(
+        array(
+            'post_type'   => 'page',
+            'post_status' => 'publish',
+            'numberposts' => -1,
+        )
+    );
+    return $pages ? $pages : array();
+}
+
 function pia_render_admin_page() {
-    $results = pia_get_last_scan_results();
+    $results     = pia_get_last_scan_results();
     $default_url = isset( $results['url'] ) ? esc_url( $results['url'] ) : esc_url( home_url() );
+    $is_premium  = pia_is_premium();
+    $premium_url = pia_get_premium_url();
+    $free_limit  = pia_get_free_limit();
+    $show_upgrade = ! $is_premium && ! empty( $premium_url );
+    $pages = pia_get_published_pages();
+    $home_url = home_url();
+    $telemetry_enabled = pia_is_telemetry_enabled();
+    $supabase_configured = defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL );
     ?>
     <div class="wrap">
         <h1><?php esc_html_e( 'Plugin Impact Scanner', 'slow-plugin-scanner' ); ?></h1>
+        <?php if ( $is_premium ) { ?>
+            <div class="notice notice-info"><p><?php esc_html_e( 'Premium Mode - Unlimited scanning enabled.', 'slow-plugin-scanner' ); ?></p></div>
+        <?php } else { ?>
+            <div class="notice notice-info"><p><?php echo esc_html( sprintf( __( 'Free Mode - Limited to %d plugins per scan.', 'slow-plugin-scanner' ), $free_limit ) ); ?></p></div>
+        <?php } ?>
+
+        <?php if ( $supabase_configured ) { ?>
+        <div id="pia-telemetry-settings" class="notice notice-info">
+            <p>
+                <label for="pia-telemetry-toggle">
+                    <input type="checkbox" id="pia-telemetry-toggle" <?php checked( $telemetry_enabled ); ?> />
+                    <?php esc_html_e( 'Share anonymous plugin performance data to help build a shared plugin compatibility database.', 'slow-plugin-scanner' ); ?>
+                </label>
+            </p>
+            <p class="description">
+                <?php esc_html_e( 'Data sent: plugin slug, performance delta, PHP version, WordPress version. No personally identifiable information is collected.', 'slow-plugin-scanner' ); ?>
+            </p>
+        </div>
+        <?php } else { ?>
+            <div class="notice notice-warning">
+                <p><?php esc_html_e( 'Telemetry not configured. Add PIA_SUPABASE_URL and PIA_SUPABASE_ANON_KEY to your .env file to enable anonymous data sharing.', 'slow-plugin-scanner' ); ?></p>
+            </div>
+        <?php } ?>
         <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'slow-plugin-scanner' ); ?></p>
 
         <div id="pia-scan-controls">
             <p>
-                <label for="pia_scan_url"><?php esc_html_e( 'URL to scan', 'slow-plugin-scanner' ); ?></label>
-                <input type="url" id="pia_scan_url" value="<?php echo esc_attr( $default_url ); ?>" class="regular-text" />
+                <label for="pia_page_select"><?php esc_html_e( 'Page to scan', 'slow-plugin-scanner' ); ?></label>
+                <select id="pia_page_select" class="regular-text">
+                    <option value="<?php echo esc_attr( $home_url ); ?>" selected><?php esc_html_e( 'Homepage', 'slow-plugin-scanner' ); ?></option>
+                    <?php
+                    foreach ( $pages as $page ) {
+                        $page_url   = get_permalink( $page->ID );
+                        $page_title = $page->post_title;
+                        if ( $is_premium ) {
+                            ?>
+                            <option value="<?php echo esc_attr( $page_url ); ?>"><?php echo esc_html( $page_title ); ?></option>
+                            <?php
+                        } else {
+                            ?>
+                            <option value="<?php echo esc_attr( $page_url ); ?>" disabled><?php echo esc_html( $page_title ); ?> (<?php esc_html_e( 'Pro', 'slow-plugin-scanner' ); ?>)</option>
+                            <?php
+                        }
+                    }
+                    if ( $is_premium ) {
+                        ?>
+                        <option value="custom"><?php esc_html_e( 'Custom URL', 'slow-plugin-scanner' ); ?></option>
+                        <?php
+                    }
+                ?>
+                </select>
+                <input type="url" id="pia_scan_url" value="<?php echo esc_attr( $default_url ); ?>" class="regular-text" style="display:none;" />
+                <?php if ( ! $is_premium ) { ?>
+                    <span class="description"> (<?php esc_html_e( 'Free mode limited to homepage', 'slow-plugin-scanner' ); ?>)</span>
+                <?php } ?>
             </p>
-            <p>
-                <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'slow-plugin-scanner' ); ?></button>
-                <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'slow-plugin-scanner' ); ?></button>
-            </p>
+            <?php if ( $show_upgrade ) { ?>
+                <p>
+                    <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank" class="button button-primary"><?php esc_html_e( 'Upgrade to Pro', 'slow-plugin-scanner' ); ?></a>
+                    <span class="description"><?php esc_html_e( 'Scan unlimited plugins on any page', 'slow-plugin-scanner' ); ?></span>
+                </p>
+            <?php } else { ?>
+                <p>
+                    <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'slow-plugin-scanner' ); ?></button>
+                    <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'slow-plugin-scanner' ); ?></button>
+                </p>
+            <?php } ?>
         </div>
 
         <div id="pia-progress" style="display:none;">
@@ -142,7 +237,22 @@ function pia_render_admin_page() {
                         <?php } ?>
                     </tbody>
                 </table>
-                <?php if ( ! empty( $results['truncated'] ) ) { ?>
+                <?php if ( ! empty( $results['truncated'] ) && $show_upgrade ) { ?>
+                    <div class="notice notice-warning">
+                        <p>
+                            <?php
+                            $remaining = $results['active_count'] - $results['scanned'];
+                            echo esc_html( sprintf(
+                                __( 'Free mode limited to %1$d plugins. %2$d more plugins were not scanned.', 'slow-plugin-scanner' ),
+                                $results['scanned'],
+                                $remaining
+                            ) );
+                            ?>
+                            <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank"><?php esc_html_e( 'Upgrade to Pro', 'slow-plugin-scanner' ); ?></a>
+                            <?php esc_html_e( ' to scan all plugins.', 'slow-plugin-scanner' ); ?>
+                        </p>
+                    </div>
+                <?php } elseif ( ! empty( $results['truncated'] ) ) { ?>
                     <p><?php esc_html_e( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'slow-plugin-scanner' ); ?></p>
                 <?php } ?>
             <?php } ?>

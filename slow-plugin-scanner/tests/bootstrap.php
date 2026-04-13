@@ -12,34 +12,28 @@ if ( ! defined( 'WP_CONTENT_DIR' ) ) {
     define( 'WP_CONTENT_DIR', '/tmp/wordpress/wp-content' );
 }
 
-// Define plugin constants if not already defined.
-if ( ! defined( 'PIA_PLUGIN_FILE' ) ) {
-    define( 'PIA_PLUGIN_FILE', dirname( __DIR__ ) . '/plugin-impact-analyzer.php' );
-}
-
 if ( ! defined( 'PIA_PLUGIN_DIR' ) ) {
-    define( 'PIA_PLUGIN_DIR', dirname( __DIR__ ) . '/' );
+    define( 'PIA_PLUGIN_DIR', __DIR__ . '/../' );
 }
 
-if ( ! defined( 'PIA_TEMP_MU_PLUGIN' ) ) {
-    define( 'PIA_TEMP_MU_PLUGIN', '/tmp/wordpress/wp-content/mu-plugins/pia-temp-disable.php' );
+if ( ! defined( 'PIA_TELEMETRY_QUEUE' ) ) {
+    define( 'PIA_TELEMETRY_QUEUE', 'pia_telemetry_queue' );
+}
+if ( ! defined( 'PIA_TELEMETRY_ENABLED' ) ) {
+    define( 'PIA_TELEMETRY_ENABLED', 'pia_telemetry_optin' );
+}
+if ( ! defined( 'PIA_TELEMETRY_CRON_HOOK' ) ) {
+    define( 'PIA_TELEMETRY_CRON_HOOK', 'pia_send_telemetry_cron' );
 }
 
-if ( ! defined( 'PIA_SCAN_LOCK_KEY' ) ) {
-    define( 'PIA_SCAN_LOCK_KEY', 'pia_scan_lock' );
-}
-
-if ( ! defined( 'PIA_RESULTS_OPTION' ) ) {
-    define( 'PIA_RESULTS_OPTION', 'pia_last_scan' );
-}
-
-if ( ! defined( 'PIA_MAX_TEST_PLUGINS' ) ) {
-    define( 'PIA_MAX_TEST_PLUGINS', 6 );
-}
+define( 'PIA_SUPABASE_URL', 'https://test.supabase.co' );
+define( 'PIA_SUPABASE_ANON_KEY', 'test-key' );
+define( 'PIA_SUPABASE_TABLE', 'telemetry' );
 
 // Mock WordPress functions that are required.
 $GLOBALS['pia_mock_options'] = array();
 $GLOBALS['pia_mock_transients'] = array();
+$GLOBALS['pia_mock_scheduled_hooks'] = array();
 
 if ( ! function_exists( 'get_option' ) ) {
     function get_option( $option, $default = false ) {
@@ -67,6 +61,13 @@ if ( ! function_exists( 'update_option' ) ) {
     }
 }
 
+if ( ! function_exists( 'delete_option' ) ) {
+    function delete_option( $option ) {
+        unset( $GLOBALS['pia_mock_options'][ $option ] );
+        return true;
+    }
+}
+
 if ( ! function_exists( 'get_transient' ) ) {
     function get_transient( $transient ) {
         return $GLOBALS['pia_mock_transients'][ $transient ] ?? false;
@@ -90,6 +91,18 @@ if ( ! function_exists( 'delete_transient' ) ) {
 if ( ! function_exists( 'plugin_basename' ) ) {
     function plugin_basename( $file ) {
         return basename( dirname( $file ) ) . '/' . basename( $file );
+    }
+}
+
+if ( ! function_exists( 'plugin_dir_path' ) ) {
+    function plugin_dir_path( $file ) {
+        return trailingslashit( dirname( $file ) );
+    }
+}
+
+if ( ! function_exists( 'trailingslashit' ) ) {
+    function trailingslashit( $string ) {
+        return rtrim( $string, '/\\' ) . '/';
     }
 }
 
@@ -165,8 +178,187 @@ if ( ! function_exists( 'apply_filters' ) ) {
     }
 }
 
+if ( ! function_exists( 'add_action' ) ) {
+    function add_action( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+        return true;
+    }
+}
+
+if ( ! function_exists( 'admin_url' ) ) {
+    function admin_url( $path = '', $scheme = 'admin' ) {
+        return 'http://example.com/wp-admin/' . ltrim( $path, '/' );
+    }
+}
+
+if ( ! function_exists( 'wp_create_nonce' ) ) {
+    function wp_create_nonce( $action = -1 ) {
+        return 'test_nonce_' . $action;
+    }
+}
+
+if ( ! function_exists( 'wp_send_json_success' ) ) {
+    function wp_send_json_success( $data = null, $status_code = null ) {
+        echo json_encode( $data );
+        exit;
+    }
+}
+
+if ( ! function_exists( 'wp_send_json_error' ) ) {
+    function wp_send_json_error( $data = null, $status_code = null ) {
+        echo json_encode( $data );
+        exit;
+    }
+}
+
+if ( ! function_exists( 'plugins_url' ) ) {
+    function plugins_url( $path = '', $plugin = '' ) {
+        return 'http://example.com/wp-content/plugins/' . ltrim( $path, '/' );
+    }
+}
+
+if ( ! function_exists( 'wp_enqueue_style' ) ) {
+    function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
+        return true;
+    }
+}
+
+if ( ! function_exists( 'wp_enqueue_script' ) ) {
+    function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
+        return true;
+    }
+}
+
+if ( ! function_exists( 'wp_localize_script' ) ) {
+    function wp_localize_script( $handle, $object_name, $l10n ) {
+        return true;
+    }
+}
+
+if ( ! function_exists( 'wp_verify_nonce' ) ) {
+    function wp_verify_nonce( $nonce, $action = -1 ) {
+        return 1;
+    }
+}
+
+if ( ! function_exists( 'current_user_can' ) ) {
+    function current_user_can( $capability, ...$args ) {
+        return true;
+    }
+}
+
+$GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = false;
+$GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
+
+if ( ! function_exists( 'wp_remote_post' ) ) {
+    function wp_remote_post( $url, $args = array() ) {
+        return $GLOBALS['pia_wp_remote_post']( $url, $args ) ?? array(
+            'response' => array( 'code' => 200 ),
+            'body'     => '',
+        );
+    }
+}
+
+if ( ! function_exists( 'wp_remote_retrieve_response_code' ) ) {
+    function wp_remote_retrieve_response_code( $response ) {
+        return $response['response']['code'] ?? 0;
+    }
+}
+
+if ( ! function_exists( 'wp_remote_retrieve_body' ) ) {
+    function wp_remote_retrieve_body( $response ) {
+        return $response['body'] ?? '';
+    }
+}
+
+if ( ! function_exists( 'wp_remote_post' ) ) {
+    function wp_remote_post( $url, $args = array() ) {
+        return $GLOBALS['pia_wp_remote_post']( $url, $args ) ?? array(
+            'response' => array( 'code' => 200 ),
+            'body'     => '',
+        );
+    }
+}
+
+if ( ! function_exists( 'is_wp_error' ) ) {
+    function is_wp_error( $thing ) {
+        return $thing instanceof WP_Error;
+    }
+}
+
+if ( ! function_exists( 'wp_json_encode' ) ) {
+    function wp_json_encode( $data, $options = 0, $depth = 512 ) {
+        return json_encode( $data, $options, $depth );
+    }
+}
+
+if ( ! function_exists( 'wp_next_scheduled' ) ) {
+    function wp_next_scheduled( $hook, $args = array() ) {
+        return $GLOBALS['pia_mock_scheduled_hooks'][ $hook ] ?? false;
+    }
+}
+
+if ( ! function_exists( 'wp_schedule_event' ) ) {
+    function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array() ) {
+        $GLOBALS['pia_mock_scheduled_hooks'][ $hook ] = $timestamp;
+        return true;
+    }
+}
+
+if ( ! function_exists( 'wp_clear_scheduled_hook' ) ) {
+    function wp_clear_scheduled_hook( $hook, $args = array() ) {
+        unset( $GLOBALS['pia_mock_scheduled_hooks'][ $hook ] );
+        return true;
+    }
+}
+
+if ( ! function_exists( 'register_activation_hook' ) ) {
+    function register_activation_hook( $file, $function ) {
+        return true;
+    }
+}
+
+if ( ! function_exists( 'register_deactivation_hook' ) ) {
+    function register_deactivation_hook( $file, $function ) {
+        return true;
+    }
+}
+
+if ( ! function_exists( 'check_ajax_referer' ) ) {
+    function check_ajax_referer( $action = -1, $query_arg = false, $die = true ) {
+        return true;
+    }
+}
+
+if ( ! function_exists( 'wp_delete_file' ) ) {
+    function wp_delete_file( $file ) {
+        if ( file_exists( $file ) ) {
+            return unlink( $file );
+        }
+        return false;
+    }
+}
+
+class WP_Error {
+    public function __construct( $code, $message, $data = '' ) {
+        $this->code = $code;
+        $this->message = $message;
+        $this->data = $data;
+    }
+}
+
+if ( ! function_exists( 'get_bloginfo' ) ) {
+    function get_bloginfo( $show = '', $filter = 'raw' ) {
+        if ( $show === 'version' ) {
+            return '6.4.0';
+        }
+        return '';
+    }
+}
+
 // Load the plugin files to test.
-require_once PIA_PLUGIN_DIR . 'includes/results.php';
-require_once PIA_PLUGIN_DIR . 'includes/loopback.php';
-require_once PIA_PLUGIN_DIR . 'includes/scanner.php';
-require_once PIA_PLUGIN_DIR . 'includes/toggle.php';
+require_once __DIR__ . '/../slow-plugin-scanner.php';
+require_once __DIR__ . '/../includes/results.php';
+require_once __DIR__ . '/../includes/loopback.php';
+require_once __DIR__ . '/../includes/scanner.php';
+require_once __DIR__ . '/../includes/toggle.php';
+require_once __DIR__ . '/../includes/telemetry.php';
