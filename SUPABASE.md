@@ -134,24 +134,10 @@ CREATE OR REPLACE VIEW plugin_cooccurrence AS
 SELECT 
     p1 AS plugin_a,
     p2 AS plugin_b,
-    COUNT(*) AS pair_count,
-    AVG(pa.plugin_speed_delta) AS avg_delta_a,
-    AVG(pb.plugin_speed_delta) AS avg_delta_b
+    COUNT(*) AS pair_count
 FROM telemetry,
     LATERAL unnest(plugins) WITH ORDINALITY AS t1(p1, ord1),
-    LATERAL unnest(plugins) WITH ORDINALITY AS t2(p2, ord2),
-    LATERAL (
-        SELECT plugin_speed_delta 
-        FROM telemetry t2 
-        WHERE t2.plugin_tested = p1 
-        LIMIT 1
-    ) AS pa,
-    LATERAL (
-        SELECT plugin_speed_delta 
-        FROM telemetry t3 
-        WHERE t3.plugin_tested = p2 
-        LIMIT 1
-    ) AS pb
+    LATERAL unnest(plugins) WITH ORDINALITY AS t2(p2, ord2)
 WHERE p1 < p2
 GROUP BY p1, p2
 ORDER BY pair_count DESC;
@@ -164,10 +150,9 @@ SELECT
     COUNT(*) AS scans,
     AVG(plugin_speed_delta) AS avg_delta,
     PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY plugin_speed_delta) AS median_delta
-FROM telemetry,
-    LATERAL jsonb_object_keys(results) AS plugin
+FROM telemetry
 WHERE env IS NOT NULL AND plugin_speed_delta IS NOT NULL
-GROUP BY plugin, php_version
+GROUP BY plugin_tested, php_version
 ORDER BY avg_delta DESC;
 ```
 

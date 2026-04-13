@@ -1,8 +1,21 @@
 #!/bin/bash
 
-PLUGIN_DIR="wp-plugin-impact-analyzer"
-OUTPUT_DIR="build"
-OUTPUT_ZIP="$OUTPUT_DIR/wp-plugin-impact-analyzer.zip"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+PLUGIN_DIR="$PROJECT_ROOT/slow-plugin-scanner"
+
+ENV_FILE="$PROJECT_ROOT/slow-plugin-scanner/.env"
+MODE="free"
+if [ -f "$ENV_FILE" ]; then
+    MODE=$(grep "^PIA_MODE=" "$ENV_FILE" | cut -d'=' -f2 | tr -d ' ')
+    if [ -z "$MODE" ]; then
+        MODE="free"
+    fi
+fi
+
+OUTPUT_DIR="$PROJECT_ROOT/build"
+OUTPUT_ZIP="$OUTPUT_DIR/slow-plugin-scanner-${MODE}.zip"
 
 EXCLUDE_DIRS="tests vendor .git"
 EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md"

@@ -20,12 +20,32 @@ WordPress plugin to detect the single plugin causing slowdown or breakage on a s
 
 ### Building Free/Premium Versions
 
-This plugin supports building separate free and premium ZIPs from the same source code using the `.env` configuration:
+This plugin supports building separate free and premium ZIPs from the same source code. The build mode is configured via the `.env` file in the plugin directory.
 
-1. **Free version**: Set `PIA_MODE=free` in `.env`, then build the ZIP
-2. **Premium version**: Set `PIA_MODE=premium` in `.env`, then build the ZIP
+#### Configuration
 
-The premium URL is configured via `PIA_PREMIUM_URL` - set this to your Gumroad product link.
+Edit the `.env` file in the `slow-plugin-scanner/` directory:
+
+```ini
+# Build mode: "free" or "premium"
+PIA_MODE=free
+
+# Gumroad product URL for upgrade link (premium mode hides this)
+PIA_PREMIUM_URL=https://gumroad.com/l/your-product
+```
+
+#### Building the ZIP
+
+Run the build script from the project root:
+
+```bash
+./scripts/build.sh
+```
+
+This creates `build/wp-plugin-impact-analyzer.zip` with the configured mode baked in.
+
+- **Free version**: Set `PIA_MODE=free` in `.env` before building
+- **Premium version**: Set `PIA_MODE=premium` in `.env` before building
 
 ### Anonymous Telemetry
 

@@ -2,8 +2,20 @@
 import os
 import zipfile
 
-plugin_dir = "slow-plugin-scanner"
-output_file = "build/slow-plugin-scanner.zip"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
+
+plugin_dir = os.path.join(project_root, "slow-plugin-scanner")
+
+env_file = os.path.join(project_root, "slow-plugin-scanner", ".env")
+mode = "free"
+if os.path.exists(env_file):
+    with open(env_file) as f:
+        for line in f:
+            if line.startswith("PIA_MODE="):
+                mode = line.split("=")[1].strip()
+
+output_file = os.path.join(project_root, f"build/slow-plugin-scanner-{mode}.zip")
 exclude_patterns = {
     ".gitignore",
     ".distignore",
@@ -16,7 +28,7 @@ exclude_patterns = {
 }
 exclude_dirs = {"tests", "vendor", ".git"}
 
-os.makedirs("build", exist_ok=True)
+os.makedirs(os.path.join(project_root, "build"), exist_ok=True)
 
 with zipfile.ZipFile(output_file, "w", zipfile.ZIP_DEFLATED) as zf:
     for root, dirs, files in os.walk(plugin_dir):
