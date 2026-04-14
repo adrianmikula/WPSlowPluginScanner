@@ -3,9 +3,9 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-PLUGIN_DIR="$PROJECT_ROOT/slow-plugin-scanner"
+PLUGIN_DIR="$PROJECT_ROOT/whats-slowing-my-site"
 
-ENV_FILE="$PROJECT_ROOT/slow-plugin-scanner/.env"
+ENV_FILE="$PROJECT_ROOT/whats-slowing-my-site/.env"
 MODE="free"
 if [ -f "$ENV_FILE" ]; then
     MODE=$(grep "^PIA_MODE=" "$ENV_FILE" | cut -d'=' -f2 | tr -d ' ')

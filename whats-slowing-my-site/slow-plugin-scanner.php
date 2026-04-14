@@ -4,7 +4,7 @@
  * Plugin URI:  https://github.com/adrianmikula/WPSlowPluginScanner
  * Description: Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.
  * Version:     0.1.0
- * Author:      WP Impact Analyzer
+ * Author:      Adrian M
  * Author URI:  https://github.com/adrianmikula
  * License:     GPLv2 or later
  * Text Domain: whats-slowing-my-site
