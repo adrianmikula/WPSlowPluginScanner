@@ -83,8 +83,11 @@ class TestLicensing extends TestCase
      */
     public function testGetFreeLimitReturnsConfiguredValue()
     {
-        $limit = pia_get_free_limit();
-        $this->assertEquals( PIA_FREE_PLUGIN_LIMIT, $limit );
+        if ( pia_is_premium() ) {
+            $this->assertEquals( PHP_INT_MAX, pia_get_free_limit() );
+        } else {
+            $this->assertEquals( PIA_FREE_PLUGIN_LIMIT, pia_get_free_limit() );
+        }
     }
 
     /**
@@ -101,6 +104,11 @@ class TestLicensing extends TestCase
      */
     public function testFreeLimitTruncationLogic()
     {
+        if ( pia_is_premium() ) {
+            $this->assertEquals( PHP_INT_MAX, pia_get_free_limit() );
+            return;
+        }
+
         $limit = pia_get_free_limit();
         $pluginFiles = array(
             'plugin-1/plugin-1.php',
@@ -114,11 +122,9 @@ class TestLicensing extends TestCase
 
         $truncated = count( $pluginFiles ) > $limit;
 
-        if ( ! pia_is_premium() ) {
-            $this->assertTrue( $truncated );
-            $limited = array_slice( $pluginFiles, 0, $limit );
-            $this->assertCount( $limit, $limited );
-        }
+        $this->assertTrue( $truncated );
+        $limited = array_slice( $pluginFiles, 0, $limit );
+        $this->assertCount( $limit, $limited );
     }
 
     /**
@@ -177,6 +183,11 @@ class TestLicensing extends TestCase
      */
     public function testTruncatedResultsMessageLogic()
     {
+        if ( pia_is_premium() ) {
+            $this->assertEquals( PHP_INT_MAX, pia_get_free_limit() );
+            return;
+        }
+
         $is_premium = pia_is_premium();
         $premium_url = pia_get_premium_url();
         $show_upgrade_in_results = ! $is_premium && ! empty( $premium_url );
@@ -189,10 +200,8 @@ class TestLicensing extends TestCase
 
         $remaining = $results['active_count'] - $results['scanned'];
 
-        if ( ! pia_is_premium() ) {
-            $this->assertGreaterThan( 0, $remaining );
-            $this->assertTrue( $results['truncated'] );
-        }
+        $this->assertGreaterThan( 0, $remaining );
+        $this->assertTrue( $results['truncated'] );
 
         if ( $show_upgrade_in_results && $results['truncated'] ) {
             $this->assertNotEmpty( $premium_url );

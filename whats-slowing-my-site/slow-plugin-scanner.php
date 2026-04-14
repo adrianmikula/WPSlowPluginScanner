@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Slow Plugin Scanner
+ * Plugin Name: What's Slowing My Site
  * Plugin URI:  https://github.com/adrianmikula/WPSlowPluginScanner
  * Description: Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.
  * Version:     0.1.0
  * Author:      WP Impact Analyzer
  * Author URI:  https://github.com/adrianmikula
  * License:     GPLv2 or later
- * Text Domain: slow-plugin-scanner
+ * Text Domain: whats-slowing-my-site
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -116,6 +116,9 @@ function pia_is_premium() {
 }
 
 function pia_get_free_limit() {
+    if ( pia_is_premium() ) {
+        return PHP_INT_MAX;
+    }
     return defined( 'PIA_FREE_PLUGIN_LIMIT' ) ? (int) PIA_FREE_PLUGIN_LIMIT : 3;
 }
 
@@ -155,27 +158,27 @@ function pia_admin_assets( $hook ) {
             'isScanning'     => $is_scanning,
             'totalPlugins'   => $progress ? count( $progress['plugin_files'] ) : 0,
             'scannedCount'   => $progress ? $progress['scanned'] : 0,
-            'scanningText'   => __( 'Scanning...', 'slow-plugin-scanner' ),
-            'completedText' => __( 'Scan completed successfully.', 'slow-plugin-scanner' ),
-            'cancelledText'  => __( 'Scan cancelled.', 'slow-plugin-scanner' ),
-            'errorText'     => __( 'An error occurred.', 'slow-plugin-scanner' ),
+            'scanningText'   => __( 'Scanning...', 'whats-slowing-my-site' ),
+            'completedText' => __( 'Scan completed successfully.', 'whats-slowing-my-site' ),
+            'cancelledText'  => __( 'Scan cancelled.', 'whats-slowing-my-site' ),
+            'errorText'     => __( 'An error occurred.', 'whats-slowing-my-site' ),
             // translators: %1$d: Current plugin number, %2$d: Total number of plugins.
-            'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'slow-plugin-scanner' ),
+            'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'whats-slowing-my-site' ),
             // translators: %s: Plugin name.
-            'currentPlugin'  => __( 'Currently scanning: %s', 'slow-plugin-scanner' ),
-            'resultsHeader'  => __( 'Scan Results', 'slow-plugin-scanner' ),
-            'urlLabel'      => __( 'URL:', 'slow-plugin-scanner' ),
-            'baselineStatus' => __( 'Baseline status:', 'slow-plugin-scanner' ),
-            'baselineTime'  => __( 'Baseline time:', 'slow-plugin-scanner' ),
-            'pluginCol'     => __( 'Plugin', 'slow-plugin-scanner' ),
-            'impactCol'     => __( 'Impact', 'slow-plugin-scanner' ),
-            'statusCol'     => __( 'Status', 'slow-plugin-scanner' ),
-            'deltaCol'     => __( 'Delta', 'slow-plugin-scanner' ),
-            'changeCol'     => __( 'Output Change', 'slow-plugin-scanner' ),
-            'errorCol'      => __( 'Error', 'slow-plugin-scanner' ),
-            'yesLabel'      => __( 'Yes', 'slow-plugin-scanner' ),
-            'noLabel'      => __( 'No', 'slow-plugin-scanner' ),
-            'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'slow-plugin-scanner' ),
+            'currentPlugin'  => __( 'Currently scanning: %s', 'whats-slowing-my-site' ),
+            'resultsHeader'  => __( 'Scan Results', 'whats-slowing-my-site' ),
+            'urlLabel'      => __( 'URL:', 'whats-slowing-my-site' ),
+            'baselineStatus' => __( 'Baseline status:', 'whats-slowing-my-site' ),
+            'baselineTime'  => __( 'Baseline time:', 'whats-slowing-my-site' ),
+            'pluginCol'     => __( 'Plugin', 'whats-slowing-my-site' ),
+            'impactCol'     => __( 'Impact', 'whats-slowing-my-site' ),
+            'statusCol'     => __( 'Status', 'whats-slowing-my-site' ),
+            'deltaCol'     => __( 'Delta', 'whats-slowing-my-site' ),
+            'changeCol'     => __( 'Output Change', 'whats-slowing-my-site' ),
+            'errorCol'      => __( 'Error', 'whats-slowing-my-site' ),
+            'yesLabel'      => __( 'Yes', 'whats-slowing-my-site' ),
+            'noLabel'      => __( 'No', 'whats-slowing-my-site' ),
+            'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'whats-slowing-my-site' ),
             'telemetryEnabled' => pia_is_telemetry_enabled(),
             'supabaseConfigured' => defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL ),
         )

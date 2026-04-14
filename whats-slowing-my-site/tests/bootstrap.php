@@ -8,8 +8,16 @@ if ( ! defined( 'ABSPATH' ) ) {
     define( 'ABSPATH', '/tmp/wordpress/' );
 }
 
+if ( ! defined( 'WP_PLUGIN_DIR' ) ) {
+    define( 'WP_PLUGIN_DIR', '/tmp/wordpress/wp-content/plugins' );
+}
+
 if ( ! defined( 'WP_CONTENT_DIR' ) ) {
     define( 'WP_CONTENT_DIR', '/tmp/wordpress/wp-content' );
+}
+
+if ( ! defined( 'ABSPATH' ) ) {
+    define( 'ABSPATH', '/tmp/wordpress/' );
 }
 
 if ( ! defined( 'PIA_PLUGIN_DIR' ) ) {
@@ -35,6 +43,8 @@ define( 'PIA_SITE_UUID_OPTION', 'pia_site_uuid' );
 $GLOBALS['pia_mock_options'] = array();
 $GLOBALS['pia_mock_transients'] = array();
 $GLOBALS['pia_mock_scheduled_hooks'] = array();
+$GLOBALS['pia_mock_wpdb_results'] = array();
+$GLOBALS['pia_mock_plugins'] = array();
 
 if ( ! function_exists( 'get_option' ) ) {
     function get_option( $option, $default = false ) {
@@ -253,12 +263,18 @@ if ( ! function_exists( 'current_user_can' ) ) {
     }
 }
 
-$GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = false;
-$GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
+// Set default mock options only if not already set
+if ( ! isset( $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] ) ) {
+    $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = false;
+    $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
+}
 
 if ( ! function_exists( 'wp_remote_post' ) ) {
     function wp_remote_post( $url, $args = array() ) {
-        return $GLOBALS['pia_wp_remote_post']( $url, $args ) ?? array(
+        if ( isset( $GLOBALS['pia_wp_remote_post'] ) && is_callable( $GLOBALS['pia_wp_remote_post'] ) ) {
+            return $GLOBALS['pia_wp_remote_post']( $url, $args );
+        }
+        return array(
             'response' => array( 'code' => 200 ),
             'body'     => '',
         );
@@ -279,7 +295,10 @@ if ( ! function_exists( 'wp_remote_retrieve_body' ) ) {
 
 if ( ! function_exists( 'wp_remote_post' ) ) {
     function wp_remote_post( $url, $args = array() ) {
-        return $GLOBALS['pia_wp_remote_post']( $url, $args ) ?? array(
+        if ( isset( $GLOBALS['pia_wp_remote_post'] ) && is_callable( $GLOBALS['pia_wp_remote_post'] ) ) {
+            return $GLOBALS['pia_wp_remote_post']( $url, $args );
+        }
+        return array(
             'response' => array( 'code' => 200 ),
             'body'     => '',
         );
@@ -368,6 +387,50 @@ if ( ! function_exists( 'get_bloginfo' ) ) {
             return '6.4.0';
         }
         return '';
+    }
+}
+
+if ( ! class_exists( 'wpdb' ) ) {
+    class wpdb {
+        public $options = 'wp_options';
+        
+        public function prepare( $query, ...$args ) {
+            return vsprintf( str_replace( '%s', '%s', $query ), $args );
+        }
+        
+        public function get_var( $query, $x = 0, $y = 0 ) {
+            $results = $GLOBALS['pia_mock_wpdb_results'] ?? array();
+            return $results[ $query ] ?? 0;
+        }
+    }
+}
+
+$GLOBALS['wpdb'] = new wpdb();
+
+if ( ! function_exists( 'get_plugins' ) ) {
+    function get_plugins() {
+        return $GLOBALS['pia_mock_plugins'] ?? array();
+    }
+}
+
+if ( ! function_exists( 'get_plugin_data' ) ) {
+    function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
+        $mock_plugins = $GLOBALS['pia_mock_plugins'] ?? array();
+        if ( isset( $mock_plugins[ $plugin_file ] ) ) {
+            return $mock_plugins[ $plugin_file ];
+        }
+        return array(
+            'Name'        => 'Test Plugin',
+            'Version'    => '1.0.0',
+            'Description'=> 'Test plugin description',
+            'Author'     => 'Test Author',
+        );
+    }
+}
+
+if ( ! function_exists( 'sanitize_key' ) ) {
+    function sanitize_key( $key ) {
+        return strtolower( preg_replace( '/[^a-z0-9_]/', '', $key ) );
     }
 }
 

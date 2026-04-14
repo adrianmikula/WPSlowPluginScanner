@@ -3,10 +3,18 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'PIA_TELEMETRY_QUEUE', 'pia_telemetry_queue' );
-define( 'PIA_TELEMETRY_ENABLED', 'pia_telemetry_optin' );
-define( 'PIA_TELEMETRY_CRON_HOOK', 'pia_send_telemetry_cron' );
-define( 'PIA_SITE_UUID_OPTION', 'pia_site_uuid' );
+if ( ! defined( 'PIA_TELEMETRY_QUEUE' ) ) {
+    define( 'PIA_TELEMETRY_QUEUE', 'pia_telemetry_queue' );
+}
+if ( ! defined( 'PIA_TELEMETRY_ENABLED' ) ) {
+    define( 'PIA_TELEMETRY_ENABLED', 'pia_telemetry_optin' );
+}
+if ( ! defined( 'PIA_TELEMETRY_CRON_HOOK' ) ) {
+    define( 'PIA_TELEMETRY_CRON_HOOK', 'pia_send_telemetry_cron' );
+}
+if ( ! defined( 'PIA_SITE_UUID_OPTION' ) ) {
+    define( 'PIA_SITE_UUID_OPTION', 'pia_site_uuid' );
+}
 
 function pia_is_telemetry_enabled() {
     return (bool) get_option( PIA_TELEMETRY_ENABLED, true );
@@ -79,8 +87,43 @@ function pia_get_error_category( $plugin_result ) {
     return 'none';
 }
 
+function pia_get_plugin_version( $plugin_file ) {
+    if ( ! function_exists( 'get_plugin_data' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+
+    $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false, false );
+    return ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : null;
+}
+
+function pia_count_plugin_settings( $plugin_file ) {
+    global $wpdb;
+
+    $plugin_slug = pia_anonymize_plugin_slug( $plugin_file );
+
+    $option_patterns = array(
+        $wpdb->prepare( '%s_', $plugin_slug ),
+        $wpdb->prepare( '%s_', sanitize_key( $plugin_slug ) ),
+    );
+
+    $total_count = 0;
+
+    foreach ( $option_patterns as $pattern ) {
+        $count = $wpdb->get_var(
+            $wpdb->prepare(
+                'SELECT COUNT(*) FROM ' . $wpdb->options . ' WHERE option_name LIKE %s',
+                $pattern . '%'
+            )
+        );
+        $total_count += (int) $count;
+    }
+
+    return $total_count;
+}
+
 function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time ) {
-    $plugin_slug = pia_anonymize_plugin_slug( $plugin_result['file'] );
+    $plugin_file = $plugin_result['file'];
+    $plugin_slug = pia_anonymize_plugin_slug( $plugin_file );
     $origin = pia_get_site_uuid();
 
     $php_version = PHP_VERSION;
@@ -99,14 +142,19 @@ function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baselin
         ),
     );
 
+    $plugin_version = pia_get_plugin_version( $plugin_file );
+    $settings_count = pia_count_plugin_settings( $plugin_file );
+
     $data = array(
         'plugins'                  => $all_plugins,
         'plugin_tested'           => $plugin_slug,
-        'plugin_speed_delta'       => $plugin_result['delta'],
+        'plugin_version'          => $plugin_version,
+        'plugin_speed_delta'      => $plugin_result['delta'],
         'baseline_site_load_speed' => $baseline_time,
-        'plugin_error'             => $plugin_result['error'] ?: null,
-        'error_category'           => $error_category,
-        'env'                      => array(
+        'plugin_error'            => $plugin_result['error'] ?: null,
+        'error_category'          => $error_category,
+        'settings_count'          => $settings_count,
+        'env'                     => array(
             'php_version' => $php_version,
             'wp_version'  => $wp_version,
         ),
@@ -133,10 +181,10 @@ function pia_send_telemetry_to_supabase( $data ) {
         array(
             'method'  => 'POST',
             'headers' => array(
-                'apikey'         => $supabase_key,
-                'Authorization'  => 'Bearer ' . $supabase_key,
-                'Content-Type'   => 'application/json',
-                'Prefer'         => 'return=minimal',
+                'apikey'        => $supabase_key,
+                'Authorization' => 'Bearer ' . $supabase_key,
+                'Content-Type'  => 'application/json',
+                'Prefer'        => 'return=minimal',
             ),
             'body'    => wp_json_encode( $data ),
             'timeout' => 15,

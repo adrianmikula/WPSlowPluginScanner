@@ -3,6 +3,7 @@
 .gitignore
 .distignore
 .phpunit.result.cache
+.env.example
 
 # Tests - run outside WordPress context, can't use WP_Filesystem
 tests/

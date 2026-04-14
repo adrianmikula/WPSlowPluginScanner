@@ -1,0 +1,19 @@
+{
+    &quot;name&quot;: &quot;wp-impact-analyzer/whats-slowing-my-site&quot;,
+    &quot;description&quot;: &quot;Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.&quot;,
+    &quot;type&quot;: &quot;wordpress-plugin&quot;,
+    &quot;require-dev&quot;: {
+        &quot;phpunit/phpunit&quot;: &quot;^9.6&quot;,
+        &quot;yoast/phpunit-polyfills&quot;: &quot;^2.0&quot;
+    },
+    &quot;autoload&quot;: {
+        &quot;psr-4&quot;: {
+            &quot;PIA\\&quot;: &quot;tests/&quot;
+        }
+    },
+    &quot;config&quot;: {
+        &quot;allow-plugins&quot;: {
+            &quot;dealerdirect/phpcodesniffer-composer-installer&quot;: true
+        }
+    }
+}

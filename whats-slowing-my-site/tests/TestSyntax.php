@@ -29,7 +29,7 @@ class TestSyntax extends TestCase
      * @var array
      */
     private static $sourceFiles = array(
-        'plugin-impact-analyzer.php',
+        'slow-plugin-scanner.php',
         'admin/ui.php',
         'includes/scanner.php',
         'includes/toggle.php',
@@ -53,7 +53,7 @@ class TestSyntax extends TestCase
      */
     public function testSourceFileHasValidSyntax( $filePath )
     {
-        $fullPath = $this->baseDir . '/wp-plugin-impact-analyzer/' . $filePath;
+        $fullPath = $this->baseDir . '/whats-slowing-my-site/' . $filePath;
 
         $this->assertFileExists( $fullPath, "Source file $filePath should exist at $fullPath" );
 
@@ -83,7 +83,7 @@ class TestSyntax extends TestCase
      */
     public function testAdminJsExists()
     {
-        $jsPath = $this->baseDir . '/wp-plugin-impact-analyzer/admin/js/admin.js';
+        $jsPath = $this->baseDir . '/whats-slowing-my-site/admin/js/admin.js';
         $this->assertFileExists( $jsPath, 'admin.js should exist' );
     }
 

@@ -13,20 +13,26 @@ class TestTelemetry extends TestCase
 {
     protected function setUp(): void
     {
+        $GLOBALS['pia_mock_options'] = array();
+        $GLOBALS['pia_mock_scheduled_hooks'] = array();
+
         $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = true;
         $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
         $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
-        $GLOBALS['pia_mock_scheduled_hooks'] = array();
+    }
+
+    protected function tearDown(): void
+    {
     }
 
     public function testTelemetryEnabledByDefault()
     {
-        $this->assertTrue( pia_is_telemetry_enabled() );
+        $result = pia_is_telemetry_enabled();
+        $this->assertTrue( $result, 'Telemetry should be enabled by default' );
     }
 
     public function testSetTelemetryEnabled()
     {
-        pia_set_telemetry_enabled( true );
         $this->assertTrue( pia_is_telemetry_enabled() );
 
         pia_set_telemetry_enabled( false );
@@ -254,6 +260,10 @@ class TestTelemetry extends TestCase
 
     public function testProcessQueueWhenDisabled()
     {
+        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = false;
+        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
+        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+        
         pia_set_telemetry_enabled( false );
         pia_add_to_telemetry_queue( array( 'test' => 'data' ) );
 

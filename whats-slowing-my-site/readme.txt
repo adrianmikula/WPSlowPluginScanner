@@ -1,5 +1,5 @@
-=== Slow Plugin Scanner ===
-Contributors: wp-impact-analyzer
+=== What's Slowing My Site ===
+Contributors: Adrian Mikula
 Tags: slow wordpress, plugin performance, plugin conflict, debug wordpress, wordpress speed
 Requires at least: 5.0
 Tested up to: 6.9
@@ -49,7 +49,7 @@ Get actionable insights to speed up your WordPress site.
 
 == Installation ==
 
-1. Upload the `wp-plugin-impact-analyzer` folder to the `/wp-content/plugins/` directory
+1. Upload the `whats-slowing-my-site` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to Tools > Scan Plugins to use the scanner
 
@@ -88,4 +88,4 @@ Yes, click the "Cancel" button to stop the scan. The temporary files will be cle
 == Upgrade Notice ==
 
 = 0.1.0 =
-Initial release of WP Slow Plugin Scanner.
+Initial release of What's Slowing My Site.
