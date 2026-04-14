@@ -435,7 +435,7 @@ if ( ! function_exists( 'sanitize_key' ) ) {
 }
 
 // Load the plugin files to test.
-require_once __DIR__ . '/../slow-plugin-scanner.php';
+require_once __DIR__ . '/../whats-slowing-my-site.php';
 require_once __DIR__ . '/../includes/results.php';
 require_once __DIR__ . '/../includes/loopback.php';
 require_once __DIR__ . '/../includes/scanner.php';

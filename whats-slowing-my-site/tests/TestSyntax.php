@@ -29,7 +29,7 @@ class TestSyntax extends TestCase
      * @var array
      */
     private static $sourceFiles = array(
-        'slow-plugin-scanner.php',
+        'whats-slowing-my-site.php',
         'admin/ui.php',
         'includes/scanner.php',
         'includes/toggle.php',

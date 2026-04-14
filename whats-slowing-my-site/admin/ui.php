@@ -217,10 +217,10 @@ function pia_render_admin_page() {
                 <?php if ( ! empty( $results['truncated'] ) && $show_upgrade ) { ?>
                     <div class="notice notice-warning">
                         <p>
-                            <?php /* translators: %1$d: number of scanned plugins, %2$d: number of remaining plugins */ ?>
                             <?php
                             $remaining = $results['active_count'] - $results['scanned'];
                             echo esc_html( sprintf(
+                                /* translators: %1$d: number of scanned plugins, %2$d: number of remaining plugins */
                                 __( 'Free mode limited to %1$d plugins. %2$d more plugins were not scanned.', 'whats-slowing-my-site' ),
                                 $results['scanned'],
                                 $remaining

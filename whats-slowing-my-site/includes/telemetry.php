@@ -97,28 +97,37 @@ function pia_get_plugin_version( $plugin_file ) {
 }
 
 function pia_count_plugin_settings( $plugin_file ) {
-    global $wpdb;
+	global $wpdb;
 
-    $plugin_slug = pia_anonymize_plugin_slug( $plugin_file );
+	$plugin_slug = pia_anonymize_plugin_slug( $plugin_file );
+	$cache_key   = 'pia_plugin_settings_' . md5( $plugin_slug );
 
-    $option_patterns = array(
-        $wpdb->prepare( '%s_', $plugin_slug ),
-        $wpdb->prepare( '%s_', sanitize_key( $plugin_slug ) ),
-    );
+	$cached_count = wp_cache_get( $cache_key, 'pia_settings_count' );
+	if ( false !== $cached_count ) {
+		return $cached_count;
+	}
 
-    $total_count = 0;
+	$option_patterns = array(
+		$wpdb->prepare( '%s_', $plugin_slug ),
+		$wpdb->prepare( '%s_', sanitize_key( $plugin_slug ) ),
+	);
 
-    foreach ( $option_patterns as $pattern ) {
-        $count = $wpdb->get_var(
-            $wpdb->prepare(
-                'SELECT COUNT(*) FROM ' . $wpdb->options . ' WHERE option_name LIKE %s',
-                $pattern . '%'
-            )
-        );
-        $total_count += (int) $count;
-    }
+	$total_count = 0;
 
-    return $total_count;
+	foreach ( $option_patterns as $pattern ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$count = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM ' . $wpdb->options . ' WHERE option_name LIKE %s',
+				$pattern . '%'
+			)
+		);
+		$total_count += (int) $count;
+	}
+
+	wp_cache_set( $cache_key, $total_count, 'pia_settings_count', HOUR_IN_SECONDS );
+
+	return $total_count;
 }
 
 function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time ) {
