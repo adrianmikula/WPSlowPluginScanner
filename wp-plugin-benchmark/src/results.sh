@@ -56,29 +56,21 @@ upload_result() {
         return 1
     fi
     
-    local data=$(cat "$result_file")
-    
-    # Validate JSON
-    if ! echo "$data" | jq -e . >/dev/null 2>&1; then
-        log_error "Invalid JSON in $result_file"
-        return 1
-    fi
-    
     log_info "Uploading result to Supabase..."
     
-    # Upload via Supabase REST API
-    local response=$(curl -s -X POST \
-        -H "apikey: $SUPABASE_KEY" \
-        -H "Authorization: Bearer $SUPABASE_KEY" \
-        -H "Content-Type: application/json" \
-        -d "$data" \
-        "$SUPABASE_URL/rest/v1/$SUPABASE_TABLE" 2>&1)
-    
-    if [[ $? -eq 0 ]] && [[ "$response" != *"error"* ]]; then
-        log_success "Uploaded to Supabase"
-        return 0
+    # Use PHP uploader to include test_type field
+    local php_uploader="$BENCHMARK_DIR/bin/upload-results.php"
+    if [[ -f "$php_uploader" ]]; then
+        php "$php_uploader" --file="$result_file" --url="$SUPABASE_URL" --key="$SUPABASE_KEY" --table="$SUPABASE_TABLE" --test-type="benchmark"
+        if [[ $? -eq 0 ]]; then
+            log_success "Uploaded to Supabase (benchmark)"
+            return 0
+        else
+            log_error "Upload failed"
+            return 1
+        fi
     else
-        log_error "Upload failed: $response"
+        log_error "PHP uploader not found: $php_uploader"
         return 1
     fi
 }

@@ -15,3 +15,9 @@
 
 # Environment config (per-build)
 .env
+
+# WP Benchmark
+wp-plugin-benchmark/logs/*.log
+wp-plugin-benchmark/logs/progress.json
+wp-plugin-benchmark/logs/completed_plugins.csv
+wp-plugin-benchmark/results/

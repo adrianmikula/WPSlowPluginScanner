@@ -110,6 +110,13 @@ log_success() {
     log_to_file "SUCCESS" "$1"
 }
 
+log_debug() {
+    if [[ "$LOG_LEVEL" == "DEBUG" ]]; then
+        echo -e "${BLUE}[DEBUG]${NC} $1" >&2
+        log_to_file "DEBUG" "$1"
+    fi
+}
+
 log_to_file() {
     local level=$1
     local message=$2

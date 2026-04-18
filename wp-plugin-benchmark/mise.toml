@@ -1,0 +1,91 @@
+[variables]
+LOCALWP_SITE_NAME = "test-plugin"
+
+[tools]
+# Required system tools (ensure installed)
+jq = "1.7"
+curl = "8.5"
+# Note: wp-cli must be installed separately
+# mise plugin install php wp-cli
+
+[env]
+# Path to LocalWP sites configuration
+LOCAL_DATA = "~/.config/Local"
+
+[hooks.pre-init]
+# Ensure scripts are executable
+cmds = [
+  "chmod +x bin/wp-benchmark",
+  "chmod +x bin/localwp-wp",
+  "chmod +x src/*.sh 2>/dev/null || true"
+]
+
+[hooks.post-init]
+cmds = [
+  "echo 'Mise environment ready. Remember to start your LocalWP site.'",
+  "echo 'Set site name: mise local set LOCALWP_SITE_NAME your-site-name'"
+]
+
+[tasks]
+# Initialize benchmark (fetch top 100 plugins)
+init = "bash bin/wp-benchmark init"
+
+# Run single batch
+"run-batch" = "bash bin/wp-benchmark run --batch={{query .batch}}"
+
+# Run full benchmark (all 10 batches)
+run = "bash bin/wp-benchmark run"
+
+# Show status
+status = "bash bin/wp-benchmark status"
+
+# View logs
+logs = "bash bin/wp-benchmark logs"
+
+# List plugins
+list = "bash bin/wp-benchmark list"
+
+# Clean up old result files
+clean = "rm -f logs/progress.json logs/benchmark-summary.json && rm -f logs/results/*.json"
+
+# Reset everything (clean + re-init)
+reset = "mise clean && mise init"
+
+# Run a quick sanity check test
+sanity = "bash bin/wp-benchmark run --batch=1 --site=test-plugin"
+
+# Show current configuration
+config = "bash bin/wp-benchmark config"
+
+# Generate summary from results
+summary = "bash bin/wp-benchmark summary"
+
+[task.init.description]
+"Fetch top 100 WordPress plugins from API"
+
+[task."run-batch".description]
+"Run a specific batch (use: mise run-batch --batch=1)"
+
+[task.run.description]
+"Run full benchmark (10 batches × 10 plugins)"
+
+[task.status.description]
+"Show current benchmark progress"
+
+[task.logs.description]
+"View recent benchmark logs"
+
+[task.list.description]
+"List loaded plugins (use --full for all 100)"
+
+[task.clean.description]
+"Remove all benchmark result and progress files"
+
+[task.reset.description]
+"Clean and re-initialize benchmark (fresh start)"
+
+[task.sanity.description]
+"Run quick test of batch 1 to verify setup"
+
+[task.summary.description]
+"Generate benchmark summary from result files"

@@ -36,24 +36,44 @@ mark_plugin_complete() {
 measure_response_time() {
     local url=$1
     local max_time=$2
-    local start_time end_time elapsed_ms
     
-    # Use curl with timing metrics
-    local curl_output=$(curl -s -w "\n%{time_total}" --max-time "$max_time" -A "$TEST_USER_AGENT" "$url" 2>/dev/null)
+    log_debug "Measuring: $url (timeout=${max_time}s)"
     
-    if [[ $? -ne 0 ]]; then
+    # Use curl with timing metrics, with clean environment (unset LD_LIBRARY_PATH that breaks curl)
+    local curl_output
+    curl_output=$(env -u LD_LIBRARY_PATH curl -s -w "\n%{time_total}" --max-time "$max_time" -A "$TEST_USER_AGENT" "$url" 2>/dev/null)
+    local curl_rc=$?
+    
+    log_debug "curl exit: $curl_rc, output length: ${#curl_output}"
+    
+    if [[ $curl_rc -ne 0 ]]; then
+        log_debug "curl failed with exit code $curl_rc"
         echo "ERROR"
         return 1
     fi
     
     # Extract time (last line)
-    local time_total=$(echo "$curl_output" | tail -n1)
+    local time_total
+    time_total=$(echo "$curl_output" | tail -n1)
+    log_debug "time_total raw: '$time_total'"
     
-    # Convert to milliseconds
-    elapsed_ms=$(echo "$time_total * 1000" | bc -l 2>/dev/null || echo "0")
+    # Validate it's a number
+    if ! [[ "$time_total" =~ ^[0-9]+\.?[0-9]*$ ]]; then
+        log_debug "time_total validation failed"
+        echo "ERROR"
+        return 1
+    fi
     
-    # Round to integer
-    echo "${elapsed_ms%.*}"
+    # Convert to milliseconds and round to nearest integer using printf
+    local elapsed_ms
+    elapsed_ms=$(echo "$time_total * 1000" | bc -l 2>/dev/null)
+    log_debug "elapsed_ms before rounding: '$elapsed_ms'"
+    
+    local rounded
+    rounded=$(echo "$elapsed_ms" | awk '{printf "%.0f", $1}')
+    log_debug "rounded result: '$rounded'"
+    
+    echo "$rounded"
     return 0
 }
 
@@ -70,11 +90,23 @@ run_test_iteration() {
     local site_url=$(get_site_url "$site_name")
     local test_url="${site_url}/"
     
+    log_debug "URL to test: $test_url"
+    
     # Measure response time
-    local response_time=$(measure_response_time "$test_url" "$TEST_REQUEST_TIMEOUT")
+    local response_time
+    response_time=$(measure_response_time "$test_url" "$TEST_REQUEST_TIMEOUT")
+    
+    log_debug "Raw response_time: '$response_time'"
     
     if [[ "$response_time" == "ERROR" ]]; then
         log_error "Iteration $iteration failed: site unreachable"
+        echo "ERROR"
+        return 1
+    fi
+    
+    # Validate response_time is a non-negative integer
+    if ! [[ "$response_time" =~ ^[0-9]+$ ]]; then
+        log_error "Invalid response time: '$response_time' (not a number)"
         echo "ERROR"
         return 1
     fi
@@ -193,6 +225,20 @@ EOF
     # Store result for later upload
     echo "$result_json" > "$LOGS_DIR/result-$plugin_slug.json"
     
+    # Upload to Supabase if credentials available (non-blocking)
+    if [[ -n "$SUPABASE_URL" && -n "$SUPABASE_KEY" ]]; then
+        local php_uploader="$BENCHMARK_DIR/bin/upload-results.php"
+        if [[ -f "$php_uploader" ]]; then
+            local upload_output
+            upload_output=$(php "$php_uploader" --file="$LOGS_DIR/result-$plugin_slug.json" --url="$SUPABASE_URL" --key="$SUPABASE_KEY" --table="$SUPABASE_TABLE" --test-type="benchmark" 2>&1)
+            if [[ $? -eq 0 ]]; then
+                log_info "Uploaded to Supabase"
+            else
+                log_warn "Supabase upload failed: $upload_output"
+            fi
+        fi
+    fi
+    
     mark_plugin_complete "$batch_num" "$plugin_slug" "success"
     return 0
 }
@@ -251,10 +297,12 @@ run_batch() {
     local site_name="${SITE_PREFIX}-${batch_num}-$(date +%s)"
     log_info "Creating site: $site_name"
     
-    # Note: lwp cannot create sites; we need to use an existing site or manual creation
-    # For now, check if we can use a pre-existing site or create via alternative
+# Note: lwp cannot create sites; we need to use an existing site or manual creation
     if [[ -n "$LOCALWP_SITE_NAME" ]]; then
         site_name="$LOCALWP_SITE_NAME"
+        log_info "Using provided site: $site_name"
+    elif [[ -n "$SITE_NAME" ]]; then
+        site_name="$SITE_NAME"
         log_info "Using provided site: $site_name"
     else
         log_warn "lwp cannot create sites. Please create site '$site_name' manually in LocalWP first."
@@ -308,7 +356,7 @@ run_batch() {
     cleanup_batch "$site_name"
     
     # Optionally delete site if we created it specifically
-    if [[ -z "$LOCALWP_SITE_NAME" ]]; then
+    if [[ -z "$LOCALWP_SITE_NAME" && -z "$SITE_NAME" ]]; then
         log_info "Site $site_name will remain. Delete manually via Local app when done."
     fi
     

@@ -4,6 +4,7 @@
 # Project paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+BENCHMARK_DIR="$PROJECT_ROOT"
 CONFIG_DIR="$PROJECT_ROOT/config"
 LOGS_DIR="$PROJECT_ROOT/logs"
 SRC_DIR="$PROJECT_ROOT/src"

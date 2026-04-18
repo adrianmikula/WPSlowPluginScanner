@@ -21,13 +21,14 @@ WP Plugin Performance Benchmark CLI
 
 Usage: wp-benchmark <command> [options]
 
-Commands:
-    init                    Fetch & save top 100 plugins list
-    run                     Run full benchmark (10 batches)
-    run --batch=N           Run specific batch only
-    status                  Show current progress
-    logs                    View recent test logs
-    list                    Show loaded plugin list
+ Commands:
+     init                    Fetch & save top 100 plugins list
+     run                     Run full benchmark (10 batches)
+     run --batch=N           Run specific batch only
+     status                  Show current progress
+     logs                    View recent test logs
+     clean                   Remove all result and progress files
+     list                    Show loaded plugin list
 
 Options:
     --batch=N               Run specific batch (1-10)
@@ -101,6 +102,13 @@ case "$COMMAND" in
         ;;
     logs)
         show_logs
+        ;;
+    clean)
+        log_info "Cleaning up benchmark results..."
+        rm -f "$BENCHMARK_DIR/logs/progress.json"
+        rm -f "$BENCHMARK_DIR/logs/benchmark-summary.json"
+        rm -f "$BENCHMARK_DIR/logs/results/"*.json
+        log_success "Clean complete"
         ;;
     list)
         if $SHOW_FULL; then
