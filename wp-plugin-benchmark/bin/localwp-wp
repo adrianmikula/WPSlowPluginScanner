@@ -1,0 +1,69 @@
+#!/bin/bash
+# LocalWP wp-cli wrapper - runs wp-cli with correct LocalPHP environment
+# Usage: localwp-wp SITE_NAME <wp-cli-args...>
+
+SITE_NAME="${1:-test-plugin}"
+shift || true
+
+# Find Local data directory
+if [[ -d "$HOME/Library/Application Support/Local" ]]; then
+    LOCAL_DATA="$HOME/Library/Application Support/Local"
+elif [[ -d "$HOME/.config/Local" ]]; then
+    LOCAL_DATA="$HOME/.config/Local"
+else
+    echo "ERROR: LocalWP not found" >&2
+    exit 1
+fi
+
+# Get site info from sites.json
+SITES_JSON="$LOCAL_DATA/sites.json"
+if [[ ! -f "$SITES_JSON" ]]; then
+    echo "ERROR: sites.json not found" >&2
+    exit 1
+fi
+
+# Look up site
+SITE_INFO=$(python3 -c "
+import json, sys, os
+with open('$SITES_JSON') as f:
+    sites = json.load(f)
+for sid, s in sites.items():
+    if s.get('name', '') == '$SITE_NAME':
+        php_ver = s.get('services', {}).get('php', {}).get('version', '')
+        mysql_ver = s.get('services', {}).get('mysql', {}).get('version', '')
+        path = os.path.expanduser(s.get('path', ''))
+        print(f'{sid}|{path}|{php_ver}')
+        break
+else:
+    sys.exit(1)
+") || exit 1
+
+IFS='|' read -r SITE_ID SITE_PATH PHP_VER <<< "$SITE_INFO"
+
+# Setup paths
+PHP_BASE="$LOCAL_DATA/lightning-services/php-${PHP_VER}+0/bin/linux"
+PHP_BIN="$PHP_BASE/bin/php"
+MYSQL_SOCKET="$LOCAL_DATA/run/$SITE_ID/mysql/mysqld.sock"
+WP_PATH="${SITE_PATH}/app/public"
+
+# Check requirements
+if [[ ! -x "$PHP_BIN" ]]; then
+    echo "ERROR: PHP binary not found: $PHP_BIN" >&2
+    exit 1
+fi
+if [[ ! -S "$MYSQL_SOCKET" ]]; then
+    echo "ERROR: MySQL socket not found: $MYSQL_SOCKET" >&2
+    exit 1
+fi
+
+# Run wp-cli with proper environment
+export PATH="$(dirname "$PHP_BIN"):$PATH"
+export LD_LIBRARY_PATH="$PHP_BASE/shared-libs:$PHP_BASE/lib:${LD_LIBRARY_PATH:-}"
+export MYSQL_UNIX_PORT="$MYSQL_SOCKET"
+
+exec "$PHP_BIN" \
+    -d "mysqli.default_socket=$MYSQL_SOCKET" \
+    -d "memory_limit=512M" \
+    "$(which wp)" \
+    --path="$WP_PATH" \
+    "$@"

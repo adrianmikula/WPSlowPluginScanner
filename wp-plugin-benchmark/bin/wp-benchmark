@@ -1,0 +1,115 @@
+#!/bin/bash
+# WP Plugin Benchmark CLI - Main Entry Point
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BENCHMARK_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Source all modules
+source "$BENCHMARK_DIR/src/config.sh"
+source "$BENCHMARK_DIR/src/plugins.sh"
+source "$BENCHMARK_DIR/src/localwp.sh"
+source "$BENCHMARK_DIR/src/test-runner.sh" 2>/dev/null || true
+source "$BENCHMARK_DIR/src/results.sh" 2>/dev/null || true
+
+# Initialize logging
+init_logging
+
+# CLI usage
+usage() {
+    cat << EOF
+WP Plugin Performance Benchmark CLI
+
+Usage: wp-benchmark <command> [options]
+
+Commands:
+    init                    Fetch & save top 100 plugins list
+    run                     Run full benchmark (10 batches)
+    run --batch=N           Run specific batch only
+    status                  Show current progress
+    logs                    View recent test logs
+    list                    Show loaded plugin list
+
+Options:
+    --batch=N               Run specific batch (1-10)
+    --site=NAME             Use existing LocalWP site
+    --full                  Show all plugins in list
+    -h, --help              Show this help
+
+Examples:
+    wp-benchmark init                    # Fetch plugin list
+    wp-benchmark run                     # Run all batches
+    wp-benchmark run --batch=3           # Run only batch 3
+    wp-benchmark status                  # Check progress
+
+EOF
+    exit 0
+}
+
+# Parse arguments
+COMMAND=""
+BATCH_NUM=""
+SITE_NAME=""
+SHOW_FULL=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        init|run|status|logs|list)
+            COMMAND="$1"
+            shift
+            ;;
+        --batch=*)
+            BATCH_NUM="${1#*=}"
+            shift
+            ;;
+        --site=*)
+            SITE_NAME="${1#*=}"
+            shift
+            ;;
+        --full)
+            SHOW_FULL=true
+            shift
+            ;;
+        -h|--help)
+            usage
+            ;;
+        *)
+            echo "Unknown option: $1"
+            usage
+            ;;
+    esac
+done
+
+# Execute command
+case "$COMMAND" in
+    init)
+        log_info "Initializing WP Plugin Benchmark..."
+        fetch_plugin_list
+        check_dependencies
+        log_success "Initialization complete!"
+        ;;
+    run)
+        if [[ -n "$BATCH_NUM" ]]; then
+            log_info "Running batch $BATCH_NUM..."
+            run_batch "$BATCH_NUM"
+        else
+            log_info "Running full benchmark (10 batches)..."
+            run_full_benchmark
+        fi
+        ;;
+    status)
+        show_status
+        ;;
+    logs)
+        show_logs
+        ;;
+    list)
+        if $SHOW_FULL; then
+            get_plugin_list
+        else
+            show_plugin_list
+        fi
+        ;;
+    *)
+        usage
+        ;;
+esac

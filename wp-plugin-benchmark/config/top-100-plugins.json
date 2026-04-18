@@ -1,0 +1,602 @@
+[
+  {
+    "slug": "elementor",
+    "name": "Elementor Website Builder &#8211; more than just a page builder",
+    "version": "4.0.2",
+    "rating": 90
+  },
+  {
+    "slug": "wordpress-seo",
+    "name": "Yoast SEO &#8211; Advanced SEO with real-time guidance and built-in AI",
+    "version": "27.4",
+    "rating": 96
+  },
+  {
+    "slug": "contact-form-7",
+    "name": "Contact Form 7",
+    "version": "6.1.5",
+    "rating": 80
+  },
+  {
+    "slug": "classic-editor",
+    "name": "Classic Editor",
+    "version": "1.6.7",
+    "rating": 98
+  },
+  {
+    "slug": "litespeed-cache",
+    "name": "LiteSpeed Cache",
+    "version": "7.8.1",
+    "rating": 96
+  },
+  {
+    "slug": "woocommerce",
+    "name": "WooCommerce",
+    "version": "10.7.0",
+    "rating": 90
+  },
+  {
+    "slug": "akismet",
+    "name": "Akismet Anti-spam: Spam Protection",
+    "version": "5.6",
+    "rating": 94
+  },
+  {
+    "slug": "wpforms-lite",
+    "name": "WPForms &#8211; Easy Form Builder for WordPress &#8211; Contact Forms, Payment Forms, Surveys, &amp; More",
+    "version": "1.10.0.4",
+    "rating": 96
+  },
+  {
+    "slug": "google-site-kit",
+    "name": "Site Kit by Google &#8211; Analytics, Search Console, AdSense, Speed",
+    "version": "1.176.0",
+    "rating": 84
+  },
+  {
+    "slug": "all-in-one-wp-migration",
+    "name": "All-in-One WP Migration and Backup",
+    "version": "7.105",
+    "rating": 90
+  },
+  {
+    "slug": "wordfence",
+    "name": "Wordfence Security &#8211; Firewall, Malware Scan, and Login Security",
+    "version": "8.1.4",
+    "rating": 94
+  },
+  {
+    "slug": "wp-mail-smtp",
+    "name": "WP Mail SMTP by WPForms &#8211; The Most Popular SMTP and Email Log Plugin",
+    "version": "4.8.0",
+    "rating": 96
+  },
+  {
+    "slug": "duplicate-post",
+    "name": "Yoast Duplicate Post",
+    "version": "4.6",
+    "rating": 94
+  },
+  {
+    "slug": "seo-by-rank-math",
+    "name": "Rank Math SEO – AI SEO Tools to Dominate SEO Rankings",
+    "version": "1.0.268",
+    "rating": 96
+  },
+  {
+    "slug": "really-simple-ssl",
+    "name": "Really Simple Security &#8211; Simple and Performant Security (formerly Really Simple SSL)",
+    "version": "9.5.9",
+    "rating": 98
+  },
+  {
+    "slug": "duplicate-page",
+    "name": "Duplicate Page",
+    "version": "4.5.7",
+    "rating": 96
+  },
+  {
+    "slug": "updraftplus",
+    "name": "UpdraftPlus: WP Backup &amp; Migration Plugin",
+    "version": "1.26.2",
+    "rating": 96
+  },
+  {
+    "slug": "jetpack",
+    "name": "Jetpack &#8211; WP Security, Backup, Speed, &amp; Growth",
+    "version": "15.7.1",
+    "rating": 76
+  },
+  {
+    "slug": "hostinger",
+    "name": "Hostinger Tools",
+    "version": "3.0.65",
+    "rating": 66
+  },
+  {
+    "slug": "all-in-one-seo-pack",
+    "name": "All in One SEO – Powerful SEO Plugin to Boost SEO Rankings &amp; Increase Traffic",
+    "version": "4.9.5.1",
+    "rating": 94
+  },
+  {
+    "slug": "insert-headers-and-footers",
+    "name": "WPCode &#8211; Insert Headers and Footers + Custom Code Snippets &#8211; WordPress Code Manager",
+    "version": "2.3.5",
+    "rating": 98
+  },
+  {
+    "slug": "wordpress-importer",
+    "name": "WordPress Importer",
+    "version": "0.9.5",
+    "rating": 62
+  },
+  {
+    "slug": "redirection",
+    "name": "Redirection",
+    "version": "5.7.5",
+    "rating": 88
+  },
+  {
+    "slug": "google-analytics-for-wordpress",
+    "name": "MonsterInsights &#8211; Google Analytics Dashboard for WordPress (Website Stats Made Easy)",
+    "version": "10.1.2",
+    "rating": 90
+  },
+  {
+    "slug": "classic-widgets",
+    "name": "Classic Widgets",
+    "version": "0.3",
+    "rating": 98
+  },
+  {
+    "slug": "header-footer-elementor",
+    "name": "Ultimate Addons for Elementor",
+    "version": "2.8.7",
+    "rating": 98
+  },
+  {
+    "slug": "wps-hide-login",
+    "name": "WPS Hide Login",
+    "version": "1.9.18",
+    "rating": 96
+  },
+  {
+    "slug": "advanced-custom-fields",
+    "name": "Advanced Custom Fields (ACF®)",
+    "version": "6.8.0",
+    "rating": 90
+  },
+  {
+    "slug": "essential-addons-for-elementor-lite",
+    "name": "Essential Addons for Elementor &#8211; Popular Elementor Templates &amp; Widgets",
+    "version": "6.6.2",
+    "rating": 98
+  },
+  {
+    "slug": "tinymce-advanced",
+    "name": "Advanced Editor Tools",
+    "version": "5.9.2",
+    "rating": 90
+  },
+  {
+    "slug": "astra-sites",
+    "name": "Starter Templates – AI-Powered Templates for Elementor &amp; Gutenberg",
+    "version": "4.5.3",
+    "rating": 98
+  },
+  {
+    "slug": "elementskit-lite",
+    "name": "ElementsKit Elementor Addons &#8211; Advanced Widgets &amp; Templates Addons for Elementor",
+    "version": "3.9.2",
+    "rating": 98
+  },
+  {
+    "slug": "limit-login-attempts-reloaded",
+    "name": "Limit Login Attempts Reloaded – Login Security, 2FA, Brute Force Protection &amp; Firewall",
+    "version": "3.1.0",
+    "rating": 98
+  },
+  {
+    "slug": "mailchimp-for-wp",
+    "name": "MC4WP: Mailchimp for WordPress",
+    "version": "4.12.1",
+    "rating": 96
+  },
+  {
+    "slug": "loco-translate",
+    "name": "Loco Translate",
+    "version": "2.8.3",
+    "rating": 96
+  },
+  {
+    "slug": "disable-comments",
+    "name": "Disable Comments &#8211; Remove Comments &amp; Stop Spam [Multi-Site Support]",
+    "version": "2.7.0",
+    "rating": 94
+  },
+  {
+    "slug": "wp-super-cache",
+    "name": "WP Super Cache",
+    "version": "3.1.0",
+    "rating": 86
+  },
+  {
+    "slug": "duplicator",
+    "name": "Duplicator &#8211; Backups &amp; Migration Plugin &#8211; Cloud Backups, Scheduled Backups, &amp; More",
+    "version": "1.5.16",
+    "rating": 98
+  },
+  {
+    "slug": "cookie-law-info",
+    "name": "CookieYes – Cookie Banner for Cookie Consent (Easy to setup GDPR/CCPA Compliant Cookie Notice)",
+    "version": "3.4.2",
+    "rating": 96
+  },
+  {
+    "slug": "better-search-replace",
+    "name": "Better Search Replace",
+    "version": "1.4.10",
+    "rating": 86
+  },
+  {
+    "slug": "loginizer",
+    "name": "Loginizer",
+    "version": "2.0.7",
+    "rating": 96
+  },
+  {
+    "slug": "wp-file-manager",
+    "name": "File Manager",
+    "version": "8.0.3",
+    "rating": 94
+  },
+  {
+    "slug": "code-snippets",
+    "name": "Code Snippets",
+    "version": "3.9.5",
+    "rating": 94
+  },
+  {
+    "slug": "wp-fastest-cache",
+    "name": "WP Fastest Cache &#8211; WordPress Cache Plugin",
+    "version": "1.4.7",
+    "rating": 98
+  },
+  {
+    "slug": "complianz-gdpr",
+    "name": "Complianz &#8211; GDPR/CCPA Cookie Consent",
+    "version": "7.4.5",
+    "rating": 96
+  },
+  {
+    "slug": "svg-support",
+    "name": "SVG Support",
+    "version": "2.5.14",
+    "rating": 96
+  },
+  {
+    "slug": "sg-cachepress",
+    "name": "Speed Optimizer &#8211; The All-In-One Performance-Boosting Plugin",
+    "version": "7.7.9",
+    "rating": 84
+  },
+  {
+    "slug": "custom-post-type-ui",
+    "name": "Custom Post Type UI",
+    "version": "1.18.3",
+    "rating": 92
+  },
+  {
+    "slug": "optinmonster",
+    "name": "Popup Builder &amp; Popup Maker for WordPress – OptinMonster Email Marketing and Lead Generation",
+    "version": "2.16.22",
+    "rating": 86
+  },
+  {
+    "slug": "one-click-demo-import",
+    "name": "One Click Demo Import",
+    "version": "3.4.0",
+    "rating": 86
+  },
+  {
+    "slug": "wp-optimize",
+    "name": "WP-Optimize – Cache, Compress images, Minify &amp; Clean database to boost page speed &amp; performance",
+    "version": "4.5.1",
+    "rating": 96
+  },
+  {
+    "slug": "ultimate-addons-for-gutenberg",
+    "name": "Spectra Gutenberg Blocks – Website Builder for the Block Editor",
+    "version": "2.19.22",
+    "rating": 94
+  },
+  {
+    "slug": "worker",
+    "name": "ManageWP Worker",
+    "version": "4.9.33",
+    "rating": 92
+  },
+  {
+    "slug": "google-sitemap-generator",
+    "name": "XML Sitemap Generator for Google",
+    "version": "4.1.23",
+    "rating": 96
+  },
+  {
+    "slug": "maintenance",
+    "name": "Maintenance",
+    "version": "4.21",
+    "rating": 90
+  },
+  {
+    "slug": "hostinger-reach",
+    "name": "Hostinger Reach &#8211; AI-Powered Email Marketing for WordPress",
+    "version": "1.4.6",
+    "rating": 100
+  },
+  {
+    "slug": "image-optimization",
+    "name": "Image Optimizer &#8211; Optimize Images and Convert to WebP or AVIF",
+    "version": "1.7.3",
+    "rating": 32
+  },
+  {
+    "slug": "safe-svg",
+    "name": "Safe SVG",
+    "version": "2.4.0",
+    "rating": 98
+  },
+  {
+    "slug": "instagram-feed",
+    "name": "Smash Balloon Social Photo Feed – Easy Social Feeds Plugin",
+    "version": "6.10.1",
+    "rating": 98
+  },
+  {
+    "slug": "wp-smushit",
+    "name": "Smush – Image Optimization, Compression, Lazy Load, WebP &amp; CDN",
+    "version": "3.24.0",
+    "rating": 96
+  },
+  {
+    "slug": "ewww-image-optimizer",
+    "name": "EWWW Image Optimizer",
+    "version": "8.5.0",
+    "rating": 96
+  },
+  {
+    "slug": "regenerate-thumbnails",
+    "name": "Regenerate Thumbnails",
+    "version": "3.1.6",
+    "rating": 92
+  },
+  {
+    "slug": "all-in-one-wp-security-and-firewall",
+    "name": "All-In-One Security (AIOS) – Security and Firewall",
+    "version": "5.4.6",
+    "rating": 94
+  },
+  {
+    "slug": "sg-security",
+    "name": "Security Optimizer &#8211; The All-In-One Protection Plugin",
+    "version": "1.6.0",
+    "rating": 90
+  },
+  {
+    "slug": "wp-multibyte-patch",
+    "name": "WP Multibyte Patch",
+    "version": "2.9.3",
+    "rating": 100
+  },
+  {
+    "slug": "redux-framework",
+    "name": "Redux Framework",
+    "version": "4.5.11",
+    "rating": 88
+  },
+  {
+    "slug": "imagify",
+    "name": "Imagify Image Optimization – Optimize Images | Compress Images | Convert WebP | Convert AVIF",
+    "version": "2.2.7",
+    "rating": 86
+  },
+  {
+    "slug": "w3-total-cache",
+    "name": "W3 Total Cache",
+    "version": "2.9.4",
+    "rating": 88
+  },
+  {
+    "slug": "cookie-notice",
+    "name": "Compliance by Hu-manity.co",
+    "version": "3.0.1",
+    "rating": 96
+  },
+  {
+    "slug": "wpvivid-backuprestore",
+    "name": "WPvivid — Backup, Migration &amp; Staging",
+    "version": "0.9.125",
+    "rating": 98
+  },
+  {
+    "slug": "gtranslate",
+    "name": "Translate WordPress with GTranslate",
+    "version": "3.0.9",
+    "rating": 98
+  },
+  {
+    "slug": "autoptimize",
+    "name": "Autoptimize",
+    "version": "3.1.15.1",
+    "rating": 94
+  },
+  {
+    "slug": "wp-reviews-plugin-for-google",
+    "name": "Widgets for Google Reviews",
+    "version": "13.2.9",
+    "rating": 98
+  },
+  {
+    "slug": "woocommerce-payments",
+    "name": "WooPayments: Integrated WooCommerce Payments",
+    "version": "10.7.1",
+    "rating": 62
+  },
+  {
+    "slug": "google-listings-and-ads",
+    "name": "Google for WooCommerce",
+    "version": "3.6.1",
+    "rating": 54
+  },
+  {
+    "slug": "smart-slider-3",
+    "name": "Smart Slider 3",
+    "version": "3.5.1.34",
+    "rating": 98
+  },
+  {
+    "slug": "breadcrumb-navxt",
+    "name": "Breadcrumb NavXT",
+    "version": "7.5.1",
+    "rating": 92
+  },
+  {
+    "slug": "polylang",
+    "name": "Polylang",
+    "version": "3.8.2",
+    "rating": 94
+  },
+  {
+    "slug": "woocommerce-paypal-payments",
+    "name": "WooCommerce PayPal Payments",
+    "version": "4.0.2",
+    "rating": 56
+  },
+  {
+    "slug": "flamingo",
+    "name": "Flamingo",
+    "version": "2.6.1",
+    "rating": 84
+  },
+  {
+    "slug": "duracelltomi-google-tag-manager",
+    "name": "GTM4WP &#8211; A Google Tag Manager (GTM) plugin for WordPress",
+    "version": "1.22.3",
+    "rating": 90
+  },
+  {
+    "slug": "better-wp-security",
+    "name": "Solid Security – Password, Two Factor Authentication, and Brute Force Protection",
+    "version": "9.4.7",
+    "rating": 92
+  },
+  {
+    "slug": "antispam-bee",
+    "name": "Antispam Bee",
+    "version": "2.11.10",
+    "rating": 96
+  },
+  {
+    "slug": "woocommerce-gateway-stripe",
+    "name": "WooCommerce Stripe Payment Gateway",
+    "version": "10.5.3",
+    "rating": 62
+  },
+  {
+    "slug": "coming-soon",
+    "name": "Website Builder by SeedProd — Theme Builder, Landing Page Builder, Coming Soon Page, Maintenance Mode",
+    "version": "6.19.10",
+    "rating": 98
+  },
+  {
+    "slug": "mainwp-child",
+    "name": "MainWP Child &#8211; Securely Connects to the MainWP Dashboard to Manage Multiple Sites",
+    "version": "6.0.8",
+    "rating": 100
+  },
+  {
+    "slug": "creame-whatsapp-me",
+    "name": "Joinchat",
+    "version": "6.1.3",
+    "rating": 94
+  },
+  {
+    "slug": "user-role-editor",
+    "name": "User Role Editor",
+    "version": "4.64.6",
+    "rating": 90
+  },
+  {
+    "slug": "premium-addons-for-elementor",
+    "name": "Premium Addons for Elementor &#8211; Powerful Elementor Templates &amp; Widgets",
+    "version": "4.11.74",
+    "rating": 98
+  },
+  {
+    "slug": "popup-maker",
+    "name": "Popup Maker &#8211; Boost Sales, Conversions, Optins, Subscribers with the Ultimate WP Popup Builder",
+    "version": "1.22.0",
+    "rating": 98
+  },
+  {
+    "slug": "click-to-chat-for-whatsapp",
+    "name": "Click to Chat &#8211; HoliThemes",
+    "version": "4.39",
+    "rating": 96
+  },
+  {
+    "slug": "the-events-calendar",
+    "name": "The Events Calendar",
+    "version": "6.15.20",
+    "rating": 86
+  },
+  {
+    "slug": "fluentform",
+    "name": "Fluent Forms – Customizable Contact Forms, Survey, Quiz, &amp; Conversational Form Builder",
+    "version": "6.2.1",
+    "rating": 96
+  },
+  {
+    "slug": "tablepress",
+    "name": "TablePress &#8211; Tables in WordPress made easy",
+    "version": "3.3",
+    "rating": 100
+  },
+  {
+    "slug": "custom-css-js",
+    "name": "Simple Custom CSS and JS",
+    "version": "3.52",
+    "rating": 88
+  },
+  {
+    "slug": "backuply",
+    "name": "Backuply &#8211; Backup, Restore, Migrate and Clone",
+    "version": "1.5.2",
+    "rating": 90
+  },
+  {
+    "slug": "royal-elementor-addons",
+    "name": "Royal Addons for Elementor – Addons and Templates Kit for Elementor",
+    "version": "1.7.1057",
+    "rating": 96
+  },
+  {
+    "slug": "sucuri-scanner",
+    "name": "Sucuri Security &#8211; Auditing, Malware Scanner and Security Hardening",
+    "version": "2.7.1",
+    "rating": 84
+  },
+  {
+    "slug": "hello-dolly",
+    "name": "Hello Dolly",
+    "version": "1.7.2",
+    "rating": 88
+  },
+  {
+    "slug": "post-types-order",
+    "name": "Post Types Order",
+    "version": "2.4.6",
+    "rating": 90
+  }
+]
