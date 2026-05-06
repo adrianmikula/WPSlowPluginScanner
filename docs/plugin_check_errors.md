@@ -1,6 +1,6 @@
 # Plugin Check Report
 
-**Plugin:** What's Slowing My Site
+**Plugin:** CodeMedic Speed Scanner for Plugins
 **Generated at:** 2026-04-14 09:50:47
 
 

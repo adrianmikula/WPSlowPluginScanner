@@ -6,6 +6,7 @@
 # IDE
 /.idea/
 .vscode/
+.kilo/
 
 # OS
 .DS_Store
@@ -13,6 +14,7 @@
 # Build output
 /build/
 logs
+*.result.cache
 
 # Environment config (per-build)
 .env

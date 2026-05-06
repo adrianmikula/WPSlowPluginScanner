@@ -7,7 +7,7 @@
  * Author:      Adrian M
  * Author URI:  https://github.com/adrianmikula
  * License:     GPLv2 or later
- * Text Domain: whats-slowing-my-site
+ * Text Domain: codemedic-speed-scanner-for-plugins
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -159,27 +159,27 @@ function pia_admin_assets( $hook ) {
             'isScanning'     => $is_scanning,
             'totalPlugins'   => $progress ? count( $progress['plugin_files'] ) : 0,
             'scannedCount'   => $progress ? $progress['scanned'] : 0,
-            'scanningText'   => __( 'Scanning...', 'whats-slowing-my-site' ),
-            'completedText' => __( 'Scan completed successfully.', 'whats-slowing-my-site' ),
-            'cancelledText'  => __( 'Scan cancelled.', 'whats-slowing-my-site' ),
-            'errorText'     => __( 'An error occurred.', 'whats-slowing-my-site' ),
+            'scanningText'   => __( 'Scanning...', 'codemedic-speed-scanner-for-plugins' ),
+            'completedText' => __( 'Scan completed successfully.', 'codemedic-speed-scanner-for-plugins' ),
+            'cancelledText'  => __( 'Scan cancelled.', 'codemedic-speed-scanner-for-plugins' ),
+            'errorText'     => __( 'An error occurred.', 'codemedic-speed-scanner-for-plugins' ),
             // translators: %1$d: Current plugin number, %2$d: Total number of plugins.
-            'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'whats-slowing-my-site' ),
+            'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'codemedic-speed-scanner-for-plugins' ),
             // translators: %s: Plugin name.
-            'currentPlugin'  => __( 'Currently scanning: %s', 'whats-slowing-my-site' ),
-            'resultsHeader'  => __( 'Scan Results', 'whats-slowing-my-site' ),
-            'urlLabel'      => __( 'URL:', 'whats-slowing-my-site' ),
-            'baselineStatus' => __( 'Baseline status:', 'whats-slowing-my-site' ),
-            'baselineTime'  => __( 'Baseline time:', 'whats-slowing-my-site' ),
-            'pluginCol'     => __( 'Plugin', 'whats-slowing-my-site' ),
-            'impactCol'     => __( 'Impact', 'whats-slowing-my-site' ),
-            'statusCol'     => __( 'Status', 'whats-slowing-my-site' ),
-            'deltaCol'     => __( 'Delta', 'whats-slowing-my-site' ),
-            'changeCol'     => __( 'Output Change', 'whats-slowing-my-site' ),
-            'errorCol'      => __( 'Error', 'whats-slowing-my-site' ),
-            'yesLabel'      => __( 'Yes', 'whats-slowing-my-site' ),
-            'noLabel'      => __( 'No', 'whats-slowing-my-site' ),
-            'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'whats-slowing-my-site' ),
+            'currentPlugin'  => __( 'Currently scanning: %s', 'codemedic-speed-scanner-for-plugins' ),
+            'resultsHeader'  => __( 'Scan Results', 'codemedic-speed-scanner-for-plugins' ),
+            'urlLabel'      => __( 'URL:', 'codemedic-speed-scanner-for-plugins' ),
+            'baselineStatus' => __( 'Baseline status:', 'codemedic-speed-scanner-for-plugins' ),
+            'baselineTime'  => __( 'Baseline time:', 'codemedic-speed-scanner-for-plugins' ),
+            'pluginCol'     => __( 'Plugin', 'codemedic-speed-scanner-for-plugins' ),
+            'impactCol'     => __( 'Impact', 'codemedic-speed-scanner-for-plugins' ),
+            'statusCol'     => __( 'Status', 'codemedic-speed-scanner-for-plugins' ),
+            'deltaCol'     => __( 'Delta', 'codemedic-speed-scanner-for-plugins' ),
+            'changeCol'     => __( 'Output Change', 'codemedic-speed-scanner-for-plugins' ),
+            'errorCol'      => __( 'Error', 'codemedic-speed-scanner-for-plugins' ),
+            'yesLabel'      => __( 'Yes', 'codemedic-speed-scanner-for-plugins' ),
+            'noLabel'      => __( 'No', 'codemedic-speed-scanner-for-plugins' ),
+            'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'codemedic-speed-scanner-for-plugins' ),
             'telemetryEnabled' => pia_is_telemetry_enabled(),
             'supabaseConfigured' => defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL ),
         )

@@ -165,7 +165,7 @@ slow-plugin-scanner
 Slug:
 
 ```
-whats-slowing-my-site
+codemedic-speed-scanner-for-plugins
 ```
 
 ✅ Pros:

@@ -24,7 +24,7 @@ This plugin supports building separate free and premium ZIPs from the same sourc
 
 #### Configuration
 
-Edit the `.env` file in the `slow-plugin-scanner/` directory:
+Edit the `.env` file in the `codemedic-speed-scanner-for-plugins/` directory:
 
 ```ini
 # Build mode: "free" or "premium"
@@ -42,7 +42,7 @@ Run the build script from the project root:
 ./scripts/build.sh
 ```
 
-This creates `build/wp-plugin-impact-analyzer.zip` with the configured mode baked in.
+This creates `build/codemedic-speed-scanner-for-plugins-${MODE}.zip` with the configured mode baked in.
 
 - **Free version**: Set `PIA_MODE=free` in `.env` before building
 - **Premium version**: Set `PIA_MODE=premium` in `.env` before building
