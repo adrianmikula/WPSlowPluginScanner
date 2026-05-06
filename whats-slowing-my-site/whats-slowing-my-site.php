@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: What's Slowing My Site
+ * Plugin Name: CodeMedic Speed Scanner for Plugins
  * Plugin URI:  https://github.com/adrianmikula/WPSlowPluginScanner
  * Description: Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.
  * Version:     0.1.0
@@ -23,6 +23,7 @@ define( 'PIA_RESULTS_OPTION', 'pia_last_scan' );
 define( 'PIA_MAX_TEST_PLUGINS', 6 );
 define( 'PIA_PROGRESS_KEY', 'pia_scan_progress' );
 define( 'PIA_CANCEL_KEY', 'pia_scan_cancel' );
+define( 'PIA_SCANNER_ENGINE_VERSION', '0.1.0' );
 
 $config_file = PIA_PLUGIN_DIR . 'config.php';
 if ( file_exists( $config_file ) ) {

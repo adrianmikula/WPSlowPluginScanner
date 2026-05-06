@@ -105,6 +105,7 @@ function pia_scan_next_plugin() {
     $baseline = $progress['baseline'];
 
     $delta = $test_result['time'] - $baseline['time'];
+    $percentage = $baseline['time'] > 0 ? round( ( $delta / $baseline['time'] ) * 100, 1 ) : 0;
     $status_changed = $test_result['status'] !== $baseline['status'];
     $hash_changed = $test_result['hash'] !== $baseline['hash'];
 
@@ -118,16 +119,18 @@ function pia_scan_next_plugin() {
     }
 
     $plugin_result = array(
-        'file'           => $plugin_file,
-        'name'           => $plugin_name,
-        'time'           => $test_result['time'],
-        'status'         => $test_result['status'],
-        'hash'           => $test_result['hash'],
-        'error'          => $test_result['error'],
-        'delta'          => round( $delta, 3 ),
-        'status_changed' => $status_changed,
-        'hash_changed'   => $hash_changed,
-        'impact'         => $impact,
+        'file'                 => $plugin_file,
+        'name'                 => $plugin_name,
+        'time'                 => $test_result['time'],
+        'status'               => $test_result['status'],
+        'hash'                 => $test_result['hash'],
+        'error'                => $test_result['error'],
+        'delta'                => round( $delta, 3 ),
+        'percentage'           => $percentage,
+        'scanner_engine_version' => PIA_SCANNER_ENGINE_VERSION,
+        'status_changed'       => $status_changed,
+        'hash_changed'         => $hash_changed,
+        'impact'               => $impact,
     );
 
     $progress['plugin_results'][] = $plugin_result;
@@ -164,13 +167,14 @@ function pia_complete_scan() {
     } );
 
     $results = array(
-        'url'          => $progress['url'],
-        'baseline'    => $progress['baseline'],
-        'plugins'     => $progress['plugin_results'],
-        'scanned'     => $progress['scanned'],
-        'active_count'=> $progress['active_count'],
-        'truncated'   => $progress['truncated'],
-        'errors'       => isset( $progress['errors'] ) ? $progress['errors'] : array(),
+        'url'                  => $progress['url'],
+        'baseline'             => $progress['baseline'],
+        'plugins'              => $progress['plugin_results'],
+        'scanned'              => $progress['scanned'],
+        'active_count'         => $progress['active_count'],
+        'truncated'            => $progress['truncated'],
+        'scanner_engine_version' => PIA_SCANNER_ENGINE_VERSION,
+        'errors'               => isset( $progress['errors'] ) ? $progress['errors'] : array(),
     );
 
     pia_store_scan_results( $results );

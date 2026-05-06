@@ -191,6 +191,13 @@ test_plugin() {
     local baseline_time="${BASELINE_TIME:-0}"
     local delta=$((avg_time - baseline_time))
     
+    # Calculate percentage increase
+    local percentage=0
+    if [[ $baseline_time -gt 0 ]]; then
+        percentage=$(echo "scale=1; ($delta / $baseline_time) * 100" | bc -l 2>/dev/null || echo "0")
+        percentage=${percentage%.*}
+    fi
+    
     # Get plugin version
     local plugin_version=$(lwp --site="$site_name" plugin get "$plugin_slug" --field=version 2>/dev/null | tail -1)
     plugin_version="${plugin_version:-unknown}"
@@ -211,6 +218,8 @@ test_plugin() {
   "std_dev_ms": $std_dev,
   "baseline_time_ms": $baseline_time,
   "delta_ms": $delta,
+  "percentage_ms": $percentage,
+  "scanner_engine_version": "$SCANNER_ENGINE_VERSION",
   "error": null,
   "error_category": null,
   "wp_version": "$wp_version",

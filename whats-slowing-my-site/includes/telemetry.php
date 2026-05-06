@@ -159,10 +159,12 @@ function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baselin
         'plugin_tested'           => $plugin_slug,
         'plugin_version'          => $plugin_version,
         'plugin_speed_delta'      => $plugin_result['delta'],
+        'plugin_speed_percentage' => isset( $plugin_result['percentage'] ) ? $plugin_result['percentage'] : 0,
         'baseline_site_load_speed' => $baseline_time,
         'plugin_error'            => $plugin_result['error'] ?: null,
         'error_category'          => $error_category,
         'settings_count'          => $settings_count,
+        'scanner_engine_version'  => PIA_SCANNER_ENGINE_VERSION,
         'env'                     => array(
             'php_version' => $php_version,
             'wp_version'  => $wp_version,

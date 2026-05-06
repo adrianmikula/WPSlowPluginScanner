@@ -197,6 +197,8 @@ function pia_render_admin_page() {
                             <th><?php esc_html_e( 'Impact', 'whats-slowing-my-site' ); ?></th>
                             <th><?php esc_html_e( 'Status', 'whats-slowing-my-site' ); ?></th>
                             <th><?php esc_html_e( 'Delta', 'whats-slowing-my-site' ); ?></th>
+                            <th><?php esc_html_e( '%', 'whats-slowing-my-site' ); ?></th>
+                            <th><?php esc_html_e( 'Scanner Ver', 'whats-slowing-my-site' ); ?></th>
                             <th><?php esc_html_e( 'Output Change', 'whats-slowing-my-site' ); ?></th>
                             <th><?php esc_html_e( 'Error', 'whats-slowing-my-site' ); ?></th>
                         </tr>
@@ -208,6 +210,8 @@ function pia_render_admin_page() {
                                 <td><?php echo esc_html( $plugin['impact'] ); ?></td>
                                 <td><?php echo esc_html( $plugin['status'] ); ?></td>
                                 <td><?php echo esc_html( $plugin['delta'] ); ?>s</td>
+                                <td><?php echo esc_html( $plugin['percentage'] ); ?>%</td>
+                                <td><?php echo esc_html( $plugin['scanner_engine_version'] ); ?></td>
                                 <td><?php echo $plugin['hash_changed'] ? esc_html__( 'Yes', 'whats-slowing-my-site' ) : esc_html__( 'No', 'whats-slowing-my-site' ); ?></td>
                                 <td><?php echo esc_html( $plugin['error'] ); ?></td>
                             </tr>

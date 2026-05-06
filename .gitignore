@@ -12,6 +12,7 @@
 
 # Build output
 /build/
+logs
 
 # Environment config (per-build)
 .env

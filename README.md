@@ -1,4 +1,4 @@
-# WP Slow Plugin Scanner
+# CodeMedic Speed Scanner for Plugins
 
 WordPress plugin to detect the single plugin causing slowdown or breakage on a specific page using safe loopback tests.
 
