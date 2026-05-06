@@ -3,9 +3,9 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-PLUGIN_DIR="$PROJECT_ROOT/codemedic-speed-scanner-for-plugins"
+PLUGIN_DIR="$PROJECT_ROOT/code-medic-slow-site-scanner"
 
-ENV_FILE="$PROJECT_ROOT/codemedic-speed-scanner-for-plugins/.env"
+ENV_FILE="$PROJECT_ROOT/code-medic-slow-site-scanner/.env"
 MODE="free"
 if [ -f "$ENV_FILE" ]; then
     MODE=$(grep "^PIA_MODE=" "$ENV_FILE" | cut -d'=' -f2 | tr -d ' ')
@@ -15,7 +15,7 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 OUTPUT_DIR="$PROJECT_ROOT/build"
-OUTPUT_ZIP="$OUTPUT_DIR/codemedic-speed-scanner-for-plugins-${MODE}.zip"
+OUTPUT_ZIP="$OUTPUT_DIR/code-medic-slow-site-scanner-${MODE}.zip"
 
 EXCLUDE_DIRS="tests vendor .git"
 EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md .env .env.example env-example"
@@ -29,30 +29,30 @@ rm -rf "$temp_dir"/*
 
 trap "rm -rf $temp_dir" EXIT
 
-cp -r "$PLUGIN_DIR/." "$temp_dir/codemedic-speed-scanner-for-plugins/"
+cp -r "$PLUGIN_DIR/." "$temp_dir/code-medic-slow-site-scanner/"
 
 for dir in $EXCLUDE_DIRS; do
-    rm -rf "$temp_dir/codemedic-speed-scanner-for-plugins/$dir"
+    rm -rf "$temp_dir/code-medic-slow-site-scanner/$dir"
 done
 
 for file in $EXCLUDE_FILES; do
-    rm -f "$temp_dir/codemedic-speed-scanner-for-plugins/$file"
+    rm -f "$temp_dir/code-medic-slow-site-scanner/$file"
 done
 
 if [ "$MODE" = "premium" ]; then
-    PLUGIN_NAME="CodeMedic Speed Scanner for Plugins Premium"
-    PLUGIN_SLUG="codemedic-speed-scanner-for-plugins-premium"
-    mv "$temp_dir/codemedic-speed-scanner-for-plugins" "$temp_dir/$PLUGIN_SLUG"
+    PLUGIN_NAME="CodeMedic Slow Site Scanner Premium"
+    PLUGIN_SLUG="code-medic-slow-site-scanner-premium"
+    mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$PLUGIN_SLUG"
     CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
 else
-    PLUGIN_NAME="CodeMedic Speed Scanner for Plugins"
-    PLUGIN_SLUG="codemedic-speed-scanner-for-plugins"
-    CONFIG_PATH="$temp_dir/codemedic-speed-scanner-for-plugins/config.php"
+    PLUGIN_NAME="CodeMedic Slow Site Scanner"
+    PLUGIN_SLUG="code-medic-slow-site-scanner"
+    CONFIG_PATH="$temp_dir/code-medic-slow-site-scanner/config.php"
 fi
 
-sed -i "s/=== CodeMedic Speed Scanner for Plugins ===/=== $PLUGIN_NAME ===/" "$temp_dir/$PLUGIN_SLUG/readme.txt"
+sed -i "s/=== CodeMedic Slow Site Scanner ===/=== $PLUGIN_NAME ===/" "$temp_dir/$PLUGIN_SLUG/readme.txt"
 
-sed -i "s/Plugin Name: CodeMedic Speed Scanner for Plugins/Plugin Name: $PLUGIN_NAME/" "$temp_dir/$PLUGIN_SLUG/codemedic-speed-scanner-for-plugins.php"
+sed -i "s/Plugin Name: CodeMedic Slow Site Scanner/Plugin Name: $PLUGIN_NAME/" "$temp_dir/$PLUGIN_SLUG/code-medic-slow-site-scanner.php"
 
 if [ -f "$ENV_FILE" ]; then
     CONFIG_CONTENT="<?php\nif ( ! defined( 'ABSPATH' ) ) { exit; }\n// Auto-generated config - do not commit to version control\n"

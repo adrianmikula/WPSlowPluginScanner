@@ -4,9 +4,9 @@
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $ScriptDir
 
-$PluginDir = Join-Path $ProjectRoot "codemedic-speed-scanner-for-plugins"
+$PluginDir = Join-Path $ProjectRoot "code-medic-slow-site-scanner"
 
-$EnvFile = Join-Path $ProjectRoot "codemedic-speed-scanner-for-plugins\.env"
+$EnvFile = Join-Path $ProjectRoot "code-medic-slow-site-scanner\.env"
 $Mode = "free"
 if (Test-Path $EnvFile) {
     $envContent = Get-Content $EnvFile
@@ -20,7 +20,7 @@ if (Test-Path $EnvFile) {
 }
 
 $OutputDir = Join-Path $ProjectRoot "build"
-$OutputZip = Join-Path $OutputDir "codemedic-speed-scanner-for-plugins-${Mode}.zip"
+$OutputZip = Join-Path $OutputDir "code-medic-slow-site-scanner-${Mode}.zip"
 
 $ExcludeDirs = @("tests", "vendor", ".git")
 $ExcludeFiles = @(".gitignore", ".distignore", ".phpunit.result.cache", "composer-setup.php", ".phpunit.xml", "composer.json", "composer.lock", "README.md", ".env", ".env.example", "env-example")
@@ -35,7 +35,7 @@ $tempDir = Join-Path $env:TEMP "wp-plugin-build-$(Get-Random)"
 New-Item -ItemType Directory -Path $tempDir | Out-Null
 
 # Ensure destination directory exists
-$destDir = Join-Path $tempDir "codemedic-speed-scanner-for-plugins"
+$destDir = Join-Path $tempDir "code-medic-slow-site-scanner"
 New-Item -ItemType Directory -Path $destDir -ErrorAction SilentlyContinue | Out-Null
 
 # Copy plugin files
@@ -43,37 +43,37 @@ Copy-Item -Path "$PluginDir\*" -Destination $destDir -Recurse -Force
 
 # Remove excluded directories
 foreach ($dir in $ExcludeDirs) {
-    $target = Join-Path $tempDir "codemedic-speed-scanner-for-plugins\$dir"
+    $target = Join-Path $tempDir "code-medic-slow-site-scanner\$dir"
     if (Test-Path $target) { Remove-Item -Path $target -Recurse -Force }
 }
 
 # Remove excluded files
 foreach ($file in $ExcludeFiles) {
-    $target = Join-Path $tempDir "codemedic-speed-scanner-for-plugins\$file"
+    $target = Join-Path $tempDir "code-medic-slow-site-scanner\$file"
     if (Test-Path $target) { Remove-Item -Path $target -Force }
 }
 
 if ($Mode -eq "premium") {
-    $PluginName = "CodeMedic Speed Scanner for Plugins Premium"
-    $PluginSlug = "codemedic-speed-scanner-for-plugins-premium"
-    Rename-Item -Path "$tempDir\codemedic-speed-scanner-for-plugins" -NewName $PluginSlug
+    $PluginName = "CodeMedic Slow Site Scanner Premium"
+    $PluginSlug = "code-medic-slow-site-scanner-premium"
+    Rename-Item -Path "$tempDir\code-medic-slow-site-scanner" -NewName $PluginSlug
     $ConfigPath = Join-Path $tempDir "$PluginSlug\config.php"
 } else {
-    $PluginName = "CodeMedic Speed Scanner for Plugins"
-    $PluginSlug = "codemedic-speed-scanner-for-plugins"
-    $ConfigPath = Join-Path $tempDir "codemedic-speed-scanner-for-plugins\config.php"
+    $PluginName = "CodeMedic Slow Site Scanner"
+    $PluginSlug = "code-medic-slow-site-scanner"
+    $ConfigPath = Join-Path $tempDir "code-medic-slow-site-scanner\config.php"
 }
 
 # Update readme.txt
 $readmePath = Join-Path $tempDir "$PluginSlug\readme.txt"
 if (Test-Path $readmePath) {
-    (Get-Content $readmePath) -replace "=== CodeMedic Speed Scanner for Plugins ===", "=== $PluginName ===" | Set-Content $readmePath
+    (Get-Content $readmePath) -replace "=== CodeMedic Slow Site Scanner ===", "=== $PluginName ===" | Set-Content $readmePath
 }
 
 # Update main plugin file
-$mainPluginPath = Join-Path $tempDir "$PluginSlug\codemedic-speed-scanner-for-plugins.php"
+$mainPluginPath = Join-Path $tempDir "$PluginSlug\code-medic-slow-site-scanner.php"
 if (Test-Path $mainPluginPath) {
-    (Get-Content $mainPluginPath) -replace "Plugin Name: CodeMedic Speed Scanner for Plugins", "Plugin Name: $PluginName" | Set-Content $mainPluginPath
+    (Get-Content $mainPluginPath) -replace "Plugin Name: CodeMedic Slow Site Scanner", "Plugin Name: $PluginName" | Set-Content $mainPluginPath
 }
 
 # Generate config.php from .env

@@ -5,8 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function pia_admin_menu() {
     add_plugins_page(
-        __( 'Plugin Impact Scanner', 'codemedic-speed-scanner-for-plugins' ),
-        __( 'Scan Plugins', 'codemedic-speed-scanner-for-plugins' ),
+        __( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ),
+        __( 'Scan Plugins', 'code-medic-slow-site-scanner' ),
         'manage_options',
         'pia-scan-plugins',
         'pia_render_admin_page'
@@ -125,21 +125,21 @@ function pia_render_admin_page() {
     $supabase_configured = defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL );
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e( 'Plugin Impact Scanner', 'codemedic-speed-scanner-for-plugins' ); ?></h1>
+        <h1><?php esc_html_e( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ); ?></h1>
         <?php if ( $is_premium ) { ?>
-            <div class="notice notice-info"><p><?php esc_html_e( 'Premium Mode - Unlimited scanning enabled.', 'codemedic-speed-scanner-for-plugins' ); ?></p></div>
+            <div class="notice notice-info"><p><?php esc_html_e( 'Premium Mode - Unlimited scanning enabled.', 'code-medic-slow-site-scanner' ); ?></p></div>
 <?php } else { ?>
             <?php /* translators: %d: number of plugins */ ?>
-            <div class=&quot;notice notice-info&quot;><p><?php echo esc_html( sprintf( __( 'Free Mode - Limited to %d plugins per scan.', 'codemedic-speed-scanner-for-plugins' ), $free_limit ) ); ?></p></div>
+            <div class=&quot;notice notice-info&quot;><p><?php echo esc_html( sprintf( __( 'Free Mode - Limited to %d plugins per scan.', 'code-medic-slow-site-scanner' ), $free_limit ) ); ?></p></div>
         <?php } ?>
 
-        <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'codemedic-speed-scanner-for-plugins' ); ?></p>
+        <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'code-medic-slow-site-scanner' ); ?></p>
 
         <div id="pia-scan-controls">
             <p>
-                <label for="pia_page_select"><?php esc_html_e( 'Page to scan', 'codemedic-speed-scanner-for-plugins' ); ?></label>
+                <label for="pia_page_select"><?php esc_html_e( 'Page to scan', 'code-medic-slow-site-scanner' ); ?></label>
                 <select id="pia_page_select" class="regular-text">
-                    <option value="<?php echo esc_attr( $home_url ); ?>" selected><?php esc_html_e( 'Homepage', 'codemedic-speed-scanner-for-plugins' ); ?></option>
+                    <option value="<?php echo esc_attr( $home_url ); ?>" selected><?php esc_html_e( 'Homepage', 'code-medic-slow-site-scanner' ); ?></option>
                     <?php
                     foreach ( $pages as $page ) {
                         $page_url   = get_permalink( $page->ID );
@@ -150,30 +150,30 @@ function pia_render_admin_page() {
                             <?php
                         } else {
                             ?>
-                            <option value="<?php echo esc_attr( $page_url ); ?>" disabled><?php echo esc_html( $page_title ); ?> (<?php esc_html_e( 'Pro', 'codemedic-speed-scanner-for-plugins' ); ?>)</option>
+                            <option value="<?php echo esc_attr( $page_url ); ?>" disabled><?php echo esc_html( $page_title ); ?> (<?php esc_html_e( 'Pro', 'code-medic-slow-site-scanner' ); ?>)</option>
                             <?php
                         }
                     }
                     if ( $is_premium ) {
                         ?>
-                        <option value="custom"><?php esc_html_e( 'Custom URL', 'codemedic-speed-scanner-for-plugins' ); ?></option>
+                        <option value="custom"><?php esc_html_e( 'Custom URL', 'code-medic-slow-site-scanner' ); ?></option>
                         <?php
                     }
                 ?>
                 </select>
                 <input type="url" id="pia_scan_url" value="<?php echo esc_attr( $default_url ); ?>" class="regular-text" style="display:none;" />
                 <?php if ( ! $is_premium ) { ?>
-                    <span class="description"> (<?php esc_html_e( 'Free mode limited to homepage', 'codemedic-speed-scanner-for-plugins' ); ?>)</span>
+                    <span class="description"> (<?php esc_html_e( 'Free mode limited to homepage', 'code-medic-slow-site-scanner' ); ?>)</span>
                 <?php } ?>
             </p>
             <p>
-                <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'codemedic-speed-scanner-for-plugins' ); ?></button>
-                <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'codemedic-speed-scanner-for-plugins' ); ?></button>
+                <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'code-medic-slow-site-scanner' ); ?></button>
+                <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'code-medic-slow-site-scanner' ); ?></button>
             </p>
         </div>
 
         <div id="pia-progress" style="display:none;">
-            <p><?php esc_html_e( 'Scanning...', 'codemedic-speed-scanner-for-plugins' ); ?></p>
+            <p><?php esc_html_e( 'Scanning...', 'code-medic-slow-site-scanner' ); ?></p>
             <progress id="pia-progress-bar" value="0" max="100"></progress>
             <p id="pia-progress-text"></p>
         </div>
@@ -181,11 +181,11 @@ function pia_render_admin_page() {
         <div id="pia-message-area"></div>
 
         <div id="pia-results-area"<?php echo empty( $results ) || ! isset( $results['baseline'] ) ? ' style="display:none;"' : ''; ?>>
-            <h2><?php esc_html_e( 'Scan Results', 'codemedic-speed-scanner-for-plugins' ); ?></h2>
+            <h2><?php esc_html_e( 'Scan Results', 'code-medic-slow-site-scanner' ); ?></h2>
             <?php if ( ! empty( $results ) && isset( $results['baseline'] ) ) { ?>
-                <p><strong><?php esc_html_e( 'URL:', 'codemedic-speed-scanner-for-plugins' ); ?></strong> <?php echo esc_html( $results['url'] ); ?></p>
-                <p><strong><?php esc_html_e( 'Baseline status:', 'codemedic-speed-scanner-for-plugins' ); ?></strong> <?php echo esc_html( $results['baseline']['status'] ); ?></p>
-                <p><strong><?php esc_html_e( 'Baseline time:', 'codemedic-speed-scanner-for-plugins' ); ?></strong> <?php echo esc_html( round( $results['baseline']['time'], 3 ) ); ?>s</p>
+                <p><strong><?php esc_html_e( 'URL:', 'code-medic-slow-site-scanner' ); ?></strong> <?php echo esc_html( $results['url'] ); ?></p>
+                <p><strong><?php esc_html_e( 'Baseline status:', 'code-medic-slow-site-scanner' ); ?></strong> <?php echo esc_html( $results['baseline']['status'] ); ?></p>
+                <p><strong><?php esc_html_e( 'Baseline time:', 'code-medic-slow-site-scanner' ); ?></strong> <?php echo esc_html( round( $results['baseline']['time'], 3 ) ); ?>s</p>
                 <?php if ( ! empty( $results['errors'] ) ) { ?>
                     <div class="notice notice-warning"><p><?php echo esc_html( implode( ' ', $results['errors'] ) ); ?></p></div>
                 <?php } ?>
@@ -193,14 +193,14 @@ function pia_render_admin_page() {
                 <table class="widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e( 'Plugin', 'codemedic-speed-scanner-for-plugins' ); ?></th>
-                            <th><?php esc_html_e( 'Impact', 'codemedic-speed-scanner-for-plugins' ); ?></th>
-                            <th><?php esc_html_e( 'Status', 'codemedic-speed-scanner-for-plugins' ); ?></th>
-                            <th><?php esc_html_e( 'Delta', 'codemedic-speed-scanner-for-plugins' ); ?></th>
-                            <th><?php esc_html_e( '%', 'codemedic-speed-scanner-for-plugins' ); ?></th>
-                            <th><?php esc_html_e( 'Scanner Ver', 'codemedic-speed-scanner-for-plugins' ); ?></th>
-                            <th><?php esc_html_e( 'Output Change', 'codemedic-speed-scanner-for-plugins' ); ?></th>
-                            <th><?php esc_html_e( 'Error', 'codemedic-speed-scanner-for-plugins' ); ?></th>
+                            <th><?php esc_html_e( 'Plugin', 'code-medic-slow-site-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Impact', 'code-medic-slow-site-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Status', 'code-medic-slow-site-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Delta', 'code-medic-slow-site-scanner' ); ?></th>
+                            <th><?php esc_html_e( '%', 'code-medic-slow-site-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Scanner Ver', 'code-medic-slow-site-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Output Change', 'code-medic-slow-site-scanner' ); ?></th>
+                            <th><?php esc_html_e( 'Error', 'code-medic-slow-site-scanner' ); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -212,7 +212,7 @@ function pia_render_admin_page() {
                                 <td><?php echo esc_html( $plugin['delta'] ); ?>s</td>
                                 <td><?php echo esc_html( $plugin['percentage'] ); ?>%</td>
                                 <td><?php echo esc_html( $plugin['scanner_engine_version'] ); ?></td>
-                                <td><?php echo $plugin['hash_changed'] ? esc_html__( 'Yes', 'codemedic-speed-scanner-for-plugins' ) : esc_html__( 'No', 'codemedic-speed-scanner-for-plugins' ); ?></td>
+                                <td><?php echo $plugin['hash_changed'] ? esc_html__( 'Yes', 'code-medic-slow-site-scanner' ) : esc_html__( 'No', 'code-medic-slow-site-scanner' ); ?></td>
                                 <td><?php echo esc_html( $plugin['error'] ); ?></td>
                             </tr>
                         <?php } ?>
@@ -225,25 +225,25 @@ function pia_render_admin_page() {
                             $remaining = $results['active_count'] - $results['scanned'];
                             echo esc_html( sprintf(
                                 /* translators: %1$d: number of scanned plugins, %2$d: number of remaining plugins */
-                                __( 'Free mode limited to %1$d plugins. %2$d more plugins were not scanned.', 'codemedic-speed-scanner-for-plugins' ),
+                                __( 'Free mode limited to %1$d plugins. %2$d more plugins were not scanned.', 'code-medic-slow-site-scanner' ),
                                 $results['scanned'],
                                 $remaining
                             ) );
                             ?>
-                            <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank"><?php esc_html_e( 'Upgrade to Pro', 'codemedic-speed-scanner-for-plugins' ); ?></a>
-                            <?php esc_html_e( ' to scan all plugins.', 'codemedic-speed-scanner-for-plugins' ); ?>
+                            <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank"><?php esc_html_e( 'Upgrade to Pro', 'code-medic-slow-site-scanner' ); ?></a>
+                            <?php esc_html_e( ' to scan all plugins.', 'code-medic-slow-site-scanner' ); ?>
                         </p>
                     </div>
                 <?php } elseif ( ! empty( $results['truncated'] ) ) { ?>
-                    <p><?php esc_html_e( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'codemedic-speed-scanner-for-plugins' ); ?></p>
+                    <p><?php esc_html_e( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'code-medic-slow-site-scanner' ); ?></p>
                 <?php } ?>
             <?php } ?>
         </div>
 
         <?php if ( $show_upgrade ) { ?>
             <p>
-                <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank" class="button button-secondary"><?php esc_html_e( 'Upgrade to Pro', 'codemedic-speed-scanner-for-plugins' ); ?></a>
-                <span class="description"><?php esc_html_e( 'Scan unlimited plugins on any page', 'codemedic-speed-scanner-for-plugins' ); ?></span>
+                <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank" class="button button-secondary"><?php esc_html_e( 'Upgrade to Pro', 'code-medic-slow-site-scanner' ); ?></a>
+                <span class="description"><?php esc_html_e( 'Scan unlimited plugins on any page', 'code-medic-slow-site-scanner' ); ?></span>
             </p>
         <?php } ?>
 
@@ -252,16 +252,16 @@ function pia_render_admin_page() {
                 <p>
                     <label for="pia-telemetry-toggle">
                         <input type="checkbox" id="pia-telemetry-toggle" <?php checked( $telemetry_enabled ); ?> />
-                        <?php esc_html_e( 'Share anonymous plugin performance data to help build a shared plugin compatibility database.', 'codemedic-speed-scanner-for-plugins' ); ?>
+                        <?php esc_html_e( 'Share anonymous plugin performance data to help build a shared plugin compatibility database.', 'code-medic-slow-site-scanner' ); ?>
                     </label>
                 </p>
                 <p class="description">
-                    <?php esc_html_e( 'Data sent: plugin slug, performance delta, PHP version, WordPress version. No personally identifiable information is collected.', 'codemedic-speed-scanner-for-plugins' ); ?>
+                    <?php esc_html_e( 'Data sent: plugin slug, performance delta, PHP version, WordPress version. No personally identifiable information is collected.', 'code-medic-slow-site-scanner' ); ?>
                 </p>
             </div>
         <?php } else { ?>
             <div class="notice notice-warning" style="margin-top: 20px;">
-                <p><?php esc_html_e( 'Telemetry not configured. Add PIA_SUPABASE_URL and PIA_SUPABASE_ANON_KEY to your .env file to enable anonymous data sharing.', 'codemedic-speed-scanner-for-plugins' ); ?></p>
+                <p><?php esc_html_e( 'Telemetry not configured. Add PIA_SUPABASE_URL and PIA_SUPABASE_ANON_KEY to your .env file to enable anonymous data sharing.', 'code-medic-slow-site-scanner' ); ?></p>
             </div>
         <?php } ?>
     </div>

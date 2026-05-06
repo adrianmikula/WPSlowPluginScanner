@@ -1,4 +1,4 @@
-=== CodeMedic Speed Scanner for Plugins ===
+=== CodeMedic Slow Site Scanner ===
 Contributors: Adrian Mikula
 Tags: slow wordpress, plugin performance, plugin conflict, debug wordpress, wordpress speed
 Requires at least: 5.0
@@ -49,7 +49,7 @@ Get actionable insights to speed up your WordPress site.
 
 == Installation ==
 
-1. Upload the `codemedic-speed-scanner-for-plugins` folder to the `/wp-content/plugins/` directory
+1. Upload the `code-medic-slow-site-scanner` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to Tools > Scan Plugins to use the scanner
 
@@ -88,4 +88,4 @@ Yes, click the "Cancel" button to stop the scan. The temporary files will be cle
 == Upgrade Notice ==
 
 = 0.1.0 =
-Initial release of CodeMedic Speed Scanner for Plugins.
+Initial release of CodeMedic Slow Site Scanner.

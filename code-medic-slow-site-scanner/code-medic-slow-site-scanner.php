@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: CodeMedic Speed Scanner for Plugins
+ * Plugin Name: CodeMedic Slow Site Scanner
  * Plugin URI:  https://github.com/adrianmikula/WPSlowPluginScanner
  * Description: Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.
  * Version:     0.1.0
  * Author:      Adrian M
  * Author URI:  https://github.com/adrianmikula
  * License:     GPLv2 or later
- * Text Domain: codemedic-speed-scanner-for-plugins
+ * Text Domain: code-medic-slow-site-scanner
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -159,27 +159,27 @@ function pia_admin_assets( $hook ) {
             'isScanning'     => $is_scanning,
             'totalPlugins'   => $progress ? count( $progress['plugin_files'] ) : 0,
             'scannedCount'   => $progress ? $progress['scanned'] : 0,
-            'scanningText'   => __( 'Scanning...', 'codemedic-speed-scanner-for-plugins' ),
-            'completedText' => __( 'Scan completed successfully.', 'codemedic-speed-scanner-for-plugins' ),
-            'cancelledText'  => __( 'Scan cancelled.', 'codemedic-speed-scanner-for-plugins' ),
-            'errorText'     => __( 'An error occurred.', 'codemedic-speed-scanner-for-plugins' ),
+            'scanningText'   => __( 'Scanning...', 'code-medic-slow-site-scanner' ),
+            'completedText' => __( 'Scan completed successfully.', 'code-medic-slow-site-scanner' ),
+            'cancelledText'  => __( 'Scan cancelled.', 'code-medic-slow-site-scanner' ),
+            'errorText'     => __( 'An error occurred.', 'code-medic-slow-site-scanner' ),
             // translators: %1$d: Current plugin number, %2$d: Total number of plugins.
-            'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'codemedic-speed-scanner-for-plugins' ),
+            'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'code-medic-slow-site-scanner' ),
             // translators: %s: Plugin name.
-            'currentPlugin'  => __( 'Currently scanning: %s', 'codemedic-speed-scanner-for-plugins' ),
-            'resultsHeader'  => __( 'Scan Results', 'codemedic-speed-scanner-for-plugins' ),
-            'urlLabel'      => __( 'URL:', 'codemedic-speed-scanner-for-plugins' ),
-            'baselineStatus' => __( 'Baseline status:', 'codemedic-speed-scanner-for-plugins' ),
-            'baselineTime'  => __( 'Baseline time:', 'codemedic-speed-scanner-for-plugins' ),
-            'pluginCol'     => __( 'Plugin', 'codemedic-speed-scanner-for-plugins' ),
-            'impactCol'     => __( 'Impact', 'codemedic-speed-scanner-for-plugins' ),
-            'statusCol'     => __( 'Status', 'codemedic-speed-scanner-for-plugins' ),
-            'deltaCol'     => __( 'Delta', 'codemedic-speed-scanner-for-plugins' ),
-            'changeCol'     => __( 'Output Change', 'codemedic-speed-scanner-for-plugins' ),
-            'errorCol'      => __( 'Error', 'codemedic-speed-scanner-for-plugins' ),
-            'yesLabel'      => __( 'Yes', 'codemedic-speed-scanner-for-plugins' ),
-            'noLabel'      => __( 'No', 'codemedic-speed-scanner-for-plugins' ),
-            'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'codemedic-speed-scanner-for-plugins' ),
+            'currentPlugin'  => __( 'Currently scanning: %s', 'code-medic-slow-site-scanner' ),
+            'resultsHeader'  => __( 'Scan Results', 'code-medic-slow-site-scanner' ),
+            'urlLabel'      => __( 'URL:', 'code-medic-slow-site-scanner' ),
+            'baselineStatus' => __( 'Baseline status:', 'code-medic-slow-site-scanner' ),
+            'baselineTime'  => __( 'Baseline time:', 'code-medic-slow-site-scanner' ),
+            'pluginCol'     => __( 'Plugin', 'code-medic-slow-site-scanner' ),
+            'impactCol'     => __( 'Impact', 'code-medic-slow-site-scanner' ),
+            'statusCol'     => __( 'Status', 'code-medic-slow-site-scanner' ),
+            'deltaCol'     => __( 'Delta', 'code-medic-slow-site-scanner' ),
+            'changeCol'     => __( 'Output Change', 'code-medic-slow-site-scanner' ),
+            'errorCol'      => __( 'Error', 'code-medic-slow-site-scanner' ),
+            'yesLabel'      => __( 'Yes', 'code-medic-slow-site-scanner' ),
+            'noLabel'      => __( 'No', 'code-medic-slow-site-scanner' ),
+            'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'code-medic-slow-site-scanner' ),
             'telemetryEnabled' => pia_is_telemetry_enabled(),
             'supabaseConfigured' => defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL ),
         )

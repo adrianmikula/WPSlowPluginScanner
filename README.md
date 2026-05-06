@@ -1,4 +1,4 @@
-# CodeMedic Speed Scanner for Plugins
+# CodeMedic Slow Site Scanner
 
 WordPress plugin to detect the single plugin causing slowdown or breakage on a specific page using safe loopback tests.
 
@@ -24,7 +24,7 @@ This plugin supports building separate free and premium ZIPs from the same sourc
 
 #### Configuration
 
-Edit the `.env` file in the `codemedic-speed-scanner-for-plugins/` directory:
+Edit the `.env` file in the `code-medic-slow-site-scanner/` directory:
 
 ```ini
 # Build mode: "free" or "premium"
@@ -42,7 +42,7 @@ Run the build script from the project root:
 ./scripts/build.sh
 ```
 
-This creates `build/codemedic-speed-scanner-for-plugins-${MODE}.zip` with the configured mode baked in.
+This creates `build/code-medic-slow-site-scanner-${MODE}.zip` with the configured mode baked in.
 
 - **Free version**: Set `PIA_MODE=free` in `.env` before building
 - **Premium version**: Set `PIA_MODE=premium` in `.env` before building
@@ -164,7 +164,7 @@ class TestExample extends TestCase
 
 ## Plugin Structure
 
-- `slow-plugin-scanner.php` - Main plugin file
+- `code-medic-slow-site-scanner.php` - Main plugin file
 - `admin/ui.php` - Admin interface and AJAX handlers
 - `admin/js/admin.js` - Frontend JavaScript
 - `includes/scanner.php` - Core scanning logic

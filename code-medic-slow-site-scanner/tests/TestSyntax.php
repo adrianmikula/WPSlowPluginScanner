@@ -29,7 +29,7 @@ class TestSyntax extends TestCase
      * @var array
      */
     private static $sourceFiles = array(
-        'codemedic-speed-scanner-for-plugins.php',
+        'code-medic-slow-site-scanner.php',
         'admin/ui.php',
         'includes/scanner.php',
         'includes/toggle.php',
@@ -53,7 +53,7 @@ class TestSyntax extends TestCase
      */
     public function testSourceFileHasValidSyntax( $filePath )
     {
-        $fullPath = $this->baseDir . '/codemedic-speed-scanner-for-plugins/' . $filePath;
+        $fullPath = $this->baseDir . '/code-medic-slow-site-scanner/' . $filePath;
 
         $this->assertFileExists( $fullPath, "Source file $filePath should exist at $fullPath" );
 
@@ -83,7 +83,7 @@ class TestSyntax extends TestCase
      */
     public function testAdminJsExists()
     {
-        $jsPath = $this->baseDir . '/codemedic-speed-scanner-for-plugins/admin/js/admin.js';
+        $jsPath = $this->baseDir . '/code-medic-slow-site-scanner/admin/js/admin.js';
         $this->assertFileExists( $jsPath, 'admin.js should exist' );
     }
 

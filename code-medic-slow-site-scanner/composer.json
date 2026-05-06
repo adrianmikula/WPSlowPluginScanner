@@ -1,5 +1,5 @@
 {
-    "name": "codemedic/codemedic-speed-scanner-for-plugins",
+    "name": "codemedic/code-medic-slow-site-scanner",
     "description": "Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.",
     "type": "wordpress-plugin",
     "require-dev": {
