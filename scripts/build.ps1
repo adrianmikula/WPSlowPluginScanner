@@ -59,9 +59,10 @@ if ($Mode -eq "premium") {
     Rename-Item -Path "$tempDir\code-medic-slow-site-scanner" -NewName $PluginSlug
     $ConfigPath = Join-Path $tempDir "$PluginSlug\config.php"
 } else {
-    $PluginName = "CodeMedic Slow Site Scanner"
-    $PluginSlug = "code-medic-slow-site-scanner"
-    $ConfigPath = Join-Path $tempDir "code-medic-slow-site-scanner\config.php"
+    $PluginName = "CodeMedic Slow Site Scanner (Free)"
+    $PluginSlug = "code-medic-slow-site-scanner-free"
+    Rename-Item -Path "$tempDir\code-medic-slow-site-scanner" -NewName $PluginSlug
+    $ConfigPath = Join-Path $tempDir "$PluginSlug\config.php"
 }
 
 # Update readme.txt

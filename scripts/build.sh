@@ -45,9 +45,10 @@ if [ "$MODE" = "premium" ]; then
     mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$PLUGIN_SLUG"
     CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
 else
-    PLUGIN_NAME="CodeMedic Slow Site Scanner"
-    PLUGIN_SLUG="code-medic-slow-site-scanner"
-    CONFIG_PATH="$temp_dir/code-medic-slow-site-scanner/config.php"
+    PLUGIN_NAME="CodeMedic Slow Site Scanner (Free)"
+    PLUGIN_SLUG="code-medic-slow-site-scanner-free"
+    mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$PLUGIN_SLUG"
+    CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
 fi
 
 sed -i "s/=== CodeMedic Slow Site Scanner ===/=== $PLUGIN_NAME ===/" "$temp_dir/$PLUGIN_SLUG/readme.txt"
