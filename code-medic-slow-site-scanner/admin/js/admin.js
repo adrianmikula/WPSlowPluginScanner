@@ -1,25 +1,25 @@
 (function($) {
     'use strict';
 
-    var piaScan = {
+    var codemedsssScan = {
         isScanning: false,
         totalPlugins: 0,
         pollInterval: null,
 
         init: function() {
-            $('#pia-scan-btn').on('click', this.startScan.bind(this));
-            $('#pia-cancel-btn').on('click', this.cancelScan.bind(this));
-            $('#pia_page_select').on('change', this.onPageSelectChange.bind(this));
+            $('#codemedsss-scan-btn').on('click', this.startScan.bind(this));
+            $('#codemedsss-cancel-btn').on('click', this.cancelScan.bind(this));
+            $('#codemedsss_page_select').on('change', this.onPageSelectChange.bind(this));
 
-            if ( piaData.homeUrl && $('#pia_scan_url').val() === '' ) {
-                $('#pia_scan_url').val(piaData.homeUrl);
+            if ( codemedsssData.homeUrl && $('#codemedsss_scan_url').val() === '' ) {
+                $('#codemedsss_scan_url').val(codemedsssData.homeUrl);
             }
 
-            if (piaData.isScanning && piaData.totalPlugins > 0) {
+            if (codemedsssData.isScanning && codemedsssData.totalPlugins > 0) {
                 this.isScanning = true;
-                this.totalPlugins = piaData.totalPlugins;
+                this.totalPlugins = codemedsssData.totalPlugins;
                 this.setControls(true);
-                this.setProgress(piaData.scannedCount, this.totalPlugins, '');
+                this.setProgress(codemedsssData.scannedCount, this.totalPlugins, '');
                 this.startPolling();
             }
         },
@@ -33,12 +33,12 @@
             this.showMessage('', '');
 
             $.ajax({
-                url: piaData.ajaxUrl,
+                url: codemedsssData.ajaxUrl,
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'pia_start_scan',
-                    nonce: piaData.nonce,
+                    action: 'codemedsss_start_scan',
+                    nonce: codemedsssData.nonce,
                     url: url
                 }
             }).done($.proxy(this.onScanStarted, this)).fail($.proxy(this.onError, this));
@@ -53,7 +53,7 @@
 
             this.totalPlugins = response.data.total_plugins;
             this.isScanning = true;
-            this.setProgress(0, this.totalPlugins, piaData.scanningText);
+            this.setProgress(0, this.totalPlugins, codemedsssData.scanningText);
             this.startPolling();
         },
 
@@ -68,12 +68,12 @@
             }
 
             $.ajax({
-                url: piaData.ajaxUrl,
+                url: codemedsssData.ajaxUrl,
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'pia_poll_scan',
-                    nonce: piaData.nonce
+                    action: 'codemedsss_poll_scan',
+                    nonce: codemedsssData.nonce
                 }
             }).done($.proxy(this.onPolled, this)).fail($.proxy(this.onError, this));
         },
@@ -93,9 +93,9 @@
                 this.setControls(false);
 
                 if (data.cancelled) {
-                    this.showMessage(piaData.cancelledText, 'success');
+                    this.showMessage(codemedsssData.cancelledText, 'success');
                 } else {
-                    this.showMessage(piaData.completedText, 'success');
+                    this.showMessage(codemedsssData.completedText, 'success');
                 }
 
                 this.displayResults(data.results);
@@ -108,81 +108,81 @@
             e.preventDefault();
 
             $.ajax({
-                url: piaData.ajaxUrl,
+                url: codemedsssData.ajaxUrl,
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'pia_cancel_scan',
-                    nonce: piaData.nonce
+                    action: 'codemedsss_cancel_scan',
+                    nonce: codemedsssData.nonce
                 }
             }).always($.proxy(function() {
                 clearInterval(this.pollInterval);
                 this.isScanning = false;
                 this.setControls(false);
-                this.showMessage(piaData.cancelledText, 'success');
+                this.showMessage(codemedsssData.cancelledText, 'success');
             }, this));
         },
 
         onError: function(xhr, status, error) {
             this.setControls(false);
-            this.showMessage(error || piaData.errorText, 'error');
+            this.showMessage(error || codemedsssData.errorText, 'error');
         },
 
         onPageSelectChange: function() {
-            var selected = $('#pia_page_select').val();
+            var selected = $('#codemedsss_page_select').val();
             if (selected === 'custom') {
-                $('#pia_scan_url').show().prop('disabled', false).focus();
+                $('#codemedsss_scan_url').show().prop('disabled', false).focus();
             } else {
-                $('#pia_scan_url').hide().prop('disabled', true);
+                $('#codemedsss_scan_url').hide().prop('disabled', true);
             }
         },
 
         getScanUrl: function() {
-            var pageSelect = $('#pia_page_select').val();
+            var pageSelect = $('#codemedsss_page_select').val();
             if (pageSelect === 'custom') {
-                return $('#pia_scan_url').val();
+                return $('#codemedsss_scan_url').val();
             }
-            return pageSelect || piaData.homeUrl || '';
+            return pageSelect || codemedsssData.homeUrl || '';
         },
 
         setControls: function(scanning) {
-            $('#pia-scan-btn').toggle(!scanning);
-            $('#pia-cancel-btn').toggle(scanning);
-            $('#pia_page_select').prop('disabled', scanning);
-            $('#pia_scan_url').prop('disabled', scanning);
+            $('#codemedsss-scan-btn').toggle(!scanning);
+            $('#codemedsss-cancel-btn').toggle(scanning);
+            $('#codemedsss_page_select').prop('disabled', scanning);
+            $('#codemedsss_scan_url').prop('disabled', scanning);
 
             if (scanning) {
-                $('#pia-progress').show();
+                $('#codemedsss-progress').show();
             } else {
-                $('#pia-progress').hide();
+                $('#codemedsss-progress').hide();
             }
         },
 
         setProgress: function(current, total, pluginName) {
             var percent = total > 0 ? Math.round((current / total) * 100) : 0;
 
-            $('#pia-progress-bar').val(percent);
-            $('#pia-progress-text').text(
-                piaData.pluginText
+            $('#codemedsss-progress-bar').val(percent);
+            $('#codemedsss-progress-text').text(
+                codemedsssData.pluginText
                     .replace('%1$d', current)
                     .replace('%2$d', total)
             );
 
             if (pluginName) {
-                $('#pia-progress-text').append('<br>' + piaData.currentPlugin.replace('%s', pluginName));
+                $('#codemedsss-progress-text').append('<br>' + codemedsssData.currentPlugin.replace('%s', pluginName));
             }
         },
 
         displayResults: function(results) {
             if (!results || !results.baseline) {
-                $('#pia-results-area').hide();
+                $('#codemedsss-results-area').hide();
                 return;
             }
 
-            var html = '<h2>' + piaData.resultsHeader + '</h2>';
-            html += '<p><strong>' + piaData.urlLabel + '</strong> ' + this.escapeHtml(results.url) + '</p>';
-            html += '<p><strong>' + piaData.baselineStatus + '</strong> ' + this.escapeHtml(results.baseline.status) + '</p>';
-            html += '<p><strong>' + piaData.baselineTime + '</strong> ' + results.baseline.time.toFixed(3) + 's</p>';
+            var html = '<h2>' + codemedsssData.resultsHeader + '</h2>';
+            html += '<p><strong>' + codemedsssData.urlLabel + '</strong> ' + this.escapeHtml(results.url) + '</p>';
+            html += '<p><strong>' + codemedsssData.baselineStatus + '</strong> ' + this.escapeHtml(results.baseline.status) + '</p>';
+            html += '<p><strong>' + codemedsssData.baselineTime + '</strong> ' + results.baseline.time.toFixed(3) + 's</p>';
 
             if (results.errors && results.errors.length) {
                 html += '<div class="notice notice-warning"><p>' + this.escapeHtml(results.errors.join(' ')) + '</p></div>';
@@ -190,12 +190,12 @@
 
             html += '<table class="widefat fixed striped">';
             html += '<thead><tr>';
-            html += '<th>' + piaData.pluginCol + '</th>';
-            html += '<th>' + piaData.impactCol + '</th>';
-            html += '<th>' + piaData.statusCol + '</th>';
-            html += '<th>' + piaData.deltaCol + '</th>';
-            html += '<th>' + piaData.changeCol + '</th>';
-            html += '<th>' + piaData.errorCol + '</th>';
+            html += '<th>' + codemedsssData.pluginCol + '</th>';
+            html += '<th>' + codemedsssData.impactCol + '</th>';
+            html += '<th>' + codemedsssData.statusCol + '</th>';
+            html += '<th>' + codemedsssData.deltaCol + '</th>';
+            html += '<th>' + codemedsssData.changeCol + '</th>';
+            html += '<th>' + codemedsssData.errorCol + '</th>';
             html += '</tr></thead><tbody>';
 
             for (var i = 0; i < results.plugins.length; i++) {
@@ -205,7 +205,7 @@
                 html += '<td>' + this.escapeHtml(p.impact) + '</td>';
                 html += '<td>' + this.escapeHtml(p.status) + '</td>';
                 html += '<td>' + p.delta + 's</td>';
-                html += '<td>' + (p.hash_changed ? piaData.yesLabel : piaData.noLabel) + '</td>';
+                html += '<td>' + (p.hash_changed ? codemedsssData.yesLabel : codemedsssData.noLabel) + '</td>';
                 html += '<td>' + this.escapeHtml(p.error || '') + '</td>';
                 html += '</tr>';
             }
@@ -213,14 +213,14 @@
             html += '</tbody></table>';
 
             if (results.truncated) {
-                html += '<p>' + piaData.truncatedText + '</p>';
+                html += '<p>' + codemedsssData.truncatedText + '</p>';
             }
 
-            $('#pia-results-area').html(html).show();
+            $('#codemedsss-results-area').html(html).show();
         },
 
         showMessage: function(message, type) {
-            var area = $('#pia-message-area');
+            var area = $('#codemedsss-message-area');
             if (!message) {
                 area.hide();
                 return;
@@ -239,25 +239,7 @@
     };
 
     $(document).ready(function() {
-        piaScan.init();
-
-        if ( $('#pia-telemetry-toggle').length && piaData.supabaseConfigured ) {
-            $('#pia-telemetry-toggle').on('change', function() {
-                var enabled = $(this).is(':checked');
-                $.ajax({
-                    url: piaData.ajaxUrl,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        action: 'pia_toggle_telemetry',
-                        nonce: piaData.nonce,
-                        enabled: enabled
-                    }
-                }).fail(function() {
-                    $('#pia-telemetry-toggle').prop('checked', !enabled);
-                });
-            });
-        }
+        codemedsssScan.init();
     });
 
 })(jQuery);

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class TestResults extends TestCase
 {
     /**
-     * Test pia_get_last_scan_results returns array.
+     * Test codemedsss_get_last_scan_results returns array.
      */
     public function testGetLastScanResultsReturnsArray()
     {
@@ -25,26 +25,26 @@ class TestResults extends TestCase
             'baseline' => array('time' => 0.5, 'status' => 200),
         );
 
-        $result = pia_get_last_scan_results();
+        $result = codemedsss_get_last_scan_results();
         
         $this->assertIsArray( $result );
         $this->assertArrayHasKey( 'url', $result );
     }
 
     /**
-     * Test pia_get_last_scan_results handles non-array result.
+     * Test codemedsss_get_last_scan_results handles non-array result.
      */
     public function testGetLastScanResultsHandlesNonArray()
     {
         // Reset to default mock that returns false
-        $result = pia_get_last_scan_results();
+        $result = codemedsss_get_last_scan_results();
         
         $this->assertIsArray( $result );
         $this->assertEmpty( $result );
     }
 
     /**
-     * Test pia_store_scan_results adds timestamp.
+     * Test codemedsss_store_scan_results adds timestamp.
      */
     public function testStoreScanResultsAddsTimestamp()
     {
@@ -62,7 +62,7 @@ class TestResults extends TestCase
             return true;
         };
 
-        pia_store_scan_results( $testResults );
+        codemedsss_store_scan_results( $testResults );
 
         $this->assertNotNull( $capturedResults );
         $this->assertArrayHasKey( 'last_updated', $capturedResults );
@@ -70,42 +70,42 @@ class TestResults extends TestCase
     }
 
     /**
-     * Test pia_scan_is_locked returns boolean.
+     * Test codemedsss_scan_is_locked returns boolean.
      */
     public function testScanIsLockedReturnsBoolean()
     {
-        $result = pia_scan_is_locked();
+        $result = codemedsss_scan_is_locked();
         $this->assertIsBool( $result );
     }
 
     /**
-     * Test pia_lock_scan returns boolean.
+     * Test codemedsss_lock_scan returns boolean.
      */
     public function testLockScanReturnsBoolean()
     {
-        $result = pia_lock_scan();
+        $result = codemedsss_lock_scan();
         $this->assertIsBool( $result );
     }
 
     /**
-     * Test pia_unlock_scan returns boolean.
+     * Test codemedsss_unlock_scan returns boolean.
      */
     public function testUnlockScanReturnsBoolean()
     {
-        $result = pia_unlock_scan();
+        $result = codemedsss_unlock_scan();
         $this->assertNull( $result );
     }
 
     /**
-     * Test pia_clear_temp_mu_plugin handles missing file.
+     * Test codemedsss_clear_temp_mu_plugin handles missing file.
      */
     public function testClearTempMuPluginHandlesMissingFile()
     {
         // Ensure the temp file doesn't exist for this test
-        $tempFile = PIA_TEMP_MU_PLUGIN;
+        $tempFile = CODEMEDSSS_TEMP_MU_PLUGIN;
         
         // This should not throw an error even if file doesn't exist.
-        $result = pia_clear_temp_mu_plugin();
+        $result = codemedsss_clear_temp_mu_plugin();
         
         $this->assertNull( $result );
     }

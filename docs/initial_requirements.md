@@ -106,8 +106,8 @@ Use:
 
 ```id="6y7h9z"
 add_filter('option_active_plugins', function($plugins) {
-    if (isset($_GET['pia_disable'])) {
-        $disable = sanitize_text_field($_GET['pia_disable']);
+    if (isset($_GET['codemedsss_disable'])) {
+        $disable = sanitize_text_field($_GET['codemedsss_disable']);
         return array_diff($plugins, [$disable]);
     }
     return $plugins;
@@ -121,8 +121,8 @@ add_filter('option_active_plugins', function($plugins) {
 ```id="v4m9px"
 function run_test($url, $disable_plugin = null) {
     $test_url = add_query_arg([
-        'pia_test' => 1,
-        'pia_disable' => $disable_plugin
+        'codemedsss_test' => 1,
+        'codemedsss_disable' => $disable_plugin
     ], $url);
 
     $start = microtime(true);
@@ -171,7 +171,7 @@ if (hash_changed) → "Changes output"
 Use a single option:
 
 ```id="x8f2ka"
-update_option('pia_last_scan', $results);
+update_option('codemedsss_last_scan', $results);
 ```
 
 No custom tables yet.
@@ -211,7 +211,7 @@ One page:
 ## 1. Prevent infinite loops
 
 ```id="7k2d9s"
-if (isset($_GET['pia_test'])) return;
+if (isset($_GET['codemedsss_test'])) return;
 ```
 
 ---

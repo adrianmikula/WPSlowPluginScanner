@@ -28,10 +28,10 @@ Edit the `.env` file in the `code-medic-slow-site-scanner/` directory:
 
 ```ini
 # Build mode: "free" or "premium"
-PIA_MODE=free
+CODEMEDSSS_MODE=free
 
 # Gumroad product URL for upgrade link (premium mode hides this)
-PIA_PREMIUM_URL=https://gumroad.com/l/your-product
+CODEMEDSSS_PREMIUM_URL=https://gumroad.com/l/your-product
 ```
 
 #### Building the ZIP
@@ -44,8 +44,8 @@ Run the build script from the project root:
 
 This creates `build/code-medic-slow-site-scanner-${MODE}.zip` with the configured mode baked in.
 
-- **Free version**: Set `PIA_MODE=free` in `.env` before building
-- **Premium version**: Set `PIA_MODE=premium` in `.env` before building
+- **Free version**: Set `CODEMEDSSS_MODE=free` in `.env` before building
+- **Premium version**: Set `CODEMEDSSS_MODE=premium` in `.env` before building
 
 ### Anonymous Telemetry
 
@@ -79,18 +79,18 @@ Settings are configured via a `.env` file in the plugin directory:
 # Build mode: "free" or "premium"
 # - free: Limited scans with upgrade prompts to Gumroad
 # - premium: Full functionality, no limits
-PIA_MODE=free
+CODEMEDSSS_MODE=free
 
 # Number of plugins to scan in free mode (premium has unlimited)
-PIA_FREE_PLUGIN_LIMIT=3
+CODEMEDSSS_FREE_PLUGIN_LIMIT=3
 
 # Gumroad product URL for upgrade link
-PIA_PREMIUM_URL=https://gumroad.com/l/your-product
+CODEMEDSSS_PREMIUM_URL=https://gumroad.com/l/your-product
 
 # Supabase configuration for anonymous telemetry (optional)
-PIA_SUPABASE_URL=         # Your Supabase project URL (e.g., https://xxxxx.supabase.co)
-PIA_SUPABASE_ANON_KEY=    # Your Supabase anon/public key
-PIA_SUPABASE_TABLE=       # Table name (default: telemetry)
+CODEMEDSSS_SUPABASE_URL=         # Your Supabase project URL (e.g., https://xxxxx.supabase.co)
+CODEMEDSSS_SUPABASE_ANON_KEY=    # Your Supabase anon/public key
+CODEMEDSSS_SUPABASE_TABLE=       # Table name (default: telemetry)
 ```
 
 ### Setting up Supabase for Telemetry

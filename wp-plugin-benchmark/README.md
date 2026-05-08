@@ -47,7 +47,7 @@ For each of 10 batches (10 plugins each):
 ### 3. Results Storage
 - Aggregate 3 runs per plugin (average time)
 - Add `test_type: "benchmark"` flag to existing telemetry
-- Send to Supabase via existing `pia_send_telemetry_to_supabase()`
+- Send to Supabase via existing `codemedsss_send_telemetry_to_supabase()`
 
 ## CLI Commands
 

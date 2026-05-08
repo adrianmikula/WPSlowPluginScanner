@@ -75,8 +75,8 @@ You do NOT need:
 Example:
 
 ```php id="u9sj91"
-function pia_can_scan_all_plugins() {
-    return get_option('pia_pro_enabled') === '1';
+function codemedsss_can_scan_all_plugins() {
+    return get_option('codemedsss_pro_enabled') === '1';
 }
 ```
 
@@ -133,7 +133,7 @@ After purchase:
 
 ```php id="r2lq4p"
 if ($entered_key === 'MY_SECRET_CODE') {
-    update_option('pia_pro_enabled', '1');
+    update_option('codemedsss_pro_enabled', '1');
 }
 ```
 

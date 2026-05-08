@@ -14,7 +14,7 @@ if (empty($json_file) || !file_exists($json_file)) {
 }
 
 $supabase_url = $options['url'] ?? getenv('SUPABASE_URL') ?: '';
-$supabase_key = $options['key'] ?? getenv('SUPABASE_KEY') ?: getenv('PIA_SUPABASE_ANON_KEY') ?: '';
+$supabase_key = $options['key'] ?? getenv('SUPABASE_KEY') ?: getenv('CODEMEDSSS_SUPABASE_ANON_KEY') ?: '';
 $table = $options['table'] ?? getenv('SUPABASE_TABLE') ?: 'telemetry';
 $test_type = $options['test-type'] ?? 'benchmark';
 
@@ -55,7 +55,7 @@ if ($test_type !== 'production') {
 }
 
 $json_payload = json_encode($telemetry);
-$temp_file = sys_get_temp_dir() . '/pia_upload_' . uniqid() . '.json';
+$temp_file = sys_get_temp_dir() . '/codemedsss_upload_' . uniqid() . '.json';
 file_put_contents($temp_file, $json_payload);
 
 $url = $supabase_url . '/rest/v1/' . $table;

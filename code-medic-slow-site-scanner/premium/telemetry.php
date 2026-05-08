@@ -3,37 +3,37 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! defined( 'PIA_TELEMETRY_QUEUE' ) ) {
-    define( 'PIA_TELEMETRY_QUEUE', 'pia_telemetry_queue' );
+if ( ! defined( 'CODEMEDSSS_TELEMETRY_QUEUE' ) ) {
+    define( 'CODEMEDSSS_TELEMETRY_QUEUE', 'codemedsss_telemetry_queue' );
 }
-if ( ! defined( 'PIA_TELEMETRY_ENABLED' ) ) {
-    define( 'PIA_TELEMETRY_ENABLED', 'pia_telemetry_optin' );
+if ( ! defined( 'CODEMEDSSS_TELEMETRY_ENABLED' ) ) {
+    define( 'CODEMEDSSS_TELEMETRY_ENABLED', 'codemedsss_telemetry_optin' );
 }
-if ( ! defined( 'PIA_TELEMETRY_CRON_HOOK' ) ) {
-    define( 'PIA_TELEMETRY_CRON_HOOK', 'pia_send_telemetry_cron' );
+if ( ! defined( 'CODEMEDSSS_TELEMETRY_CRON_HOOK' ) ) {
+    define( 'CODEMEDSSS_TELEMETRY_CRON_HOOK', 'codemedsss_send_telemetry_cron' );
 }
-if ( ! defined( 'PIA_SITE_UUID_OPTION' ) ) {
-    define( 'PIA_SITE_UUID_OPTION', 'pia_site_uuid' );
-}
-
-function pia_is_telemetry_enabled() {
-    return (bool) get_option( PIA_TELEMETRY_ENABLED, true );
+if ( ! defined( 'CODEMEDSSS_SITE_UUID_OPTION' ) ) {
+    define( 'CODEMEDSSS_SITE_UUID_OPTION', 'codemedsss_site_uuid' );
 }
 
-function pia_set_telemetry_enabled( $enabled ) {
-    update_option( PIA_TELEMETRY_ENABLED, $enabled ? true : false );
+function codemedsss_is_telemetry_enabled() {
+    return (bool) get_option( CODEMEDSSS_TELEMETRY_ENABLED, true );
 }
 
-function pia_get_site_uuid() {
-    $uuid = get_option( PIA_SITE_UUID_OPTION, '' );
+function codemedsss_set_telemetry_enabled( $enabled ) {
+    update_option( CODEMEDSSS_TELEMETRY_ENABLED, $enabled ? true : false );
+}
+
+function codemedsss_get_site_uuid() {
+    $uuid = get_option( CODEMEDSSS_SITE_UUID_OPTION, '' );
     if ( empty( $uuid ) ) {
-        $uuid = pia_generate_site_uuid();
-        update_option( PIA_SITE_UUID_OPTION, $uuid );
+        $uuid = codemedsss_generate_site_uuid();
+        update_option( CODEMEDSSS_SITE_UUID_OPTION, $uuid );
     }
     return $uuid;
 }
 
-function pia_generate_site_uuid() {
+function codemedsss_generate_site_uuid() {
     $site_url = get_site_url();
     $salt = 'pia-telemetry-v1';
     $hash = md5( $site_url . $salt );
@@ -48,26 +48,26 @@ function pia_generate_site_uuid() {
     );
 }
 
-function pia_get_telemetry_queue() {
-    return get_option( PIA_TELEMETRY_QUEUE, array() );
+function codemedsss_get_telemetry_queue() {
+    return get_option( CODEMEDSSS_TELEMETRY_QUEUE, array() );
 }
 
-function pia_add_to_telemetry_queue( $data ) {
-    $queue = pia_get_telemetry_queue();
+function codemedsss_add_to_telemetry_queue( $data ) {
+    $queue = codemedsss_get_telemetry_queue();
     $queue[] = $data;
-    update_option( PIA_TELEMETRY_QUEUE, $queue );
+    update_option( CODEMEDSSS_TELEMETRY_QUEUE, $queue );
 }
 
-function pia_clear_telemetry_queue() {
-    delete_option( PIA_TELEMETRY_QUEUE );
+function codemedsss_clear_telemetry_queue() {
+    delete_option( CODEMEDSSS_TELEMETRY_QUEUE );
 }
 
-function pia_anonymize_plugin_slug( $plugin_file ) {
+function codemedsss_anonymize_plugin_slug( $plugin_file ) {
     $parts = explode( '/', $plugin_file );
     return ! empty( $parts[0] ) ? $parts[0] : $plugin_file;
 }
 
-function pia_get_error_category( $plugin_result ) {
+function codemedsss_get_error_category( $plugin_result ) {
     if ( ! empty( $plugin_result['error'] ) ) {
         $error = strtolower( $plugin_result['error'] );
         if ( strpos( $error, 'timeout' ) !== false ) {
@@ -87,7 +87,7 @@ function pia_get_error_category( $plugin_result ) {
     return 'none';
 }
 
-function pia_get_plugin_version( $plugin_file ) {
+function codemedsss_get_plugin_version( $plugin_file ) {
     if ( ! function_exists( 'get_plugin_data' ) ) {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
     }
@@ -96,13 +96,13 @@ function pia_get_plugin_version( $plugin_file ) {
     return ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : null;
 }
 
-function pia_count_plugin_settings( $plugin_file ) {
+function codemedsss_count_plugin_settings( $plugin_file ) {
 	global $wpdb;
 
-	$plugin_slug = pia_anonymize_plugin_slug( $plugin_file );
-	$cache_key   = 'pia_plugin_settings_' . md5( $plugin_slug );
+	$plugin_slug = codemedsss_anonymize_plugin_slug( $plugin_file );
+	$cache_key   = 'codemedsss_plugin_settings_' . md5( $plugin_slug );
 
-	$cached_count = wp_cache_get( $cache_key, 'pia_settings_count' );
+	$cached_count = wp_cache_get( $cache_key, 'codemedsss_settings_count' );
 	if ( false !== $cached_count ) {
 		return $cached_count;
 	}
@@ -125,25 +125,25 @@ function pia_count_plugin_settings( $plugin_file ) {
 		$total_count += (int) $count;
 	}
 
-	wp_cache_set( $cache_key, $total_count, 'pia_settings_count', HOUR_IN_SECONDS );
+	wp_cache_set( $cache_key, $total_count, 'codemedsss_settings_count', HOUR_IN_SECONDS );
 
 	return $total_count;
 }
 
-function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time ) {
+function codemedsss_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time ) {
     $plugin_file = $plugin_result['file'];
-    $plugin_slug = pia_anonymize_plugin_slug( $plugin_file );
-    $origin = pia_get_site_uuid();
+    $plugin_slug = codemedsss_anonymize_plugin_slug( $plugin_file );
+    $origin = codemedsss_get_site_uuid();
 
     $php_version = PHP_VERSION;
     $wp_version  = get_bloginfo( 'version' );
 
     $all_plugins = array();
     foreach ( $all_plugin_files as $file ) {
-        $all_plugins[] = pia_anonymize_plugin_slug( $file );
+        $all_plugins[] = codemedsss_anonymize_plugin_slug( $file );
     }
 
-    $error_category = pia_get_error_category( $plugin_result );
+    $error_category = codemedsss_get_error_category( $plugin_result );
 
     $result_data = array(
         $plugin_slug => array(
@@ -151,8 +151,8 @@ function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baselin
         ),
     );
 
-    $plugin_version = pia_get_plugin_version( $plugin_file );
-    $settings_count = pia_count_plugin_settings( $plugin_file );
+    $plugin_version = codemedsss_get_plugin_version( $plugin_file );
+    $settings_count = codemedsss_count_plugin_settings( $plugin_file );
 
     $data = array(
         'plugins'                  => $all_plugins,
@@ -164,7 +164,7 @@ function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baselin
         'plugin_error'            => $plugin_result['error'] ?: null,
         'error_category'          => $error_category,
         'settings_count'          => $settings_count,
-        'scanner_engine_version'  => PIA_SCANNER_ENGINE_VERSION,
+        'scanner_engine_version'  => CODEMEDSSS_SCANNER_ENGINE_VERSION,
         'env'                     => array(
             'php_version' => $php_version,
             'wp_version'  => $wp_version,
@@ -176,10 +176,10 @@ function pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baselin
     return $data;
 }
 
-function pia_send_telemetry_to_supabase( $data ) {
-    $supabase_url = defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL ) ? PIA_SUPABASE_URL : '';
-    $supabase_key = defined( 'PIA_SUPABASE_ANON_KEY' ) && ! empty( PIA_SUPABASE_ANON_KEY ) ? PIA_SUPABASE_ANON_KEY : '';
-    $table_name   = defined( 'PIA_SUPABASE_TABLE' ) ? PIA_SUPABASE_TABLE : 'telemetry';
+function codemedsss_send_telemetry_to_supabase( $data ) {
+    $supabase_url = defined( 'CODEMEDSSS_SUPABASE_URL' ) && ! empty( CODEMEDSSS_SUPABASE_URL ) ? CODEMEDSSS_SUPABASE_URL : '';
+    $supabase_key = defined( 'CODEMEDSSS_SUPABASE_ANON_KEY' ) && ! empty( CODEMEDSSS_SUPABASE_ANON_KEY ) ? CODEMEDSSS_SUPABASE_ANON_KEY : '';
+    $table_name   = defined( 'CODEMEDSSS_SUPABASE_TABLE' ) ? CODEMEDSSS_SUPABASE_TABLE : 'telemetry';
 
     if ( empty( $supabase_url ) || empty( $supabase_key ) ) {
         return false;
@@ -210,12 +210,12 @@ function pia_send_telemetry_to_supabase( $data ) {
     return $code >= 200 && $code < 300;
 }
 
-function pia_process_telemetry_queue() {
-    if ( ! pia_is_telemetry_enabled() ) {
+function codemedsss_process_telemetry_queue() {
+    if ( ! codemedsss_is_telemetry_enabled() ) {
         return;
     }
 
-    $queue = pia_get_telemetry_queue();
+    $queue = codemedsss_get_telemetry_queue();
     if ( empty( $queue ) ) {
         return;
     }
@@ -223,14 +223,14 @@ function pia_process_telemetry_queue() {
     $failed = array();
 
     foreach ( $queue as $index => $data ) {
-        $sent = pia_send_telemetry_to_supabase( $data );
+        $sent = codemedsss_send_telemetry_to_supabase( $data );
         if ( ! $sent ) {
             $failed[] = $index;
         }
     }
 
     if ( empty( $failed ) ) {
-        pia_clear_telemetry_queue();
+        codemedsss_clear_telemetry_queue();
     } else {
         $remaining = array();
         foreach ( $queue as $index => $data ) {
@@ -238,28 +238,28 @@ function pia_process_telemetry_queue() {
                 $remaining[] = $data;
             }
         }
-        update_option( PIA_TELEMETRY_QUEUE, $remaining );
+        update_option( CODEMEDSSS_TELEMETRY_QUEUE, $remaining );
     }
 }
 
-function pia_schedule_telemetry_cron() {
-    if ( ! wp_next_scheduled( PIA_TELEMETRY_CRON_HOOK ) ) {
-        wp_schedule_event( time(), 'hourly', PIA_TELEMETRY_CRON_HOOK );
+function codemedsss_schedule_telemetry_cron() {
+    if ( ! wp_next_scheduled( CODEMEDSSS_TELEMETRY_CRON_HOOK ) ) {
+        wp_schedule_event( time(), 'hourly', CODEMEDSSS_TELEMETRY_CRON_HOOK );
     }
 }
 
-function pia_unschedule_telemetry_cron() {
-    wp_clear_scheduled_hook( PIA_TELEMETRY_CRON_HOOK );
+function codemedsss_unschedule_telemetry_cron() {
+    wp_clear_scheduled_hook( CODEMEDSSS_TELEMETRY_CRON_HOOK );
 }
 
-add_action( PIA_TELEMETRY_CRON_HOOK, 'pia_process_telemetry_queue' );
+add_action( CODEMEDSSS_TELEMETRY_CRON_HOOK, 'codemedsss_process_telemetry_queue' );
 
-register_activation_hook( __FILE__, 'pia_activate_telemetry' );
+register_activation_hook( __FILE__, 'codemedsss_activate_telemetry' );
 
-function pia_activate_telemetry() {
-    if ( pia_is_telemetry_enabled() ) {
-        pia_schedule_telemetry_cron();
+function codemedsss_activate_telemetry() {
+    if ( codemedsss_is_telemetry_enabled() ) {
+        codemedsss_schedule_telemetry_cron();
     }
 }
 
-register_deactivation_hook( __FILE__, 'pia_unschedule_telemetry_cron' );
+register_deactivation_hook( __FILE__, 'codemedsss_unschedule_telemetry_cron' );

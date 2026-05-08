@@ -3,42 +3,14 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-function pia_admin_menu() {
-    add_plugins_page(
-        __( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ),
-        __( 'Scan Plugins', 'code-medic-slow-site-scanner' ),
-        'manage_options',
-        'pia-scan-plugins',
-        'pia_render_admin_page'
-    );
-}
+// AJAX handlers
+add_action( 'wp_ajax_codemedsss_start_scan', 'codemedsss_ajax_start_scan' );
+add_action( 'wp_ajax_codemedsss_poll_scan', 'codemedsss_ajax_poll_scan' );
+add_action( 'wp_ajax_codemedsss_cancel_scan', 'codemedsss_ajax_cancel_scan' );
+add_action( 'wp_ajax_codemedsss_save_consent', 'codemedsss_save_mu_consent' );
 
-add_action( 'wp_ajax_pia_start_scan', 'pia_ajax_start_scan' );
-add_action( 'wp_ajax_pia_poll_scan', 'pia_ajax_poll_scan' );
-add_action( 'wp_ajax_pia_cancel_scan', 'pia_ajax_cancel_scan' );
-add_action( 'wp_ajax_pia_toggle_telemetry', 'pia_ajax_toggle_telemetry' );
-
-function pia_ajax_toggle_telemetry() {
-    check_ajax_referer( 'pia_scan_nonce', 'nonce' );
-
-    if ( ! current_user_can( 'manage_options' ) ) {
-        wp_send_json_error( array( 'message' => 'Permission denied' ) );
-    }
-
-    $enabled = isset( $_POST['enabled'] ) ? (bool) $_POST['enabled'] : false;
-    pia_set_telemetry_enabled( $enabled );
-
-    if ( $enabled ) {
-        pia_schedule_telemetry_cron();
-    } else {
-        pia_unschedule_telemetry_cron();
-    }
-
-    wp_send_json_success();
-}
-
-function pia_ajax_start_scan() {
-    check_ajax_referer( 'pia_scan_nonce', 'nonce' );
+function codemedsss_ajax_start_scan() {
+    check_ajax_referer( 'codemedsss_scan_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => 'Permission denied' ) );
@@ -49,7 +21,7 @@ function pia_ajax_start_scan() {
         $scan_url = home_url();
     }
 
-    $result = pia_initiate_scan( $scan_url );
+    $result = codemedsss_initiate_scan( $scan_url );
 
     if ( isset( $result['error'] ) ) {
         wp_send_json_error( array( 'message' => $result['error'] ) );
@@ -64,17 +36,17 @@ function pia_ajax_start_scan() {
     ) );
 }
 
-function pia_ajax_poll_scan() {
-    check_ajax_referer( 'pia_scan_nonce', 'nonce' );
+function codemedsss_ajax_poll_scan() {
+    check_ajax_referer( 'codemedsss_scan_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => 'Permission denied' ) );
     }
 
-    $result = pia_scan_next_plugin();
+    $result = codemedsss_scan_next_plugin();
 
     if ( isset( $result['complete'] ) && $result['complete'] ) {
-        $final_results = pia_get_last_scan_results();
+        $final_results = codemedsss_get_last_scan_results();
         wp_send_json_success( array(
             'complete'   => true,
             'cancelled' => isset( $result['cancelled'] ) ? $result['cancelled'] : false,
@@ -90,18 +62,28 @@ function pia_ajax_poll_scan() {
     ) );
 }
 
-function pia_ajax_cancel_scan() {
-    check_ajax_referer( 'pia_scan_nonce', 'nonce' );
+function codemedsss_ajax_cancel_scan() {
+    check_ajax_referer( 'codemedsss_scan_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => 'Permission denied' ) );
     }
 
-    pia_set_scan_cancel_flag();
+    codemedsss_set_scan_cancel_flag();
     wp_send_json_success();
 }
 
-function pia_get_published_pages() {
+function codemedsss_save_mu_consent() {
+    check_ajax_referer( 'codemedsss_scan_nonce', 'nonce' );
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( array( 'message' => 'Permission denied' ) );
+    }
+    $enabled = isset( $_POST['enabled'] ) ? (bool) $_POST['enabled'] : false;
+    update_option( 'codemedsss_mu_consent', $enabled );
+    wp_send_json_success();
+}
+
+function codemedsss_get_published_pages() {
     $pages = get_posts(
         array(
             'post_type'   => 'page',
@@ -112,83 +94,98 @@ function pia_get_published_pages() {
     return $pages ? $pages : array();
 }
 
-function pia_render_admin_page() {
-    $results     = pia_get_last_scan_results();
+function codemedsss_admin_menu() {
+    add_plugins_page(
+        __( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ),
+        __( 'Scan Plugins', 'code-medic-slow-site-scanner' ),
+        'manage_options',
+        'codemedsss-scan-plugins',
+        'codemedsss_render_admin_page'
+    );
+}
+
+function codemedsss_render_admin_page() {
+    $results = codemedsss_get_last_scan_results();
     $default_url = isset( $results['url'] ) ? esc_url( $results['url'] ) : esc_url( home_url() );
-    $is_premium  = pia_is_premium();
-    $premium_url = pia_get_premium_url();
-    $free_limit  = pia_get_free_limit();
-    $show_upgrade = ! $is_premium && ! empty( $premium_url );
-    $pages = pia_get_published_pages();
     $home_url = home_url();
-    $telemetry_enabled = pia_is_telemetry_enabled();
-    $supabase_configured = defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL );
+    $mu_consent = get_option( 'codemedsss_mu_consent', false );
+    $is_premium = codemedsss_is_premium();
+    $premium_url = codemedsss_get_premium_url();
+
+    // Free mode: homepage only. Premium: full page selection.
+    $is_free_mode = ! $is_premium;
     ?>
     <div class="wrap">
         <h1><?php esc_html_e( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ); ?></h1>
-        <?php if ( $is_premium ) { ?>
-            <div class="notice notice-info"><p><?php esc_html_e( 'Premium Mode - Unlimited scanning enabled.', 'code-medic-slow-site-scanner' ); ?></p></div>
-<?php } else { ?>
-            <?php /* translators: %d: number of plugins */ ?>
-            <div class=&quot;notice notice-info&quot;><p><?php echo esc_html( sprintf( __( 'Free Mode - Limited to %d plugins per scan.', 'code-medic-slow-site-scanner' ), $free_limit ) ); ?></p></div>
-        <?php } ?>
-
         <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'code-medic-slow-site-scanner' ); ?></p>
 
-        <div id="pia-scan-controls">
+        <!-- MU Plugin Consent -->
+        <div class="notice notice-info" style="margin-top:10px;margin-bottom:10px;">
             <p>
-                <label for="pia_page_select"><?php esc_html_e( 'Page to scan', 'code-medic-slow-site-scanner' ); ?></label>
-                <select id="pia_page_select" class="regular-text">
-                    <option value="<?php echo esc_attr( $home_url ); ?>" selected><?php esc_html_e( 'Homepage', 'code-medic-slow-site-scanner' ); ?></option>
-                    <?php
-                    foreach ( $pages as $page ) {
-                        $page_url   = get_permalink( $page->ID );
-                        $page_title = $page->post_title;
-                        if ( $is_premium ) {
-                            ?>
-                            <option value="<?php echo esc_attr( $page_url ); ?>"><?php echo esc_html( $page_title ); ?></option>
-                            <?php
-                        } else {
-                            ?>
-                            <option value="<?php echo esc_attr( $page_url ); ?>" disabled><?php echo esc_html( $page_title ); ?> (<?php esc_html_e( 'Pro', 'code-medic-slow-site-scanner' ); ?>)</option>
-                            <?php
-                        }
-                    }
-                    if ( $is_premium ) {
-                        ?>
-                        <option value="custom"><?php esc_html_e( 'Custom URL', 'code-medic-slow-site-scanner' ); ?></option>
+                <label for="codemedsss_mu_consent">
+                    <input type="checkbox" id="codemedsss_mu_consent" data-nonce="<?php echo esc_attr( wp_create_nonce( 'codemedsss_scan_nonce' ) ); ?>" <?php checked( $mu_consent ); ?> />
+                    <?php esc_html_e( 'I consent to the plugin creating temporary files to disable plugins during testing. This is required for scans to function.', 'code-medic-slow-site-scanner' ); ?>
+                </label>
+                <span id="codemedsss_consent_status" style="margin-left:10px;font-style:italic;"></span>
+            </p>
+        </div>
+
+        <?php if ( $is_free_mode && ! empty( $premium_url ) ) : ?>
+            <div class="notice notice-success" style="margin-top:10px;margin-bottom:10px;">
+                <p>
+                    <?php esc_html_e( 'Upgrade to Premium to scan any page and unlock advanced features.', 'code-medic-slow-site-scanner' ); ?>
+                    <a href="<?php echo esc_url( $premium_url ); ?>" class="button button-primary" target="_blank" rel="noopener"><?php esc_html_e( 'Upgrade Now', 'code-medic-slow-site-scanner' ); ?></a>
+                </p>
+            </div>
+        <?php endif; ?>
+
+        <div id="codemedsss-scan-controls">
+            <p>
+                <label for="codemedsss_page_select"><?php esc_html_e( 'Page to scan', 'code-medic-slow-site-scanner' ); ?></label>
+                <?php if ( $is_free_mode ) : ?>
+                    <select id="codemedsss_page_select" class="regular-text" disabled>
+                        <option value="<?php echo esc_attr( $home_url ); ?>" selected><?php esc_html_e( 'Homepage (free mode)', 'code-medic-slow-site-scanner' ); ?></option>
+                    </select>
+                    <input type="hidden" id="codemedsss_scan_url" value="<?php echo esc_attr( $home_url ); ?>" />
+                <?php else : ?>
+                    <select id="codemedsss_page_select" class="regular-text">
+                        <option value="<?php echo esc_attr( $home_url ); ?>" selected><?php esc_html_e( 'Homepage', 'code-medic-slow-site-scanner' ); ?></option>
                         <?php
-                    }
-                ?>
-                </select>
-                <input type="url" id="pia_scan_url" value="<?php echo esc_attr( $default_url ); ?>" class="regular-text" style="display:none;" />
-                <?php if ( ! $is_premium ) { ?>
-                    <span class="description"> (<?php esc_html_e( 'Free mode limited to homepage', 'code-medic-slow-site-scanner' ); ?>)</span>
-                <?php } ?>
+                        $pages = codemedsss_get_published_pages();
+                        foreach ( $pages as $page ) :
+                            $page_url   = get_permalink( $page->ID );
+                            $page_title = $page->post_title;
+                        ?>
+                            <option value="<?php echo esc_attr( $page_url ); ?>"><?php echo esc_html( $page_title ); ?></option>
+                        <?php endforeach; ?>
+                        <option value="custom"><?php esc_html_e( 'Custom URL', 'code-medic-slow-site-scanner' ); ?></option>
+                    </select>
+                    <input type="url" id="codemedsss_scan_url" value="<?php echo esc_attr( $default_url ); ?>" class="regular-text" style="display:none;" />
+                <?php endif; ?>
             </p>
             <p>
-                <button type="button" id="pia-scan-btn" class="button button-primary"><?php esc_html_e( 'Scan Plugins', 'code-medic-slow-site-scanner' ); ?></button>
-                <button type="button" id="pia-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'code-medic-slow-site-scanner' ); ?></button>
+                <button type="button" id="codemedsss-scan-btn" class="button button-primary" <?php disabled( ! $mu_consent ); ?>><?php esc_html_e( 'Scan Plugins', 'code-medic-slow-site-scanner' ); ?></button>
+                <button type="button" id="codemedsss-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'code-medic-slow-site-scanner' ); ?></button>
             </p>
         </div>
 
-        <div id="pia-progress" style="display:none;">
+        <div id="codemedsss-progress" style="display:none;">
             <p><?php esc_html_e( 'Scanning...', 'code-medic-slow-site-scanner' ); ?></p>
-            <progress id="pia-progress-bar" value="0" max="100"></progress>
-            <p id="pia-progress-text"></p>
+            <progress id="codemedsss-progress-bar" value="0" max="100"></progress>
+            <p id="codemedsss-progress-text"></p>
         </div>
 
-        <div id="pia-message-area"></div>
+        <div id="codemedsss-message-area"></div>
 
-        <div id="pia-results-area"<?php echo empty( $results ) || ! isset( $results['baseline'] ) ? ' style="display:none;"' : ''; ?>>
+        <div id="codemedsss-results-area"<?php echo empty( $results ) || ! isset( $results['baseline'] ) ? ' style="display:none;"' : ''; ?>>
             <h2><?php esc_html_e( 'Scan Results', 'code-medic-slow-site-scanner' ); ?></h2>
-            <?php if ( ! empty( $results ) && isset( $results['baseline'] ) ) { ?>
+            <?php if ( ! empty( $results ) && isset( $results['baseline'] ) ) : ?>
                 <p><strong><?php esc_html_e( 'URL:', 'code-medic-slow-site-scanner' ); ?></strong> <?php echo esc_html( $results['url'] ); ?></p>
                 <p><strong><?php esc_html_e( 'Baseline status:', 'code-medic-slow-site-scanner' ); ?></strong> <?php echo esc_html( $results['baseline']['status'] ); ?></p>
                 <p><strong><?php esc_html_e( 'Baseline time:', 'code-medic-slow-site-scanner' ); ?></strong> <?php echo esc_html( round( $results['baseline']['time'], 3 ) ); ?>s</p>
-                <?php if ( ! empty( $results['errors'] ) ) { ?>
+                <?php if ( ! empty( $results['errors'] ) ) : ?>
                     <div class="notice notice-warning"><p><?php echo esc_html( implode( ' ', $results['errors'] ) ); ?></p></div>
-                <?php } ?>
+                <?php endif; ?>
 
                 <table class="widefat fixed striped">
                     <thead>
@@ -204,7 +201,7 @@ function pia_render_admin_page() {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ( $results['plugins'] as $plugin ) { ?>
+                        <?php foreach ( $results['plugins'] as $plugin ) : ?>
                             <tr>
                                 <td><?php echo esc_html( $plugin['name'] ); ?></td>
                                 <td><?php echo esc_html( $plugin['impact'] ); ?></td>
@@ -215,55 +212,40 @@ function pia_render_admin_page() {
                                 <td><?php echo $plugin['hash_changed'] ? esc_html__( 'Yes', 'code-medic-slow-site-scanner' ) : esc_html__( 'No', 'code-medic-slow-site-scanner' ); ?></td>
                                 <td><?php echo esc_html( $plugin['error'] ); ?></td>
                             </tr>
-                        <?php } ?>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php if ( ! empty( $results['truncated'] ) && $show_upgrade ) { ?>
-                    <div class="notice notice-warning">
-                        <p>
-                            <?php
-                            $remaining = $results['active_count'] - $results['scanned'];
-                            echo esc_html( sprintf(
-                                /* translators: %1$d: number of scanned plugins, %2$d: number of remaining plugins */
-                                __( 'Free mode limited to %1$d plugins. %2$d more plugins were not scanned.', 'code-medic-slow-site-scanner' ),
-                                $results['scanned'],
-                                $remaining
-                            ) );
-                            ?>
-                            <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank"><?php esc_html_e( 'Upgrade to Pro', 'code-medic-slow-site-scanner' ); ?></a>
-                            <?php esc_html_e( ' to scan all plugins.', 'code-medic-slow-site-scanner' ); ?>
-                        </p>
-                    </div>
-                <?php } elseif ( ! empty( $results['truncated'] ) ) { ?>
+                <?php if ( ! empty( $results['truncated'] ) ) : ?>
                     <p><?php esc_html_e( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'code-medic-slow-site-scanner' ); ?></p>
-                <?php } ?>
-            <?php } ?>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
 
-        <?php if ( $show_upgrade ) { ?>
-            <p>
-                <a href="<?php echo esc_url( $premium_url ); ?>" target="_blank" class="button button-secondary"><?php esc_html_e( 'Upgrade to Pro', 'code-medic-slow-site-scanner' ); ?></a>
-                <span class="description"><?php esc_html_e( 'Scan unlimited plugins on any page', 'code-medic-slow-site-scanner' ); ?></span>
-            </p>
-        <?php } ?>
-
-        <?php if ( $supabase_configured ) { ?>
-            <div id="pia-telemetry-settings" class="notice notice-info" style="margin-top: 20px;">
-                <p>
-                    <label for="pia-telemetry-toggle">
-                        <input type="checkbox" id="pia-telemetry-toggle" <?php checked( $telemetry_enabled ); ?> />
-                        <?php esc_html_e( 'Share anonymous plugin performance data to help build a shared plugin compatibility database.', 'code-medic-slow-site-scanner' ); ?>
-                    </label>
-                </p>
-                <p class="description">
-                    <?php esc_html_e( 'Data sent: plugin slug, performance delta, PHP version, WordPress version. No personally identifiable information is collected.', 'code-medic-slow-site-scanner' ); ?>
-                </p>
-            </div>
-        <?php } else { ?>
-            <div class="notice notice-warning" style="margin-top: 20px;">
-                <p><?php esc_html_e( 'Telemetry not configured. Add PIA_SUPABASE_URL and PIA_SUPABASE_ANON_KEY to your .env file to enable anonymous data sharing.', 'code-medic-slow-site-scanner' ); ?></p>
-            </div>
-        <?php } ?>
-    </div>
+        <script>
+        jQuery(document).ready(function($) {
+            function toggleScanButton() {
+                var consent = $('#codemedsss_mu_consent').is(':checked');
+                $('#codemedsss-scan-btn').prop('disabled', !consent);
+            }
+            $('#codemedsss_mu_consent').change(function() {
+                var enabled = $(this).is(':checked');
+                var nonce = $(this).data('nonce');
+                $.post(ajaxurl, {
+                    action: 'codemedsss_save_consent',
+                    nonce: nonce,
+                    enabled: enabled
+                }, function(response) {
+                    if ( response.success ) {
+                        $('#codemedsss_consent_status').text('Saved').css('color','green');
+                        toggleScanButton();
+                    } else {
+                        $('#codemedsss_mu_consent').prop('checked', !enabled);
+                        $('#codemedsss_consent_status').text('Error').css('color','red');
+                    }
+                });
+            });
+            toggleScanButton(); // initial state
+        });
+        </script>
     <?php
 }

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class TestScanner extends TestCase
 {
     /**
-     * Test pia_get_active_plugin_entries returns array structure.
+     * Test codemedsss_get_active_plugin_entries returns array structure.
      */
     public function testGetActivePluginEntriesReturnsArray()
     {
@@ -25,7 +25,7 @@ class TestScanner extends TestCase
     }
 
     /**
-     * Test pia_run_plugin_scan returns expected structure.
+     * Test codemedsss_run_plugin_scan returns expected structure.
      */
     public function testRunPluginScanReturnsExpectedStructure()
     {
@@ -139,7 +139,7 @@ class TestScanner extends TestCase
      */
     public function testMaxPluginLimitLogic()
     {
-        $maxPlugins = PIA_MAX_TEST_PLUGINS;
+        $maxPlugins = CODEMEDSSS_MAX_TEST_PLUGINS;
         $allPlugins = array(
             'plugin-1/plugin-1.php',
             'plugin-2/plugin-2.php',

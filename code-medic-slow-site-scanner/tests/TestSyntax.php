@@ -92,16 +92,16 @@ class TestSyntax extends TestCase
      */
     public function testGeneratedMuPluginIsValidPhp()
     {
-        $muDir = dirname( PIA_TEMP_MU_PLUGIN );
+        $muDir = dirname( CODEMEDSSS_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
 
-        pia_prepare_temp_mu_plugin();
+        codemedsss_prepare_temp_mu_plugin();
 
-        $this->assertFileExists( PIA_TEMP_MU_PLUGIN );
+        $this->assertFileExists( CODEMEDSSS_TEMP_MU_PLUGIN );
 
-        $output = shell_exec( 'php -l ' . escapeshellarg( PIA_TEMP_MU_PLUGIN ) . ' 2>&1' );
+        $output = shell_exec( 'php -l ' . escapeshellarg( CODEMEDSSS_TEMP_MU_PLUGIN ) . ' 2>&1' );
 
         $this->assertStringContainsString(
             'No syntax errors',

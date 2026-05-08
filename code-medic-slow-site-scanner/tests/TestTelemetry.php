@@ -13,12 +13,12 @@ class TestTelemetry extends TestCase
 {
     protected function setUp(): void
     {
-        $GLOBALS['pia_mock_options'] = array();
-        $GLOBALS['pia_mock_scheduled_hooks'] = array();
+        $GLOBALS['codemedsss_mock_options'] = array();
+        $GLOBALS['codemedsss_mock_scheduled_hooks'] = array();
 
-        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = true;
-        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
-        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_TELEMETRY_ENABLED ] = true;
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_TELEMETRY_QUEUE ] = array();
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_SITE_UUID_OPTION ] = '';
     }
 
     protected function tearDown(): void
@@ -27,42 +27,42 @@ class TestTelemetry extends TestCase
 
     public function testTelemetryEnabledByDefault()
     {
-        $result = pia_is_telemetry_enabled();
+        $result = codemedsss_is_telemetry_enabled();
         $this->assertTrue( $result, 'Telemetry should be enabled by default' );
     }
 
     public function testSetTelemetryEnabled()
     {
-        $this->assertTrue( pia_is_telemetry_enabled() );
+        $this->assertTrue( codemedsss_is_telemetry_enabled() );
 
-        pia_set_telemetry_enabled( false );
-        $this->assertFalse( pia_is_telemetry_enabled() );
+        codemedsss_set_telemetry_enabled( false );
+        $this->assertFalse( codemedsss_is_telemetry_enabled() );
     }
 
     public function testQueueOperations()
     {
-        pia_clear_telemetry_queue();
-        $queue = pia_get_telemetry_queue();
+        codemedsss_clear_telemetry_queue();
+        $queue = codemedsss_get_telemetry_queue();
         $this->assertEmpty( $queue );
 
         $test_data = array( 'test' => 'data' );
-        pia_add_to_telemetry_queue( $test_data );
+        codemedsss_add_to_telemetry_queue( $test_data );
 
-        $queue = pia_get_telemetry_queue();
+        $queue = codemedsss_get_telemetry_queue();
         $this->assertCount( 1, $queue );
         $this->assertEquals( $test_data, $queue[0] );
     }
 
     public function testAnonymizePluginSlug()
     {
-        $this->assertEquals( 'elementor', pia_anonymize_plugin_slug( 'elementor/elementor.php' ) );
-        $this->assertEquals( 'woocommerce', pia_anonymize_plugin_slug( 'woocommerce/woocommerce.php' ) );
-        $this->assertEquals( 'some-plugin', pia_anonymize_plugin_slug( 'some-plugin' ) );
+        $this->assertEquals( 'elementor', codemedsss_anonymize_plugin_slug( 'elementor/elementor.php' ) );
+        $this->assertEquals( 'woocommerce', codemedsss_anonymize_plugin_slug( 'woocommerce/woocommerce.php' ) );
+        $this->assertEquals( 'some-plugin', codemedsss_anonymize_plugin_slug( 'some-plugin' ) );
     }
 
     public function testGetSiteUuidGeneratesNew()
     {
-        $uuid = pia_get_site_uuid();
+        $uuid = codemedsss_get_site_uuid();
         $this->assertNotEmpty( $uuid );
         $this->assertMatchesRegularExpression( '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $uuid );
     }
@@ -70,37 +70,37 @@ class TestTelemetry extends TestCase
     public function testGetSiteUuidReturnsExisting()
     {
         $existing_uuid = '550e8400-e29b-41d4-a716-446655440000';
-        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = $existing_uuid;
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_SITE_UUID_OPTION ] = $existing_uuid;
 
-        $uuid = pia_get_site_uuid();
+        $uuid = codemedsss_get_site_uuid();
         $this->assertEquals( $existing_uuid, $uuid );
     }
 
     public function testSiteUuidIsConsistentPerSite()
     {
-        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_SITE_UUID_OPTION ] = '';
 
-        $uuid1 = pia_get_site_uuid();
-        $uuid2 = pia_get_site_uuid();
+        $uuid1 = codemedsss_get_site_uuid();
+        $uuid2 = codemedsss_get_site_uuid();
 
         $this->assertEquals( $uuid1, $uuid2 );
     }
 
     public function testSiteUuidBasedOnSiteUrl()
     {
-        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_SITE_UUID_OPTION ] = '';
 
-        $uuid1 = pia_get_site_uuid();
+        $uuid1 = codemedsss_get_site_uuid();
 
-        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
-        $uuid2 = pia_get_site_uuid();
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_SITE_UUID_OPTION ] = '';
+        $uuid2 = codemedsss_get_site_uuid();
 
         $this->assertEquals( $uuid1, $uuid2 );
     }
 
     public function testErrorCategoryNone()
     {
-        $result = pia_get_error_category( array(
+        $result = codemedsss_get_error_category( array(
             'error'          => '',
             'status_changed' => false,
             'hash_changed'   => false,
@@ -110,7 +110,7 @@ class TestTelemetry extends TestCase
 
     public function testErrorCategoryTimeout()
     {
-        $result = pia_get_error_category( array(
+        $result = codemedsss_get_error_category( array(
             'error'          => 'Request timeout',
             'status_changed' => false,
             'hash_changed'   => false,
@@ -120,7 +120,7 @@ class TestTelemetry extends TestCase
 
     public function testErrorCategoryBreakSite()
     {
-        $result = pia_get_error_category( array(
+        $result = codemedsss_get_error_category( array(
             'error'          => '500 Internal Server Error',
             'status_changed' => false,
             'hash_changed'   => false,
@@ -130,7 +130,7 @@ class TestTelemetry extends TestCase
 
     public function testErrorCategoryBreakSiteFromStatusChange()
     {
-        $result = pia_get_error_category( array(
+        $result = codemedsss_get_error_category( array(
             'error'          => '',
             'status_changed' => true,
             'hash_changed'   => false,
@@ -140,7 +140,7 @@ class TestTelemetry extends TestCase
 
     public function testErrorCategoryOutputChange()
     {
-        $result = pia_get_error_category( array(
+        $result = codemedsss_get_error_category( array(
             'error'          => '',
             'status_changed' => false,
             'hash_changed'   => true,
@@ -167,7 +167,7 @@ class TestTelemetry extends TestCase
 
         $baseline_time = 0.5;
 
-        $data = pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time );
+        $data = codemedsss_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time );
 
         $this->assertArrayHasKey( 'plugins', $data );
         $this->assertArrayHasKey( 'plugin_tested', $data );
@@ -201,7 +201,7 @@ class TestTelemetry extends TestCase
         $all_plugin_files = array( 'broken-plugin/broken.php' );
         $baseline_time = 0.3;
 
-        $data = pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time );
+        $data = codemedsss_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time );
 
         $this->assertEquals( 'timeout', $data['error_category'] );
         $this->assertEquals( 'Request timeout after 30 seconds', $data['plugin_error'] );
@@ -221,81 +221,81 @@ class TestTelemetry extends TestCase
         $all_plugin_files = array( 'some-plugin/plugin.php' );
         $baseline_time = 0.2;
 
-        $data = pia_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time );
+        $data = codemedsss_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time );
 
         $this->assertEquals( 'output_change', $data['error_category'] );
     }
 
     public function testSendTelemetryWithMockedHttp()
     {
-        $GLOBALS['pia_wp_remote_post'] = function( $url, $args ) {
+        $GLOBALS['codemedsss_wp_remote_post'] = function( $url, $args ) {
             return array(
                 'response' => array( 'code' => 201 ),
                 'body'     => '',
             );
         };
 
-        $result = pia_send_telemetry_to_supabase( array( 'test' => 'data' ) );
+        $result = codemedsss_send_telemetry_to_supabase( array( 'test' => 'data' ) );
         $this->assertTrue( $result );
     }
 
     public function testSendTelemetryFailsWithEmptyConfig()
     {
-        $result = pia_send_telemetry_to_supabase( array() );
+        $result = codemedsss_send_telemetry_to_supabase( array() );
         $this->assertTrue( $result );
     }
 
     public function testScheduleCron()
     {
-        pia_schedule_telemetry_cron();
-        $this->assertTrue( wp_next_scheduled( PIA_TELEMETRY_CRON_HOOK ) !== false );
+        codemedsss_schedule_telemetry_cron();
+        $this->assertTrue( wp_next_scheduled( CODEMEDSSS_TELEMETRY_CRON_HOOK ) !== false );
     }
 
     public function testUnscheduleCron()
     {
-        pia_schedule_telemetry_cron();
-        pia_unschedule_telemetry_cron();
-        $this->assertFalse( wp_next_scheduled( PIA_TELEMETRY_CRON_HOOK ) );
+        codemedsss_schedule_telemetry_cron();
+        codemedsss_unschedule_telemetry_cron();
+        $this->assertFalse( wp_next_scheduled( CODEMEDSSS_TELEMETRY_CRON_HOOK ) );
     }
 
     public function testProcessQueueWhenDisabled()
     {
-        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = false;
-        $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
-        $GLOBALS['pia_mock_options'][ PIA_SITE_UUID_OPTION ] = '';
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_TELEMETRY_ENABLED ] = false;
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_TELEMETRY_QUEUE ] = array();
+        $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_SITE_UUID_OPTION ] = '';
         
-        pia_set_telemetry_enabled( false );
-        pia_add_to_telemetry_queue( array( 'test' => 'data' ) );
+        codemedsss_set_telemetry_enabled( false );
+        codemedsss_add_to_telemetry_queue( array( 'test' => 'data' ) );
 
-        pia_process_telemetry_queue();
+        codemedsss_process_telemetry_queue();
 
-        $queue = pia_get_telemetry_queue();
+        $queue = codemedsss_get_telemetry_queue();
         $this->assertCount( 1, $queue );
     }
 
     public function testProcessQueueWhenEnabled()
     {
-        if ( ! defined( 'PIA_SUPABASE_URL' ) ) {
-            define( 'PIA_SUPABASE_URL', 'https://test.supabase.co' );
+        if ( ! defined( 'CODEMEDSSS_SUPABASE_URL' ) ) {
+            define( 'CODEMEDSSS_SUPABASE_URL', 'https://test.supabase.co' );
         }
-        if ( ! defined( 'PIA_SUPABASE_ANON_KEY' ) ) {
-            define( 'PIA_SUPABASE_ANON_KEY', 'test-key' );
+        if ( ! defined( 'CODEMEDSSS_SUPABASE_ANON_KEY' ) ) {
+            define( 'CODEMEDSSS_SUPABASE_ANON_KEY', 'test-key' );
         }
 
-        $GLOBALS['pia_wp_remote_post'] = function( $url, $args ) {
+        $GLOBALS['codemedsss_wp_remote_post'] = function( $url, $args ) {
             return array(
                 'response' => array( 'code' => 201 ),
                 'body'     => '',
             );
         };
 
-        pia_set_telemetry_enabled( true );
-        pia_clear_telemetry_queue();
-        pia_add_to_telemetry_queue( array( 'test' => 'data' ) );
+        codemedsss_set_telemetry_enabled( true );
+        codemedsss_clear_telemetry_queue();
+        codemedsss_add_to_telemetry_queue( array( 'test' => 'data' ) );
 
-        pia_process_telemetry_queue();
+        codemedsss_process_telemetry_queue();
 
-        $queue = pia_get_telemetry_queue();
+        $queue = codemedsss_get_telemetry_queue();
         $this->assertEmpty( $queue );
     }
 }

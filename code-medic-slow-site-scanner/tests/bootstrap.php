@@ -20,41 +20,52 @@ if ( ! defined( 'ABSPATH' ) ) {
     define( 'ABSPATH', '/tmp/wordpress/' );
 }
 
-if ( ! defined( 'PIA_PLUGIN_DIR' ) ) {
-    define( 'PIA_PLUGIN_DIR', __DIR__ . '/../' );
+if ( ! defined( 'CODEMEDSSS_PLUGIN_DIR' ) ) {
+    define( 'CODEMEDSSS_PLUGIN_DIR', __DIR__ . '/../' );
 }
 
-if ( ! defined( 'PIA_TELEMETRY_QUEUE' ) ) {
-    define( 'PIA_TELEMETRY_QUEUE', 'pia_telemetry_queue' );
+if ( ! defined( 'CODEMEDSSS_TELEMETRY_QUEUE' ) ) {
+    define( 'CODEMEDSSS_TELEMETRY_QUEUE', 'codemedsss_telemetry_queue' );
 }
-if ( ! defined( 'PIA_TELEMETRY_ENABLED' ) ) {
-    define( 'PIA_TELEMETRY_ENABLED', 'pia_telemetry_optin' );
+if ( ! defined( 'CODEMEDSSS_TELEMETRY_ENABLED' ) ) {
+    define( 'CODEMEDSSS_TELEMETRY_ENABLED', 'codemedsss_telemetry_optin' );
 }
-if ( ! defined( 'PIA_TELEMETRY_CRON_HOOK' ) ) {
-    define( 'PIA_TELEMETRY_CRON_HOOK', 'pia_send_telemetry_cron' );
+if ( ! defined( 'CODEMEDSSS_TELEMETRY_CRON_HOOK' ) ) {
+    define( 'CODEMEDSSS_TELEMETRY_CRON_HOOK', 'codemedsss_send_telemetry_cron' );
 }
 
-define( 'PIA_SUPABASE_URL', 'https://test.supabase.co' );
-define( 'PIA_SUPABASE_ANON_KEY', 'test-key' );
-define( 'PIA_SUPABASE_TABLE', 'telemetry' );
-define( 'PIA_SITE_UUID_OPTION', 'pia_site_uuid' );
+define( 'CODEMEDSSS_SUPABASE_URL', 'https://test.supabase.co' );
+define( 'CODEMEDSSS_SUPABASE_ANON_KEY', 'test-key' );
+define( 'CODEMEDSSS_SUPABASE_TABLE', 'telemetry' );
+define( 'CODEMEDSSS_SITE_UUID_OPTION', 'codemedsss_site_uuid' );
+
+// Define mode and licensing constants for tests (default to free mode)
+if ( ! defined( 'CODEMEDSSS_MODE' ) ) {
+    define( 'CODEMEDSSS_MODE', 'free' );
+}
+if ( ! defined( 'CODEMEDSSS_FREE_PLUGIN_LIMIT' ) ) {
+    define( 'CODEMEDSSS_FREE_PLUGIN_LIMIT', 3 );
+}
+if ( ! defined( 'CODEMEDSSS_PREMIUM_URL' ) ) {
+    define( 'CODEMEDSSS_PREMIUM_URL', 'https://example.com/upgrade' );
+}
 
 // Mock WordPress functions that are required.
-$GLOBALS['pia_mock_options'] = array();
-$GLOBALS['pia_mock_transients'] = array();
-$GLOBALS['pia_mock_scheduled_hooks'] = array();
-$GLOBALS['pia_mock_wpdb_results'] = array();
-$GLOBALS['pia_mock_plugins'] = array();
+$GLOBALS['codemedsss_mock_options'] = array();
+$GLOBALS['codemedsss_mock_transients'] = array();
+$GLOBALS['codemedsss_mock_scheduled_hooks'] = array();
+$GLOBALS['codemedsss_mock_wpdb_results'] = array();
+$GLOBALS['codemedsss_mock_plugins'] = array();
 
 if ( ! function_exists( 'get_option' ) ) {
     function get_option( $option, $default = false ) {
-        if ( isset( $GLOBALS['wp_test_get_option'] ) && $option === PIA_RESULTS_OPTION ) {
+        if ( isset( $GLOBALS['wp_test_get_option'] ) && $option === CODEMEDSSS_RESULTS_OPTION ) {
             $val = $GLOBALS['wp_test_get_option'];
             unset( $GLOBALS['wp_test_get_option'] );
             return $val;
         }
-        $val = $GLOBALS['pia_mock_options'][ $option ] ?? $default;
-        if ( $option === PIA_RESULTS_OPTION && ! is_array( $val ) ) {
+        $val = $GLOBALS['codemedsss_mock_options'][ $option ] ?? $default;
+        if ( $option === CODEMEDSSS_RESULTS_OPTION && ! is_array( $val ) ) {
             return array();
         }
         return $val;
@@ -67,34 +78,34 @@ if ( ! function_exists( 'update_option' ) ) {
             $func = $GLOBALS['wp_test_update_option'];
             return $func( $option, $value );
         }
-        $GLOBALS['pia_mock_options'][ $option ] = $value;
+        $GLOBALS['codemedsss_mock_options'][ $option ] = $value;
         return true;
     }
 }
 
 if ( ! function_exists( 'delete_option' ) ) {
     function delete_option( $option ) {
-        unset( $GLOBALS['pia_mock_options'][ $option ] );
+        unset( $GLOBALS['codemedsss_mock_options'][ $option ] );
         return true;
     }
 }
 
 if ( ! function_exists( 'get_transient' ) ) {
     function get_transient( $transient ) {
-        return $GLOBALS['pia_mock_transients'][ $transient ] ?? false;
+        return $GLOBALS['codemedsss_mock_transients'][ $transient ] ?? false;
     }
 }
 
 if ( ! function_exists( 'set_transient' ) ) {
     function set_transient( $transient, $value, $expiration = 0 ) {
-        $GLOBALS['pia_mock_transients'][ $transient ] = $value;
+        $GLOBALS['codemedsss_mock_transients'][ $transient ] = $value;
         return true;
     }
 }
 
 if ( ! function_exists( 'delete_transient' ) ) {
     function delete_transient( $transient ) {
-        unset( $GLOBALS['pia_mock_transients'][ $transient ] );
+        unset( $GLOBALS['codemedsss_mock_transients'][ $transient ] );
         return true;
     }
 }
@@ -264,15 +275,15 @@ if ( ! function_exists( 'current_user_can' ) ) {
 }
 
 // Set default mock options only if not already set
-if ( ! isset( $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] ) ) {
-    $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_ENABLED ] = false;
-    $GLOBALS['pia_mock_options'][ PIA_TELEMETRY_QUEUE ] = array();
+if ( ! isset( $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_TELEMETRY_ENABLED ] ) ) {
+    $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_TELEMETRY_ENABLED ] = false;
+    $GLOBALS['codemedsss_mock_options'][ CODEMEDSSS_TELEMETRY_QUEUE ] = array();
 }
 
 if ( ! function_exists( 'wp_remote_post' ) ) {
     function wp_remote_post( $url, $args = array() ) {
-        if ( isset( $GLOBALS['pia_wp_remote_post'] ) && is_callable( $GLOBALS['pia_wp_remote_post'] ) ) {
-            return $GLOBALS['pia_wp_remote_post']( $url, $args );
+        if ( isset( $GLOBALS['codemedsss_wp_remote_post'] ) && is_callable( $GLOBALS['codemedsss_wp_remote_post'] ) ) {
+            return $GLOBALS['codemedsss_wp_remote_post']( $url, $args );
         }
         return array(
             'response' => array( 'code' => 200 ),
@@ -295,8 +306,8 @@ if ( ! function_exists( 'wp_remote_retrieve_body' ) ) {
 
 if ( ! function_exists( 'wp_remote_post' ) ) {
     function wp_remote_post( $url, $args = array() ) {
-        if ( isset( $GLOBALS['pia_wp_remote_post'] ) && is_callable( $GLOBALS['pia_wp_remote_post'] ) ) {
-            return $GLOBALS['pia_wp_remote_post']( $url, $args );
+        if ( isset( $GLOBALS['codemedsss_wp_remote_post'] ) && is_callable( $GLOBALS['codemedsss_wp_remote_post'] ) ) {
+            return $GLOBALS['codemedsss_wp_remote_post']( $url, $args );
         }
         return array(
             'response' => array( 'code' => 200 ),
@@ -319,20 +330,20 @@ if ( ! function_exists( 'wp_json_encode' ) ) {
 
 if ( ! function_exists( 'wp_next_scheduled' ) ) {
     function wp_next_scheduled( $hook, $args = array() ) {
-        return $GLOBALS['pia_mock_scheduled_hooks'][ $hook ] ?? false;
+        return $GLOBALS['codemedsss_mock_scheduled_hooks'][ $hook ] ?? false;
     }
 }
 
 if ( ! function_exists( 'wp_schedule_event' ) ) {
     function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array() ) {
-        $GLOBALS['pia_mock_scheduled_hooks'][ $hook ] = $timestamp;
+        $GLOBALS['codemedsss_mock_scheduled_hooks'][ $hook ] = $timestamp;
         return true;
     }
 }
 
 if ( ! function_exists( 'wp_clear_scheduled_hook' ) ) {
     function wp_clear_scheduled_hook( $hook, $args = array() ) {
-        unset( $GLOBALS['pia_mock_scheduled_hooks'][ $hook ] );
+        unset( $GLOBALS['codemedsss_mock_scheduled_hooks'][ $hook ] );
         return true;
     }
 }
@@ -399,7 +410,7 @@ if ( ! class_exists( 'wpdb' ) ) {
         }
         
         public function get_var( $query, $x = 0, $y = 0 ) {
-            $results = $GLOBALS['pia_mock_wpdb_results'] ?? array();
+            $results = $GLOBALS['codemedsss_mock_wpdb_results'] ?? array();
             return $results[ $query ] ?? 0;
         }
     }
@@ -409,13 +420,13 @@ $GLOBALS['wpdb'] = new wpdb();
 
 if ( ! function_exists( 'get_plugins' ) ) {
     function get_plugins() {
-        return $GLOBALS['pia_mock_plugins'] ?? array();
+        return $GLOBALS['codemedsss_mock_plugins'] ?? array();
     }
 }
 
 if ( ! function_exists( 'get_plugin_data' ) ) {
     function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
-        $mock_plugins = $GLOBALS['pia_mock_plugins'] ?? array();
+        $mock_plugins = $GLOBALS['codemedsss_mock_plugins'] ?? array();
         if ( isset( $mock_plugins[ $plugin_file ] ) ) {
             return $mock_plugins[ $plugin_file ];
         }
@@ -440,4 +451,8 @@ require_once __DIR__ . '/../includes/results.php';
 require_once __DIR__ . '/../includes/loopback.php';
 require_once __DIR__ . '/../includes/scanner.php';
 require_once __DIR__ . '/../includes/toggle.php';
-require_once __DIR__ . '/../includes/telemetry.php';
+
+// Load premium telemetry module for tests (always available in test env)
+if ( file_exists( __DIR__ . '/../premium/telemetry.php' ) ) {
+    require_once __DIR__ . '/../premium/telemetry.php';
+}

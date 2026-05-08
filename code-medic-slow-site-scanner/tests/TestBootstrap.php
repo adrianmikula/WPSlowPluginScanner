@@ -20,12 +20,12 @@ class TestBootstrap extends TestCase
     public function testConstantsAreDefined()
     {
         $this->assertDefined( 'ABSPATH' );
-        $this->assertDefined( 'PIA_PLUGIN_FILE' );
-        $this->assertDefined( 'PIA_PLUGIN_DIR' );
-        $this->assertDefined( 'PIA_TEMP_MU_PLUGIN' );
-        $this->assertDefined( 'PIA_SCAN_LOCK_KEY' );
-        $this->assertDefined( 'PIA_RESULTS_OPTION' );
-        $this->assertDefined( 'PIA_MAX_TEST_PLUGINS' );
+        $this->assertDefined( 'CODEMEDSSS_PLUGIN_FILE' );
+        $this->assertDefined( 'CODEMEDSSS_PLUGIN_DIR' );
+        $this->assertDefined( 'CODEMEDSSS_TEMP_MU_PLUGIN' );
+        $this->assertDefined( 'CODEMEDSSS_SCAN_LOCK_KEY' );
+        $this->assertDefined( 'CODEMEDSSS_RESULTS_OPTION' );
+        $this->assertDefined( 'CODEMEDSSS_MAX_TEST_PLUGINS' );
     }
 
     /**
@@ -40,11 +40,11 @@ class TestBootstrap extends TestCase
     }
 
     /**
-     * Test that PIA_MAX_TEST_PLUGINS is set correctly.
+     * Test that CODEMEDSSS_MAX_TEST_PLUGINS is set correctly.
      */
     public function testMaxTestPluginsValue()
     {
-        $this->assertEquals( 6, PIA_MAX_TEST_PLUGINS );
+        $this->assertEquals( 6, CODEMEDSSS_MAX_TEST_PLUGINS );
     }
 
     /**
@@ -73,20 +73,20 @@ class TestBootstrap extends TestCase
      */
     public function testPluginFunctionsAreLoadable()
     {
-        $this->assertTrue( function_exists( 'pia_get_active_plugin_entries' ) );
-        $this->assertTrue( function_exists( 'pia_initiate_scan' ) );
-        $this->assertTrue( function_exists( 'pia_scan_next_plugin' ) );
-        $this->assertTrue( function_exists( 'pia_complete_scan' ) );
-        $this->assertTrue( function_exists( 'pia_build_test_url' ) );
-        $this->assertTrue( function_exists( 'pia_compute_response_hash' ) );
-        $this->assertTrue( function_exists( 'pia_run_test' ) );
-        $this->assertTrue( function_exists( 'pia_prepare_temp_mu_plugin' ) );
-        $this->assertTrue( function_exists( 'pia_create_mu_plugins_directory' ) );
-        $this->assertTrue( function_exists( 'pia_get_last_scan_results' ) );
-        $this->assertTrue( function_exists( 'pia_store_scan_results' ) );
-        $this->assertTrue( function_exists( 'pia_scan_is_locked' ) );
-        $this->assertTrue( function_exists( 'pia_lock_scan' ) );
-        $this->assertTrue( function_exists( 'pia_unlock_scan' ) );
-        $this->assertTrue( function_exists( 'pia_clear_temp_mu_plugin' ) );
+        $this->assertTrue( function_exists( 'codemedsss_get_active_plugin_entries' ) );
+        $this->assertTrue( function_exists( 'codemedsss_initiate_scan' ) );
+        $this->assertTrue( function_exists( 'codemedsss_scan_next_plugin' ) );
+        $this->assertTrue( function_exists( 'codemedsss_complete_scan' ) );
+        $this->assertTrue( function_exists( 'codemedsss_build_test_url' ) );
+        $this->assertTrue( function_exists( 'codemedsss_compute_response_hash' ) );
+        $this->assertTrue( function_exists( 'codemedsss_run_test' ) );
+        $this->assertTrue( function_exists( 'codemedsss_prepare_temp_mu_plugin' ) );
+        $this->assertTrue( function_exists( 'codemedsss_create_mu_plugins_directory' ) );
+        $this->assertTrue( function_exists( 'codemedsss_get_last_scan_results' ) );
+        $this->assertTrue( function_exists( 'codemedsss_store_scan_results' ) );
+        $this->assertTrue( function_exists( 'codemedsss_scan_is_locked' ) );
+        $this->assertTrue( function_exists( 'codemedsss_lock_scan' ) );
+        $this->assertTrue( function_exists( 'codemedsss_unlock_scan' ) );
+        $this->assertTrue( function_exists( 'codemedsss_clear_temp_mu_plugin' ) );
     }
 }

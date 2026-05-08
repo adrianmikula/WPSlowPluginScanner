@@ -3,25 +3,25 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-function pia_build_test_url( $url, $disable_plugin = null ) {
+function codemedsss_build_test_url( $url, $disable_plugin = null ) {
     $args = array(
-        'pia_test'      => '1',
-        'pia_scan'      => '1',
+        'codemedsss_test' => '1',
+        'codemedsss_scan' => '1',
     );
 
     if ( ! empty( $disable_plugin ) ) {
-        $args['pia_disable'] = $disable_plugin;
+        $args['codemedsss_disable'] = $disable_plugin;
     }
 
     return add_query_arg( $args, $url );
 }
 
-function pia_compute_response_hash( $body, $status ) {
+function codemedsss_compute_response_hash( $body, $status ) {
     return md5( (string) $status . '|' . (string) $body );
 }
 
-function pia_run_test( $url, $disable_plugin = null ) {
-    $test_url = pia_build_test_url( $url, $disable_plugin );
+function codemedsss_run_test( $url, $disable_plugin = null ) {
+    $test_url = codemedsss_build_test_url( $url, $disable_plugin );
 
     $request_args = array(
         'timeout'     => 8,
@@ -52,7 +52,7 @@ function pia_run_test( $url, $disable_plugin = null ) {
     return array(
         'time'   => $duration,
         'status' => (int) $status,
-        'hash'   => pia_compute_response_hash( $body, $status ),
+        'hash'   => codemedsss_compute_response_hash( $body, $status ),
         'error'  => '',
     );
 }

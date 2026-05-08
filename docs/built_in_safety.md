@@ -139,10 +139,10 @@ Why:
 #### A. Scan Lock (mutex)
 
 ```php
-if (get_transient('pia_scan_lock')) {
+if (get_transient('codemedsss_scan_lock')) {
     return "Scan already running";
 }
-set_transient('pia_scan_lock', 1, 300);
+set_transient('codemedsss_scan_lock', 1, 300);
 ```
 
 #### B. Idempotent requests
@@ -218,7 +218,7 @@ current_user_can('manage_options')
 Only allow internal requests:
 
 ```php
-if (!isset($_GET['pia_test']) || !wp_verify_nonce(...)) {
+if (!isset($_GET['codemedsss_test']) || !wp_verify_nonce(...)) {
     return;
 }
 ```
@@ -264,8 +264,8 @@ Using:
 
 ```php
 add_filter('option_active_plugins', function($plugins) {
-    if (isset($_GET['pia_disable'])) {
-        return array_diff($plugins, [$_GET['pia_disable']]);
+    if (isset($_GET['codemedsss_disable'])) {
+        return array_diff($plugins, [$_GET['codemedsss_disable']]);
     }
     return $plugins;
 });
@@ -299,8 +299,8 @@ No “undo” needed.
 Prevent infinite loopback:
 
 ```php
-if (isset($_GET['pia_test'])) {
-    define('PIA_TEST_MODE', true);
+if (isset($_GET['codemedsss_test'])) {
+    define('CODEMEDSSS_TEST_MODE', true);
 }
 ```
 
@@ -315,7 +315,7 @@ Then:
 Inside test requests:
 
 ```php
-if (defined('PIA_TEST_MODE')) {
+if (defined('CODEMEDSSS_TEST_MODE')) {
     define('DISABLE_WP_CRON', true);
     define('WP_DEBUG', false);
 }
@@ -348,7 +348,7 @@ Hook DB writes (future enhancement):
 Stored in:
 
 ```php
-update_option('pia_scan_results', $data);
+update_option('codemedsss_scan_results', $data);
 ```
 
 ---

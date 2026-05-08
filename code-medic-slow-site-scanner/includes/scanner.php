@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-function pia_get_active_plugin_entries() {
+function codemedsss_get_active_plugin_entries() {
     require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
     $active_plugins = get_option( 'active_plugins', array() );
@@ -27,31 +27,39 @@ function pia_get_active_plugin_entries() {
     return $entries;
 }
 
-function pia_initiate_scan( $url ) {
-    if ( pia_scan_is_locked() ) {
+function codemedsss_initiate_scan( $url ) {
+    // User consent required
+    if ( ! get_option( 'codemedsss_mu_consent', false ) ) {
+        return array( 'error' => __( 'You must enable consent to create temporary files before scanning.', 'code-medic-slow-site-scanner' ) );
+    }
+
+    if ( codemedsss_scan_is_locked() ) {
         return array( 'error' => 'Scan already in progress' );
     }
 
-    $url = esc_url_raw( $url );
-    if ( empty( $url ) ) {
+    // Free mode: lock to homepage only
+    if ( ! codemedsss_is_premium() ) {
         $url = home_url();
+    } else {
+        $url = esc_url_raw( $url );
+        if ( empty( $url ) ) {
+            $url = home_url();
+        }
     }
 
-    $baseline = pia_run_test( $url );
-    $active_entries = pia_get_active_plugin_entries();
-    $own_plugin_file = plugin_basename( PIA_PLUGIN_FILE );
+    $baseline = codemedsss_run_test( $url );
+    $active_entries = codemedsss_get_active_plugin_entries();
+    $own_plugin_file = plugin_basename( CODESS_PLUGIN_FILE );
 
     $plugin_files = array_keys( $active_entries );
     $plugin_files = array_filter( $plugin_files, function( $file ) use ( $own_plugin_file ) {
         return $file !== $own_plugin_file;
     } );
 
-    $truncated = false;
-    $limit = pia_is_premium() ? PHP_INT_MAX : pia_get_free_limit();
-    if ( count( $plugin_files ) > $limit ) {
-        $plugin_files = array_slice( $plugin_files, 0, $limit );
-        $truncated = true;
-    }
+    // Enforce free mode limit
+    $limit = codemedsss_get_free_limit();
+    $truncated = count( $plugin_files ) > $limit;
+    $plugin_files = array_slice( $plugin_files, 0, $limit );
 
     $scan_data = array(
         'url'           => $url,
@@ -60,7 +68,7 @@ function pia_initiate_scan( $url ) {
         'active_count'  => count( $active_entries ),
         'truncated'     => $truncated,
         'plugin_results'=> array(),
-        'scanned'        => 0,
+        'scanned'       => 0,
     );
 
     if ( ! empty( $baseline['error'] ) ) {
@@ -68,24 +76,24 @@ function pia_initiate_scan( $url ) {
         return $scan_data;
     }
 
-    pia_lock_scan();
-    pia_prepare_temp_mu_plugin();
-    pia_set_scan_progress( $scan_data );
+    codemedsss_lock_scan();
+    codemedsss_prepare_temp_mu_plugin();
+    codemedsss_set_scan_progress( $scan_data );
 
     return $scan_data;
 }
 
-function pia_scan_next_plugin() {
-    $progress = pia_get_scan_progress();
+function codemedsss_scan_next_plugin() {
+    $progress = codemedsss_get_scan_progress();
     if ( ! $progress ) {
         return array( 'error' => 'No scan in progress', 'complete' => true );
     }
 
-    if ( pia_get_scan_cancel_flag() ) {
-        pia_clear_scan_cancel_flag();
-        pia_clear_scan_progress();
-        pia_unlock_scan();
-        pia_clear_temp_mu_plugin();
+    if ( codemedsss_get_scan_cancel_flag() ) {
+        codemedsss_clear_scan_cancel_flag();
+        codemedsss_clear_scan_progress();
+        codemedsss_unlock_scan();
+        codemedsss_clear_temp_mu_plugin();
         return array( 'complete' => true, 'cancelled' => true );
     }
 
@@ -93,15 +101,15 @@ function pia_scan_next_plugin() {
     $plugin_files = $progress['plugin_files'];
 
     if ( $index >= count( $plugin_files ) ) {
-        pia_complete_scan();
+        codemedsss_complete_scan();
         return array( 'complete' => true );
     }
 
     $plugin_file = $plugin_files[ $index ];
-    $active_entries = pia_get_active_plugin_entries();
+    $active_entries = codemedsss_get_active_plugin_entries();
     $plugin_name = isset( $active_entries[ $plugin_file ] ) ? $active_entries[ $plugin_file ]['name'] : $plugin_file;
 
-    $test_result = pia_run_test( $progress['url'], $plugin_file );
+    $test_result = codemedsss_run_test( $progress['url'], $plugin_file );
     $baseline = $progress['baseline'];
 
     $delta = $test_result['time'] - $baseline['time'];
@@ -127,7 +135,7 @@ function pia_scan_next_plugin() {
         'error'                => $test_result['error'],
         'delta'                => round( $delta, 3 ),
         'percentage'           => $percentage,
-        'scanner_engine_version' => PIA_SCANNER_ENGINE_VERSION,
+        'scanner_engine_version' => CODESS_SCANNER_ENGINE_VERSION,
         'status_changed'       => $status_changed,
         'hash_changed'         => $hash_changed,
         'impact'               => $impact,
@@ -135,18 +143,10 @@ function pia_scan_next_plugin() {
 
     $progress['plugin_results'][] = $plugin_result;
 
-    if ( pia_is_telemetry_enabled() ) {
-        $all_plugin_files = array_keys( $active_entries );
-        $telemetry_data = pia_prepare_telemetry_data(
-            $plugin_result,
-            $all_plugin_files,
-            $baseline['time']
-        );
-        pia_add_to_telemetry_queue( $telemetry_data );
-    }
+    // No telemetry in free version
 
     $progress['scanned']++;
-    pia_set_scan_progress( $progress );
+    codemedsss_set_scan_progress( $progress );
 
     return array(
         'current'  => $index + 1,
@@ -156,8 +156,8 @@ function pia_scan_next_plugin() {
     );
 }
 
-function pia_complete_scan() {
-    $progress = pia_get_scan_progress();
+function codemedsss_complete_scan() {
+    $progress = codemedsss_get_scan_progress();
     if ( ! $progress ) {
         return;
     }
@@ -173,13 +173,13 @@ function pia_complete_scan() {
         'scanned'              => $progress['scanned'],
         'active_count'         => $progress['active_count'],
         'truncated'            => $progress['truncated'],
-        'scanner_engine_version' => PIA_SCANNER_ENGINE_VERSION,
+        'scanner_engine_version' => CODESS_SCANNER_ENGINE_VERSION,
         'errors'               => isset( $progress['errors'] ) ? $progress['errors'] : array(),
     );
 
-    pia_store_scan_results( $results );
+    codemedsss_store_scan_results( $results );
 
-    pia_clear_scan_progress();
-    pia_unlock_scan();
-    pia_clear_temp_mu_plugin();
+    codemedsss_clear_scan_progress();
+    codemedsss_unlock_scan();
+    codemedsss_clear_temp_mu_plugin();
 }

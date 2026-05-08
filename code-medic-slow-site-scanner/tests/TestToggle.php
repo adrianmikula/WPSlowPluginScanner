@@ -21,7 +21,7 @@ class TestToggle extends TestCase
     {
         parent::setUp();
 
-        $muDir = dirname( PIA_TEMP_MU_PLUGIN );
+        $muDir = dirname( CODEMEDSSS_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             @mkdir( $muDir, 0755, true );
         }
@@ -32,15 +32,15 @@ class TestToggle extends TestCase
      */
     protected function tearDown(): void
     {
-        if ( file_exists( PIA_TEMP_MU_PLUGIN ) ) {
-            @unlink( PIA_TEMP_MU_PLUGIN );
+        if ( file_exists( CODEMEDSSS_TEMP_MU_PLUGIN ) ) {
+            @unlink( CODEMEDSSS_TEMP_MU_PLUGIN );
         }
 
         parent::tearDown();
     }
 
     /**
-     * Test pia_create_mu_plugins_directory creates directory.
+     * Test codemedsss_create_mu_plugins_directory creates directory.
      */
     public function testCreateMuPluginsDirectory()
     {
@@ -52,7 +52,7 @@ class TestToggle extends TestCase
 
         $this->assertFalse( file_exists( $muDir ) );
 
-        pia_create_mu_plugins_directory();
+        codemedsss_create_mu_plugins_directory();
 
         $this->assertTrue( file_exists( $muDir ) );
         $this->assertTrue( is_dir( $muDir ) );
@@ -61,7 +61,7 @@ class TestToggle extends TestCase
     }
 
     /**
-     * Test pia_create_mu_plugins_directory doesn't fail if directory exists.
+     * Test codemedsss_create_mu_plugins_directory doesn't fail if directory exists.
      */
     public function testCreateMuPluginsDirectoryExisting()
     {
@@ -71,53 +71,53 @@ class TestToggle extends TestCase
             mkdir( $muDir, 0755, true );
         }
 
-        pia_create_mu_plugins_directory();
+        codemedsss_create_mu_plugins_directory();
 
         $this->assertTrue( file_exists( $muDir ) );
     }
 
     /**
-     * Test pia_prepare_temp_mu_plugin creates file with correct content.
+     * Test codemedsss_prepare_temp_mu_plugin creates file with correct content.
      */
     public function testPrepareTempMuPluginCreatesFile()
     {
-        $muDir = dirname( PIA_TEMP_MU_PLUGIN );
+        $muDir = dirname( CODEMEDSSS_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
 
-        if ( file_exists( PIA_TEMP_MU_PLUGIN ) ) {
-            unlink( PIA_TEMP_MU_PLUGIN );
+        if ( file_exists( CODEMEDSSS_TEMP_MU_PLUGIN ) ) {
+            unlink( CODEMEDSSS_TEMP_MU_PLUGIN );
         }
 
-        $this->assertFalse( file_exists( PIA_TEMP_MU_PLUGIN ) );
+        $this->assertFalse( file_exists( CODEMEDSSS_TEMP_MU_PLUGIN ) );
 
-        pia_prepare_temp_mu_plugin();
+        codemedsss_prepare_temp_mu_plugin();
 
-        $this->assertTrue( file_exists( PIA_TEMP_MU_PLUGIN ) );
+        $this->assertTrue( file_exists( CODEMEDSSS_TEMP_MU_PLUGIN ) );
 
-        $content = file_get_contents( PIA_TEMP_MU_PLUGIN );
+        $content = file_get_contents( CODEMEDSSS_TEMP_MU_PLUGIN );
 
         $this->assertStringContainsString( '<?php', $content );
-        $this->assertStringContainsString( 'pia_test', $content );
-        $this->assertStringContainsString( 'pia_disable', $content );
+        $this->assertStringContainsString( 'codemedsss_test', $content );
+        $this->assertStringContainsString( 'codemedsss_disable', $content );
         $this->assertStringContainsString( 'pre_option_active_plugins', $content );
         $this->assertStringContainsString( 'pre_site_option_active_sitewide_plugins', $content );
     }
 
     /**
-     * Test pia_prepare_temp_mu_plugin generates valid PHP.
+     * Test codemedsss_prepare_temp_mu_plugin generates valid PHP.
      */
     public function testPrepareTempMuPluginGeneratesValidPhp()
     {
-        $muDir = dirname( PIA_TEMP_MU_PLUGIN );
+        $muDir = dirname( CODEMEDSSS_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
 
-        pia_prepare_temp_mu_plugin();
+        codemedsss_prepare_temp_mu_plugin();
 
-        $content = file_get_contents( PIA_TEMP_MU_PLUGIN );
+        $content = file_get_contents( CODEMEDSSS_TEMP_MU_PLUGIN );
         $tempFile = tempnam( sys_get_temp_dir(), 'php_check_' );
         file_put_contents( $tempFile, $content );
 
@@ -132,14 +132,14 @@ class TestToggle extends TestCase
      */
     public function testPrepareTempMuPluginSanitizesPluginPath()
     {
-        $muDir = dirname( PIA_TEMP_MU_PLUGIN );
+        $muDir = dirname( CODEMEDSSS_TEMP_MU_PLUGIN );
         if ( ! file_exists( $muDir ) ) {
             mkdir( $muDir, 0755, true );
         }
 
-        pia_prepare_temp_mu_plugin();
+        codemedsss_prepare_temp_mu_plugin();
 
-        $content = file_get_contents( PIA_TEMP_MU_PLUGIN );
+        $content = file_get_contents( CODEMEDSSS_TEMP_MU_PLUGIN );
 
         $this->assertStringContainsString( 'preg_replace', $content );
         $this->assertStringContainsString( '[^A-Za-z0-9_\\-\\/.]', $content );

@@ -8,7 +8,7 @@ PLUGIN_DIR="$PROJECT_ROOT/code-medic-slow-site-scanner"
 ENV_FILE="$PROJECT_ROOT/code-medic-slow-site-scanner/.env"
 MODE="free"
 if [ -f "$ENV_FILE" ]; then
-    MODE=$(grep "^PIA_MODE=" "$ENV_FILE" | cut -d'=' -f2 | tr -d ' ')
+    MODE=$(grep "^CODEMEDSSS_MODE=" "$ENV_FILE" | cut -d'=' -f2 | tr -d ' ')
     if [ -z "$MODE" ]; then
         MODE="free"
     fi
@@ -49,6 +49,8 @@ else
     PLUGIN_SLUG="code-medic-slow-site-scanner-free"
     mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$PLUGIN_SLUG"
     CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
+    # Exclude premium module from free build
+    rm -rf "$temp_dir/$PLUGIN_SLUG/premium"
 fi
 
 sed -i "s/=== CodeMedic Slow Site Scanner ===/=== $PLUGIN_NAME ===/" "$temp_dir/$PLUGIN_SLUG/readme.txt"
@@ -60,7 +62,7 @@ if [ -f "$ENV_FILE" ]; then
     while IFS='=' read -r key value; do
         key=$(echo "$key" | xargs)
         value=$(echo "$value" | xargs)
-        if [[ "$key" == PIA_* && -n "$value" ]]; then
+        if [[ "$key" == CODEMEDSSS_* && -n "$value" ]]; then
             CONFIG_CONTENT+="define('$key', '$value');\n"
         fi
     done < "$ENV_FILE"

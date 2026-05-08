@@ -11,7 +11,7 @@ $Mode = "free"
 if (Test-Path $EnvFile) {
     $envContent = Get-Content $EnvFile
     foreach ($line in $envContent) {
-        if ($line -match '^PIA_MODE=(.*)$') {
+        if ($line -match '^CODEMEDSSS_MODE=(.*)$') {
             $Mode = $Matches[1].Trim()
             break
         }
@@ -63,6 +63,11 @@ if ($Mode -eq "premium") {
     $PluginSlug = "code-medic-slow-site-scanner-free"
     Rename-Item -Path "$tempDir\code-medic-slow-site-scanner" -NewName $PluginSlug
     $ConfigPath = Join-Path $tempDir "$PluginSlug\config.php"
+    # Exclude premium module from free build
+    $premiumDir = Join-Path $tempDir "$PluginSlug\premium"
+    if (Test-Path $premiumDir) {
+        Remove-Item -Path $premiumDir -Recurse -Force
+    }
 }
 
 # Update readme.txt
@@ -84,7 +89,7 @@ if (Test-Path $EnvFile) {
     $configLines += "if ( ! defined( 'ABSPATH' ) ) { exit; }"
     $configLines += "// Auto-generated config - do not commit to version control"
     foreach ($line in $envContent) {
-        if ($line -match '^(PIA_\w+)\s*=\s*(.*)$') {
+        if ($line -match '^(CODEMEDSSS_\w+)\s*=\s*(.*)$') {
             $key = $Matches[1]
             $value = $Matches[2].Trim()
             if ($value) {

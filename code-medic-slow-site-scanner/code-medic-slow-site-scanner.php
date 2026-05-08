@@ -14,174 +14,136 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'PIA_PLUGIN_FILE', __FILE__ );
-define( 'PIA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'PIA_PLUGIN_SLUG', basename( dirname( __FILE__ ) ) );
-define( 'PIA_TEMP_MU_PLUGIN', WP_CONTENT_DIR . '/mu-plugins/pia-temp-disable.php' );
-define( 'PIA_SCAN_LOCK_KEY', 'pia_scan_lock' );
-define( 'PIA_RESULTS_OPTION', 'pia_last_scan' );
-define( 'PIA_MAX_TEST_PLUGINS', 6 );
-define( 'PIA_PROGRESS_KEY', 'pia_scan_progress' );
-define( 'PIA_CANCEL_KEY', 'pia_scan_cancel' );
-define( 'PIA_SCANNER_ENGINE_VERSION', '0.1.0' );
+// Plugin constants (CODESS_* prefix for backward compatibility)
+define( 'CODESS_PLUGIN_FILE', __FILE__ );
+define( 'CODESS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'CODESS_PLUGIN_SLUG', basename( dirname( __FILE__ ) ) );
+define( 'CODESS_TEMP_MU_PLUGIN', WPMU_PLUGIN_DIR . '/codemedsss-temp-disable.php' );
+define( 'CODESS_SCAN_LOCK_KEY', 'codemedsss_scan_lock' );
+define( 'CODESS_RESULTS_OPTION', 'codemedsss_last_scan' );
+define( 'CODESS_MAX_TEST_PLUGINS', 6 );
+define( 'CODESS_PROGRESS_KEY', 'codemedsss_scan_progress' );
+define( 'CODESS_CANCEL_KEY', 'codemedsss_scan_cancel' );
+define( 'CODESS_SCANNER_ENGINE_VERSION', '0.1.0' );
 
-$config_file = PIA_PLUGIN_DIR . 'config.php';
+// Load config if present (defines CODEMEDSSS_* constants)
+$config_file = CODESS_PLUGIN_DIR . 'config.php';
 if ( file_exists( $config_file ) ) {
     require_once $config_file;
 }
 
-$env_file = PIA_PLUGIN_DIR . '.env';
-if ( file_exists( $env_file ) ) {
-    $env_vars = parse_ini_file( $env_file );
-    if ( $env_vars ) {
-        $mode = isset( $env_vars['PIA_MODE'] ) ? strtolower( trim( $env_vars['PIA_MODE'] ) ) : 'free';
-        if ( ! defined( 'PIA_MODE' ) ) {
-            define( 'PIA_MODE', $mode );
-        }
+// CODEMEDSSS_* constant aliases for test compatibility (if not already defined via config)
+if ( ! defined( 'CODEMEDSSS_PLUGIN_FILE' ) ) {
+    define( 'CODEMEDSSS_PLUGIN_FILE', CODESS_PLUGIN_FILE );
+}
+if ( ! defined( 'CODEMEDSSS_PLUGIN_DIR' ) ) {
+    define( 'CODEMEDSSS_PLUGIN_DIR', CODESS_PLUGIN_DIR );
+}
+if ( ! defined( 'CODEMEDSSS_PLUGIN_SLUG' ) ) {
+    define( 'CODEMEDSSS_PLUGIN_SLUG', CODESS_PLUGIN_SLUG );
+}
+if ( ! defined( 'CODEMEDSSS_TEMP_MU_PLUGIN' ) ) {
+    define( 'CODEMEDSSS_TEMP_MU_PLUGIN', CODESS_TEMP_MU_PLUGIN );
+}
+if ( ! defined( 'CODEMEDSSS_SCAN_LOCK_KEY' ) ) {
+    define( 'CODEMEDSSS_SCAN_LOCK_KEY', CODESS_SCAN_LOCK_KEY );
+}
+if ( ! defined( 'CODEMEDSSS_RESULTS_OPTION' ) ) {
+    define( 'CODEMEDSSS_RESULTS_OPTION', CODESS_RESULTS_OPTION );
+}
+if ( ! defined( 'CODEMEDSSS_MAX_TEST_PLUGINS' ) ) {
+    define( 'CODEMEDSSS_MAX_TEST_PLUGINS', CODESS_MAX_TEST_PLUGINS );
+}
+if ( ! defined( 'CODEMEDSSS_PROGRESS_KEY' ) ) {
+    define( 'CODEMEDSSS_PROGRESS_KEY', CODESS_PROGRESS_KEY );
+}
+if ( ! defined( 'CODEMEDSSS_CANCEL_KEY' ) ) {
+    define( 'CODEMEDSSS_CANCEL_KEY', CODESS_CANCEL_KEY );
+}
+if ( ! defined( 'CODEMEDSSS_SCANNER_ENGINE_VERSION' ) ) {
+    define( 'CODEMEDSSS_SCANNER_ENGINE_VERSION', CODESS_SCANNER_ENGINE_VERSION );
+}
 
-        $free_limit = isset( $env_vars['PIA_FREE_PLUGIN_LIMIT'] ) ? (int) $env_vars['PIA_FREE_PLUGIN_LIMIT'] : 3;
-        if ( ! defined( 'PIA_FREE_PLUGIN_LIMIT' ) ) {
-            define( 'PIA_FREE_PLUGIN_LIMIT', $free_limit );
-        }
-
-        $premium_url = isset( $env_vars['PIA_PREMIUM_URL'] ) ? trim( $env_vars['PIA_PREMIUM_URL'] ) : '';
-        if ( ! defined( 'PIA_PREMIUM_URL' ) ) {
-            define( 'PIA_PREMIUM_URL', $premium_url );
-        }
-    } else {
-        if ( ! defined( 'PIA_MODE' ) ) {
-            define( 'PIA_MODE', 'free' );
-        }
-        if ( ! defined( 'PIA_FREE_PLUGIN_LIMIT' ) ) {
-            define( 'PIA_FREE_PLUGIN_LIMIT', 3 );
-        }
-        if ( ! defined( 'PIA_PREMIUM_URL' ) ) {
-            define( 'PIA_PREMIUM_URL', '' );
-        }
-    }
-} else {
-    if ( ! defined( 'PIA_MODE' ) ) {
-        define( 'PIA_MODE', 'free' );
-    }
-    if ( ! defined( 'PIA_FREE_PLUGIN_LIMIT' ) ) {
-        define( 'PIA_FREE_PLUGIN_LIMIT', 3 );
-    }
-    if ( ! defined( 'PIA_PREMIUM_URL' ) ) {
-        define( 'PIA_PREMIUM_URL', '' );
+// Mode detection helpers
+if ( ! function_exists( 'codemedsss_is_premium' ) ) {
+    function codemedsss_is_premium() {
+        return defined( 'CODEMEDSSS_MODE' ) && CODEMEDSSS_MODE === 'premium';
     }
 }
 
-$env_file = PIA_PLUGIN_DIR . '.env';
-if ( file_exists( $env_file ) ) {
-    $env_vars = parse_ini_file( $env_file );
-    if ( $env_vars ) {
-        $supabase_url = isset( $env_vars['PIA_SUPABASE_URL'] ) ? trim( $env_vars['PIA_SUPABASE_URL'] ) : '';
-        if ( ! defined( 'PIA_SUPABASE_URL' ) ) {
-            define( 'PIA_SUPABASE_URL', $supabase_url );
+if ( ! function_exists( 'codemedsss_get_free_limit' ) ) {
+    function codemedsss_get_free_limit() {
+        if ( codemedsss_is_premium() ) {
+            return PHP_INT_MAX;
         }
-
-        $supabase_key = isset( $env_vars['PIA_SUPABASE_ANON_KEY'] ) ? trim( $env_vars['PIA_SUPABASE_ANON_KEY'] ) : '';
-        if ( ! defined( 'PIA_SUPABASE_ANON_KEY' ) ) {
-            define( 'PIA_SUPABASE_ANON_KEY', $supabase_key );
-        }
-
-        $supabase_table = isset( $env_vars['PIA_SUPABASE_TABLE'] ) ? trim( $env_vars['PIA_SUPABASE_TABLE'] ) : 'telemetry';
-        if ( ! defined( 'PIA_SUPABASE_TABLE' ) ) {
-            define( 'PIA_SUPABASE_TABLE', $supabase_table );
-        }
-    } else {
-        if ( ! defined( 'PIA_SUPABASE_URL' ) ) {
-            define( 'PIA_SUPABASE_URL', '' );
-        }
-        if ( ! defined( 'PIA_SUPABASE_ANON_KEY' ) ) {
-            define( 'PIA_SUPABASE_ANON_KEY', '' );
-        }
-        if ( ! defined( 'PIA_SUPABASE_TABLE' ) ) {
-            define( 'PIA_SUPABASE_TABLE', 'telemetry' );
-        }
-    }
-} else {
-    if ( ! defined( 'PIA_SUPABASE_URL' ) ) {
-        define( 'PIA_SUPABASE_URL', '' );
-    }
-    if ( ! defined( 'PIA_SUPABASE_ANON_KEY' ) ) {
-        define( 'PIA_SUPABASE_ANON_KEY', '' );
-    }
-    if ( ! defined( 'PIA_SUPABASE_TABLE' ) ) {
-        define( 'PIA_SUPABASE_TABLE', 'telemetry' );
+        return defined( 'CODEMEDSSS_FREE_PLUGIN_LIMIT' ) ? (int) CODEMEDSSS_FREE_PLUGIN_LIMIT : 3;
     }
 }
 
-function pia_is_premium() {
-    return defined( 'PIA_MODE' ) && PIA_MODE === 'premium';
-}
-
-function pia_get_free_limit() {
-    if ( pia_is_premium() ) {
-        return PHP_INT_MAX;
+if ( ! function_exists( 'codemedsss_get_premium_url' ) ) {
+    function codemedsss_get_premium_url() {
+        return defined( 'CODEMEDSSS_PREMIUM_URL' ) ? CODEMEDSSS_PREMIUM_URL : '';
     }
-    return defined( 'PIA_FREE_PLUGIN_LIMIT' ) ? (int) PIA_FREE_PLUGIN_LIMIT : 3;
 }
 
-function pia_get_premium_url() {
-    return defined( 'PIA_PREMIUM_URL' ) ? PIA_PREMIUM_URL : '';
+// Conditionally load premium telemetry module
+if ( codemedsss_is_premium() && file_exists( CODESS_PLUGIN_DIR . 'premium/telemetry.php' ) ) {
+    require_once CODESS_PLUGIN_DIR . 'premium/telemetry.php';
 }
 
-require_once PIA_PLUGIN_DIR . 'includes/results.php';
-require_once PIA_PLUGIN_DIR . 'includes/loopback.php';
-require_once PIA_PLUGIN_DIR . 'includes/scanner.php';
-require_once PIA_PLUGIN_DIR . 'includes/toggle.php';
-require_once PIA_PLUGIN_DIR . 'includes/telemetry.php';
-require_once PIA_PLUGIN_DIR . 'admin/ui.php';
+// Include core files
+require_once CODESS_PLUGIN_DIR . 'includes/results.php';
+require_once CODESS_PLUGIN_DIR . 'includes/loopback.php';
+require_once CODESS_PLUGIN_DIR . 'includes/scanner.php';
+require_once CODESS_PLUGIN_DIR . 'includes/toggle.php';
+// Telemetry moved to separate premium module, not loaded in free version
+require_once CODESS_PLUGIN_DIR . 'admin/ui.php';
 
-add_action( 'admin_menu', 'pia_admin_menu' );
-add_action( 'admin_enqueue_scripts', 'pia_admin_assets' );
-add_action( 'admin_init', 'pia_clear_temp_mu_plugin' );
+// Hook into admin
+add_action( 'admin_menu', 'codemedsss_admin_menu' );
+add_action( 'admin_enqueue_scripts', 'codemedsss_admin_assets' );
+add_action( 'admin_init', 'codemedsss_clear_temp_mu_plugin' );
 
-function pia_admin_assets( $hook ) {
-    if ( 'plugins_page_pia-scan-plugins' !== $hook ) {
+function codemedsss_admin_assets( $hook ) {
+    if ( 'plugins_page_codemedsss-scan-plugins' !== $hook ) {
         return;
     }
 
-    wp_enqueue_style( 'pia-admin-style', plugins_url( 'admin/css/admin.css', __FILE__ ), array(), '0.1.0' );
-    wp_enqueue_script( 'pia-admin-script', plugins_url( 'admin/js/admin.js', __FILE__ ), array( 'jquery' ), '0.1.0', true );
+    wp_enqueue_style( 'codemedsss-admin-style', plugins_url( 'admin/css/admin.css', __FILE__ ), array(), '0.1.0' );
+    wp_enqueue_script( 'codemedsss-admin-script', plugins_url( 'admin/js/admin.js', __FILE__ ), array( 'jquery' ), '0.1.0', true );
 
-    $is_scanning = pia_scan_is_locked();
-    $progress = $is_scanning ? pia_get_scan_progress() : null;
+    $is_scanning = codemedsss_scan_is_locked();
+    $progress = $is_scanning ? codemedsss_get_scan_progress() : null;
 
     wp_localize_script(
-        'pia-admin-script',
-        'piaData',
+        'codemedsss-admin-script',
+        'codemedsssData',
         array(
-            'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
-            'nonce'          => wp_create_nonce( 'pia_scan_nonce' ),
+            'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+            'nonce'          => wp_create_nonce( 'codemedsss_scan_nonce' ),
             'homeUrl'        => home_url(),
             'isScanning'     => $is_scanning,
             'totalPlugins'   => $progress ? count( $progress['plugin_files'] ) : 0,
             'scannedCount'   => $progress ? $progress['scanned'] : 0,
             'scanningText'   => __( 'Scanning...', 'code-medic-slow-site-scanner' ),
-            'completedText' => __( 'Scan completed successfully.', 'code-medic-slow-site-scanner' ),
+            'completedText'  => __( 'Scan completed successfully.', 'code-medic-slow-site-scanner' ),
             'cancelledText'  => __( 'Scan cancelled.', 'code-medic-slow-site-scanner' ),
-            'errorText'     => __( 'An error occurred.', 'code-medic-slow-site-scanner' ),
-            // translators: %1$d: Current plugin number, %2$d: Total number of plugins.
+            'errorText'      => __( 'An error occurred.', 'code-medic-slow-site-scanner' ),
             'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'code-medic-slow-site-scanner' ),
-            // translators: %s: Plugin name.
             'currentPlugin'  => __( 'Currently scanning: %s', 'code-medic-slow-site-scanner' ),
             'resultsHeader'  => __( 'Scan Results', 'code-medic-slow-site-scanner' ),
-            'urlLabel'      => __( 'URL:', 'code-medic-slow-site-scanner' ),
+            'urlLabel'       => __( 'URL:', 'code-medic-slow-site-scanner' ),
             'baselineStatus' => __( 'Baseline status:', 'code-medic-slow-site-scanner' ),
-            'baselineTime'  => __( 'Baseline time:', 'code-medic-slow-site-scanner' ),
-            'pluginCol'     => __( 'Plugin', 'code-medic-slow-site-scanner' ),
-            'impactCol'     => __( 'Impact', 'code-medic-slow-site-scanner' ),
-            'statusCol'     => __( 'Status', 'code-medic-slow-site-scanner' ),
-            'deltaCol'     => __( 'Delta', 'code-medic-slow-site-scanner' ),
-            'changeCol'     => __( 'Output Change', 'code-medic-slow-site-scanner' ),
-            'errorCol'      => __( 'Error', 'code-medic-slow-site-scanner' ),
-            'yesLabel'      => __( 'Yes', 'code-medic-slow-site-scanner' ),
-            'noLabel'      => __( 'No', 'code-medic-slow-site-scanner' ),
-            'truncatedText' => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'code-medic-slow-site-scanner' ),
-            'telemetryEnabled' => pia_is_telemetry_enabled(),
-            'supabaseConfigured' => defined( 'PIA_SUPABASE_URL' ) && ! empty( PIA_SUPABASE_URL ),
+            'baselineTime'   => __( 'Baseline time:', 'code-medic-slow-site-scanner' ),
+            'pluginCol'      => __( 'Plugin', 'code-medic-slow-site-scanner' ),
+            'impactCol'      => __( 'Impact', 'code-medic-slow-site-scanner' ),
+            'statusCol'      => __( 'Status', 'code-medic-slow-site-scanner' ),
+            'deltaCol'       => __( 'Delta', 'code-medic-slow-site-scanner' ),
+            'changeCol'      => __( 'Output Change', 'code-medic-slow-site-scanner' ),
+            'errorCol'       => __( 'Error', 'code-medic-slow-site-scanner' ),
+            'yesLabel'       => __( 'Yes', 'code-medic-slow-site-scanner' ),
+            'noLabel'        => __( 'No', 'code-medic-slow-site-scanner' ),
+            'truncatedText'  => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'code-medic-slow-site-scanner' ),
         )
     );
 }

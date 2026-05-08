@@ -22,3 +22,6 @@ README.md
 
 # Vendor dependencies (WP tests use their own)
 vendor/
+
+# Premium add-ons (separate distribution)
+premium/.env

@@ -1,5 +1,5 @@
 === CodeMedic Slow Site Scanner ===
-Contributors: Adrian Mikula
+Contributors: adrianmikula
 Tags: slow wordpress, plugin performance, plugin conflict, debug wordpress, wordpress speed
 Requires at least: 5.0
 Tested up to: 6.9
