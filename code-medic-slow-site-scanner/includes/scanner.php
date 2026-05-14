@@ -37,14 +37,9 @@ function codemedsss_initiate_scan( $url ) {
         return array( 'error' => 'Scan already in progress' );
     }
 
-    // Free mode: lock to homepage only
-    if ( ! codemedsss_is_premium() ) {
+    $url = esc_url_raw( $url );
+    if ( empty( $url ) ) {
         $url = home_url();
-    } else {
-        $url = esc_url_raw( $url );
-        if ( empty( $url ) ) {
-            $url = home_url();
-        }
     }
 
     $baseline = codemedsss_run_test( $url );
@@ -56,17 +51,12 @@ function codemedsss_initiate_scan( $url ) {
         return $file !== $own_plugin_file;
     } );
 
-    // Enforce free mode limit
-    $limit = codemedsss_get_free_limit();
-    $truncated = count( $plugin_files ) > $limit;
-    $plugin_files = array_slice( $plugin_files, 0, $limit );
-
     $scan_data = array(
         'url'           => $url,
         'baseline'      => $baseline,
         'plugin_files'  => array_values( $plugin_files ),
         'active_count'  => count( $active_entries ),
-        'truncated'     => $truncated,
+        'truncated'     => false,
         'plugin_results'=> array(),
         'scanned'       => 0,
     );

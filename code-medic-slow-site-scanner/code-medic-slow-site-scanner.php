@@ -64,31 +64,9 @@ if ( ! defined( 'CODEMEDSSS_SCANNER_ENGINE_VERSION' ) ) {
     define( 'CODEMEDSSS_SCANNER_ENGINE_VERSION', CODESS_SCANNER_ENGINE_VERSION );
 }
 
-// Mode detection helpers
-if ( ! function_exists( 'codemedsss_is_premium' ) ) {
-    function codemedsss_is_premium() {
-        return defined( 'CODEMEDSSS_MODE' ) && CODEMEDSSS_MODE === 'premium';
-    }
-}
-
-if ( ! function_exists( 'codemedsss_get_free_limit' ) ) {
-    function codemedsss_get_free_limit() {
-        if ( codemedsss_is_premium() ) {
-            return PHP_INT_MAX;
-        }
-        return defined( 'CODEMEDSSS_FREE_PLUGIN_LIMIT' ) ? (int) CODEMEDSSS_FREE_PLUGIN_LIMIT : 3;
-    }
-}
-
-if ( ! function_exists( 'codemedsss_get_premium_url' ) ) {
-    function codemedsss_get_premium_url() {
-        return defined( 'CODEMEDSSS_PREMIUM_URL' ) ? CODEMEDSSS_PREMIUM_URL : '';
-    }
-}
-
-// Conditionally load premium telemetry module
-if ( codemedsss_is_premium() && file_exists( CODESS_PLUGIN_DIR . 'premium/telemetry.php' ) ) {
-    require_once CODESS_PLUGIN_DIR . 'premium/telemetry.php';
+// Load premium module if present (additional features only)
+if ( file_exists( CODESS_PLUGIN_DIR . 'premium/loader.php' ) ) {
+    require_once CODESS_PLUGIN_DIR . 'premium/loader.php';
 }
 
 // Include core files

@@ -1,17 +1,9 @@
 ; Plugin build mode: free or premium
-; - free: Limited scans with upgrade prompts to Gumroad
-; - premium: Full functionality, no limits
+; - free: Fully functional scanner without telemetry
+; - premium: Includes anonymous telemetry features
 ; CODEMEDSSS_MODE=free
 
-; Maximum plugins to scan in free mode
-; Ignored in premium mode
-; CODEMEDSSS_FREE_PLUGIN_LIMIT=3
-
-; Gumroad product URL for premium upgrade
-; Shown in upgrade prompts in free mode
-; CODEMEDSSS_PREMIUM_URL=https://gumroad.com/l/your-product
-
-; Supabase configuration for anonymous telemetry (optional)
+; Supabase configuration for anonymous telemetry (premium only, optional)
 ; CODEMEDSSS_SUPABASE_URL=         ; Your Supabase project URL (e.g., https://xxxxx.supabase.co)
 ; CODEMEDSSS_SUPABASE_ANON_KEY=    ; Your Supabase anon/public key
 ; CODEMEDSSS_SUPABASE_TABLE=       ; Table name (default: telemetry)

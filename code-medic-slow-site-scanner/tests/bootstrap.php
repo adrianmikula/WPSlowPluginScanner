@@ -39,17 +39,6 @@ define( 'CODEMEDSSS_SUPABASE_ANON_KEY', 'test-key' );
 define( 'CODEMEDSSS_SUPABASE_TABLE', 'telemetry' );
 define( 'CODEMEDSSS_SITE_UUID_OPTION', 'codemedsss_site_uuid' );
 
-// Define mode and licensing constants for tests (default to free mode)
-if ( ! defined( 'CODEMEDSSS_MODE' ) ) {
-    define( 'CODEMEDSSS_MODE', 'free' );
-}
-if ( ! defined( 'CODEMEDSSS_FREE_PLUGIN_LIMIT' ) ) {
-    define( 'CODEMEDSSS_FREE_PLUGIN_LIMIT', 3 );
-}
-if ( ! defined( 'CODEMEDSSS_PREMIUM_URL' ) ) {
-    define( 'CODEMEDSSS_PREMIUM_URL', 'https://example.com/upgrade' );
-}
-
 // Mock WordPress functions that are required.
 $GLOBALS['codemedsss_mock_options'] = array();
 $GLOBALS['codemedsss_mock_transients'] = array();
@@ -451,8 +440,3 @@ require_once __DIR__ . '/../includes/results.php';
 require_once __DIR__ . '/../includes/loopback.php';
 require_once __DIR__ . '/../includes/scanner.php';
 require_once __DIR__ . '/../includes/toggle.php';
-
-// Load premium telemetry module for tests (always available in test env)
-if ( file_exists( __DIR__ . '/../premium/telemetry.php' ) ) {
-    require_once __DIR__ . '/../premium/telemetry.php';
-}

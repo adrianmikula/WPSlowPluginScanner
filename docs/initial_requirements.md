@@ -245,16 +245,20 @@ Top of results:
 
 # 💰 Packaging (do this immediately)
 
-## Free version:
+## Free version (WordPress.org):
 
-* Scan homepage only
-* Max 3 plugins
+* Fully functional scanner
+* Unlimited plugins
+* Any URL/page selection
+* Core scanning functionality
 
-## Paid ($9–$19):
+## Paid ($9–$19) - separate distribution:
 
-* Full scan
-* Any URL
+* All free features PLUS:
+* Anonymous telemetry
+* Advanced reporting
 * Export results
+* Other additional features
 
 ---
 

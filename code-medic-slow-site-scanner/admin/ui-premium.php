@@ -106,6 +106,7 @@ function codemedsss_admin_menu() {
 
 function codemedsss_render_admin_page() {
     $results = codemedsss_get_last_scan_results();
+    $default_url = isset( $results['url'] ) ? esc_url( $results['url'] ) : esc_url( home_url() );
     $home_url = home_url();
     $mu_consent = get_option( 'codemedsss_mu_consent', false );
     ?>
@@ -126,9 +127,20 @@ function codemedsss_render_admin_page() {
 
         <div id="codemedsss-scan-controls">
             <p>
-                <strong><?php esc_html_e( 'Page to scan:', 'code-medic-slow-site-scanner' ); ?></strong>
-                <?php esc_html_e( 'Homepage', 'code-medic-slow-site-scanner' ); ?>
-                <input type="hidden" id="codemedsss_scan_url" value="<?php echo esc_attr( $home_url ); ?>" />
+                <label for="codemedsss_page_select"><?php esc_html_e( 'Page to scan', 'code-medic-slow-site-scanner' ); ?></label>
+                <select id="codemedsss_page_select" class="regular-text">
+                    <option value="<?php echo esc_attr( $home_url ); ?>" selected><?php esc_html_e( 'Homepage', 'code-medic-slow-site-scanner' ); ?></option>
+                    <?php
+                    $pages = codemedsss_get_published_pages();
+                    foreach ( $pages as $page ) :
+                        $page_url   = get_permalink( $page->ID );
+                        $page_title = $page->post_title;
+                    ?>
+                        <option value="<?php echo esc_attr( $page_url ); ?>"><?php echo esc_html( $page_title ); ?></option>
+                    <?php endforeach; ?>
+                    <option value="custom"><?php esc_html_e( 'Custom URL', 'code-medic-slow-site-scanner' ); ?></option>
+                </select>
+                <input type="url" id="codemedsss_scan_url" value="<?php echo esc_attr( $default_url ); ?>" class="regular-text" style="display:none;" />
             </p>
             <p>
                 <button type="button" id="codemedsss-scan-btn" class="button button-primary" <?php disabled( ! $mu_consent ); ?>><?php esc_html_e( 'Scan Plugins', 'code-medic-slow-site-scanner' ); ?></button>

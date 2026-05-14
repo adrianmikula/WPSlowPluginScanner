@@ -17,7 +17,7 @@ fi
 OUTPUT_DIR="$PROJECT_ROOT/build"
 OUTPUT_ZIP="$OUTPUT_DIR/code-medic-slow-site-scanner-${MODE}.zip"
 
-EXCLUDE_DIRS="tests vendor .git"
+EXCLUDE_DIRS="tests vendor .git premium"
 EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md .env .env.example env-example"
 
 echo "Building WordPress plugin ZIP..."
@@ -44,13 +44,12 @@ if [ "$MODE" = "premium" ]; then
     PLUGIN_SLUG="code-medic-slow-site-scanner-premium"
     mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$PLUGIN_SLUG"
     CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
+    # Copy premium module back for premium build
+    cp -r "$PLUGIN_DIR/premium" "$temp_dir/$PLUGIN_SLUG/"
 else
-    PLUGIN_NAME="CodeMedic Slow Site Scanner (Free)"
-    PLUGIN_SLUG="code-medic-slow-site-scanner-free"
-    mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$PLUGIN_SLUG"
+    PLUGIN_NAME="CodeMedic Slow Site Scanner"
+    PLUGIN_SLUG="code-medic-slow-site-scanner"
     CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
-    # Exclude premium module from free build
-    rm -rf "$temp_dir/$PLUGIN_SLUG/premium"
 fi
 
 sed -i "s/=== CodeMedic Slow Site Scanner ===/=== $PLUGIN_NAME ===/" "$temp_dir/$PLUGIN_SLUG/readme.txt"

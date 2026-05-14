@@ -6,17 +6,9 @@ WordPress plugin to detect the single plugin causing slowdown or breakage on a s
 
 - **Safe Loopback Testing** - Tests each plugin individually without affecting visitors
 - **Page Selection** - Choose which page to scan from a dropdown of all published pages
-- **Free Mode** - Limited scanning with upgrade prompts to Gumroad
-- **Premium Mode** - Unlimited plugins, all published pages, and custom URL support
-- **Anonymous Telemetry** - Opt-in data sharing to build a shared plugin performance database
-
-## Free vs Premium
-
-| Feature | Free | Premium |
-|---------|------|---------|
-| Plugin limit | 3 (configurable) | Unlimited |
-| URL options | Homepage only | Any URL |
-| Upgrade prompt | Yes (Gumroad link) | No |
+- **Unlimited Plugin Scanning** - Scan all active plugins without limitations
+- **Custom URL Support** - Scan any URL on your site
+- **Anonymous Telemetry (Premium)** - Opt-in data sharing to build a shared plugin performance database (premium feature)
 
 ### Building Free/Premium Versions
 
@@ -29,9 +21,6 @@ Edit the `.env` file in the `code-medic-slow-site-scanner/` directory:
 ```ini
 # Build mode: "free" or "premium"
 CODEMEDSSS_MODE=free
-
-# Gumroad product URL for upgrade link (premium mode hides this)
-CODEMEDSSS_PREMIUM_URL=https://gumroad.com/l/your-product
 ```
 
 #### Building the ZIP
@@ -44,12 +33,12 @@ Run the build script from the project root:
 
 This creates `build/code-medic-slow-site-scanner-${MODE}.zip` with the configured mode baked in.
 
-- **Free version**: Set `CODEMEDSSS_MODE=free` in `.env` before building
-- **Premium version**: Set `CODEMEDSSS_MODE=premium` in `.env` before building
+- **Free version**: Set `CODEMEDSSS_MODE=free` in `.env` before building (fully functional)
+- **Premium version**: Set `CODEMEDSSS_MODE=premium` in `.env` before building (includes additional telemetry features)
 
-### Anonymous Telemetry
+### Anonymous Telemetry (Premium Feature)
 
-When enabled (default), the plugin shares anonymous performance data to help build a shared plugin compatibility database. Users can opt-out via the plugin settings.
+When enabled (premium only), the plugin shares anonymous performance data to help build a shared plugin compatibility database. Users can opt-out via the plugin settings.
 
 **Data shared:**
 - Plugin slugs (anonymized to folder name only)
@@ -66,10 +55,15 @@ The data is queued and sent asynchronously via wp_cron (hourly) to avoid blockin
 
 ### Page Selection
 
-The scanner includes a dropdown that lists all published pages on your WordPress site:
+The scanner includes a dropdown that lists all published pages on your WordPress site. All users can:
+- Select from all published pages
+- Use the "Custom URL" option to scan any URL on their site
 
-- **Free users**: Only the Homepage option is enabled. Other pages show as "Pro" and require an upgrade.
-- **Premium users**: All published pages are available, plus a "Custom URL" option for scanning any URL.
+## WordPress.org Compliance
+
+This plugin is designed to comply with WordPress.org plugin directory guidelines. The free version is fully functional with no artificial restrictions, while premium features are additional functionality hosted separately.
+
+For detailed information about WordPress.org requirements and our free/premium architecture, see [docs/wordpress_requirements.md](docs/wordpress_requirements.md).
 
 ## Configuration
 
@@ -77,17 +71,11 @@ Settings are configured via a `.env` file in the plugin directory:
 
 ```ini
 # Build mode: "free" or "premium"
-# - free: Limited scans with upgrade prompts to Gumroad
-# - premium: Full functionality, no limits
+# - free: Fully functional scanner without telemetry
+# - premium: Includes anonymous telemetry features
 CODEMEDSSS_MODE=free
 
-# Number of plugins to scan in free mode (premium has unlimited)
-CODEMEDSSS_FREE_PLUGIN_LIMIT=3
-
-# Gumroad product URL for upgrade link
-CODEMEDSSS_PREMIUM_URL=https://gumroad.com/l/your-product
-
-# Supabase configuration for anonymous telemetry (optional)
+# Supabase configuration for anonymous telemetry (premium only, optional)
 CODEMEDSSS_SUPABASE_URL=         # Your Supabase project URL (e.g., https://xxxxx.supabase.co)
 CODEMEDSSS_SUPABASE_ANON_KEY=    # Your Supabase anon/public key
 CODEMEDSSS_SUPABASE_TABLE=       # Table name (default: telemetry)
@@ -136,8 +124,7 @@ mkdir -p /tmp/wordpress
 - `tests/TestLoopback.php` - Tests for loopback.php functions
 - `tests/TestScanner.php` - Tests for scanner.php functions
 - `tests/TestToggle.php` - Tests for toggle.php functions
-- `tests/TestTelemetry.php` - Tests for telemetry.php functions
-- `tests/TestLicensing.php` - Tests for licensing/monetization functions
+- `tests/TestTelemetry.php` - Tests for telemetry.php functions (premium only)
 
 ### Writing Tests
 

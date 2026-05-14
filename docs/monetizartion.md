@@ -20,16 +20,30 @@ You have 3 main models:
 
 ### How it works:
 
-* Free version → WordPress repo
-* Paid version → your site (or Gumroad, Stripe, etc.)
+* Free version → WordPress repo (fully functional)
+* Paid version → your site (or Gumroad, Stripe, etc.) with additional features
 
 ### Flow:
 
 1. User installs free plugin
-2. Sees locked features
-3. Clicks “Upgrade”
+2. Uses fully functional features
+3. Sees premium upgrade for ADDITIONAL features (not locked free features)
 4. Pays externally
 5. Installs Pro version (or enters license key)
+
+### Important: WordPress.org Compliance
+
+**The free version MUST be fully functional.** Premium features must be ADDITIONAL functionality, not locked free features.
+
+**Allowed:**
+- Free version: Core scanning functionality (unlimited plugins, any URL)
+- Premium version: Additional features like telemetry, advanced reporting, export capabilities
+
+**NOT Allowed (WordPress.org will reject):**
+- Locking core features behind payment
+- Limiting plugin counts in free version
+- Restricting URL selection in free version
+- Any artificial restrictions on free version functionality
 
 ---
 
@@ -82,17 +96,21 @@ function codemedsss_can_scan_all_plugins() {
 
 ---
 
-## 2. Free vs Paid limits
+## 2. Free vs Paid features
 
-### Free:
+### Free (WordPress.org):
 
-* Scan 3 plugins
-* Homepage only
+* Unlimited plugin scanning
+* Any URL/page selection
+* Core scanning functionality
 
-### Paid:
+### Paid (separate distribution):
 
-* Unlimited plugins
-* Any URL
+* All free features PLUS:
+* Anonymous telemetry
+* Advanced reporting
+* Export capabilities
+* Other additional features
 
 ---
 
@@ -165,11 +183,11 @@ Inside your plugin:
 
 ---
 
-## 🔒 Locked feature messaging
+## 🔒 Premium feature messaging
 
 ```text id="8zwq9v"
-🔒 Scan all plugins (Pro)
-Upgrade to analyze your full site and detect performance issues faster.
+✨ Anonymous Telemetry (Pro)
+Upgrade to contribute anonymous performance data and help build a shared plugin compatibility database.
 ```
 
 ---
@@ -179,12 +197,12 @@ Upgrade to analyze your full site and detect performance issues faster.
 After scan:
 
 ```text id="b8pd7c"
-We found 2 more plugins that may be slowing your site.
+Want to help improve plugin performance data for everyone?
 
-👉 Upgrade to Pro to scan all plugins
+👉 Upgrade to Pro to contribute anonymous telemetry
 ```
 
-👉 This converts MUCH better than generic upsells
+👉 This converts better when framed as contributing to the community
 
 ---
 

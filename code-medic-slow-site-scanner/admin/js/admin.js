@@ -9,7 +9,13 @@
         init: function() {
             $('#codemedsss-scan-btn').on('click', this.startScan.bind(this));
             $('#codemedsss-cancel-btn').on('click', this.cancelScan.bind(this));
-            $('#codemedsss_page_select').on('change', this.onPageSelectChange.bind(this));
+            
+            // Only bind page select change handler if dropdown exists (premium version)
+            if ($('#codemedsss_page_select').length) {
+                $('#codemedsss_page_select').on('change', this.onPageSelectChange.bind(this));
+            }
+            
+            $('#codemedsss_mu_consent').on('change', this.onConsentChange.bind(this));
 
             if ( codemedsssData.homeUrl && $('#codemedsss_scan_url').val() === '' ) {
                 $('#codemedsss_scan_url').val(codemedsssData.homeUrl);
@@ -22,6 +28,8 @@
                 this.setProgress(codemedsssData.scannedCount, this.totalPlugins, '');
                 this.startPolling();
             }
+
+            this.toggleScanButton();
         },
 
         startScan: function(e) {
@@ -137,18 +145,50 @@
             }
         },
 
+        onConsentChange: function() {
+            var enabled = $('#codemedsss_mu_consent').is(':checked');
+            var nonce = $('#codemedsss_mu_consent').data('nonce');
+            $.post(ajaxurl, {
+                action: 'codemedsss_save_consent',
+                nonce: nonce,
+                enabled: enabled
+            }, function(response) {
+                if (response.success) {
+                    $('#codemedsss_consent_status').text('Saved').css('color','green');
+                    codemedsssScan.toggleScanButton();
+                } else {
+                    $('#codemedsss_mu_consent').prop('checked', !enabled);
+                    $('#codemedsss_consent_status').text('Error').css('color','red');
+                }
+            });
+        },
+
+        toggleScanButton: function() {
+            var consent = $('#codemedsss_mu_consent').is(':checked');
+            $('#codemedsss-scan-btn').prop('disabled', !consent);
+        },
+
         getScanUrl: function() {
-            var pageSelect = $('#codemedsss_page_select').val();
-            if (pageSelect === 'custom') {
-                return $('#codemedsss_scan_url').val();
+            // If dropdown exists (premium version), use it
+            if ($('#codemedsss_page_select').length) {
+                var pageSelect = $('#codemedsss_page_select').val();
+                if (pageSelect === 'custom') {
+                    return $('#codemedsss_scan_url').val();
+                }
+                return pageSelect || codemedsssData.homeUrl || '';
             }
-            return pageSelect || codemedsssData.homeUrl || '';
+            // Free version: always use the hidden scan URL field (homepage)
+            return $('#codemedsss_scan_url').val() || codemedsssData.homeUrl || '';
         },
 
         setControls: function(scanning) {
             $('#codemedsss-scan-btn').toggle(!scanning);
             $('#codemedsss-cancel-btn').toggle(scanning);
-            $('#codemedsss_page_select').prop('disabled', scanning);
+            
+            // Only disable dropdown if it exists (premium version)
+            if ($('#codemedsss_page_select').length) {
+                $('#codemedsss_page_select').prop('disabled', scanning);
+            }
             $('#codemedsss_scan_url').prop('disabled', scanning);
 
             if (scanning) {

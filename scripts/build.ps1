@@ -22,7 +22,7 @@ if (Test-Path $EnvFile) {
 $OutputDir = Join-Path $ProjectRoot "build"
 $OutputZip = Join-Path $OutputDir "code-medic-slow-site-scanner-${Mode}.zip"
 
-$ExcludeDirs = @("tests", "vendor", ".git")
+$ExcludeDirs = @("tests", "vendor", ".git", "premium")
 $ExcludeFiles = @(".gitignore", ".distignore", ".phpunit.result.cache", "composer-setup.php", ".phpunit.xml", "composer.json", "composer.lock", "README.md", ".env", ".env.example", "env-example")
 
 Write-Host "Building WordPress plugin ZIP..."
@@ -58,16 +58,13 @@ if ($Mode -eq "premium") {
     $PluginSlug = "code-medic-slow-site-scanner-premium"
     Rename-Item -Path "$tempDir\code-medic-slow-site-scanner" -NewName $PluginSlug
     $ConfigPath = Join-Path $tempDir "$PluginSlug\config.php"
+    # Copy premium module back for premium build
+    Copy-Item -Path "$PluginDir\premium" -Destination "$tempDir\$PluginSlug\" -Recurse -Force
 } else {
-    $PluginName = "CodeMedic Slow Site Scanner (Free)"
-    $PluginSlug = "code-medic-slow-site-scanner-free"
+    $PluginName = "CodeMedic Slow Site Scanner"
+    $PluginSlug = "code-medic-slow-site-scanner"
     Rename-Item -Path "$tempDir\code-medic-slow-site-scanner" -NewName $PluginSlug
     $ConfigPath = Join-Path $tempDir "$PluginSlug\config.php"
-    # Exclude premium module from free build
-    $premiumDir = Join-Path $tempDir "$PluginSlug\premium"
-    if (Test-Path $premiumDir) {
-        Remove-Item -Path $premiumDir -Recurse -Force
-    }
 }
 
 # Update readme.txt
