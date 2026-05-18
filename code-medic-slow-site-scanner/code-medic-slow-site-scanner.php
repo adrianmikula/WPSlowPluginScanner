@@ -107,7 +107,9 @@ function codemedsss_admin_assets( $hook ) {
             'completedText'  => __( 'Scan completed successfully.', 'code-medic-slow-site-scanner' ),
             'cancelledText'  => __( 'Scan cancelled.', 'code-medic-slow-site-scanner' ),
             'errorText'      => __( 'An error occurred.', 'code-medic-slow-site-scanner' ),
+            /* translators: 1: current plugin number, 2: total plugin count */
             'pluginText'     => __( 'Scanning plugin %1$d of %2$d', 'code-medic-slow-site-scanner' ),
+            /* translators: %s: plugin name */
             'currentPlugin'  => __( 'Currently scanning: %s', 'code-medic-slow-site-scanner' ),
             'resultsHeader'  => __( 'Scan Results', 'code-medic-slow-site-scanner' ),
             'urlLabel'       => __( 'URL:', 'code-medic-slow-site-scanner' ),

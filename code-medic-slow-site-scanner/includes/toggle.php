@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 function codemedsss_prepare_temp_mu_plugin() {
     codemedsss_create_mu_plugins_directory();

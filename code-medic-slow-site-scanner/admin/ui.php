@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 // AJAX handlers
 add_action( 'wp_ajax_codemedsss_start_scan', 'codemedsss_ajax_start_scan' );

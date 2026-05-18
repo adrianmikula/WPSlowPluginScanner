@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 function codemedsss_get_last_scan_results() {
     $results = get_option( CODESS_RESULTS_OPTION, array() );

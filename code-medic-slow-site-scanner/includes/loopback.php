@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 function codemedsss_build_test_url( $url, $disable_plugin = null ) {
     $args = array(
@@ -30,7 +28,7 @@ function codemedsss_run_test( $url, $disable_plugin = null ) {
             'Cache-Control' => 'no-cache',
             'Pragma'        => 'no-cache',
         ),
-        'sslverify'   => apply_filters( 'https_local_ssl_verify', false ),
+        'sslverify'   => apply_filters( 'codemedsss_https_local_ssl_verify', false ),
     );
 
     $start = microtime( true );

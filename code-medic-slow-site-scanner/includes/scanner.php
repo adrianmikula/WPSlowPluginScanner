@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 function codemedsss_get_active_plugin_entries() {
     require_once ABSPATH . 'wp-admin/includes/plugin.php';
