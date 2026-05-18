@@ -10,9 +10,7 @@
  * Text Domain: code-medic-slow-site-scanner
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Plugin constants (CODESS_* prefix for backward compatibility)
 define( 'CODESS_PLUGIN_FILE', __FILE__ );
@@ -27,9 +25,9 @@ define( 'CODESS_CANCEL_KEY', 'codemedsss_scan_cancel' );
 define( 'CODESS_SCANNER_ENGINE_VERSION', '0.1.0' );
 
 // Load config if present (defines CODEMEDSSS_* constants)
-$config_file = CODESS_PLUGIN_DIR . 'config.php';
-if ( file_exists( $config_file ) ) {
-    require_once $config_file;
+$codemedsss_config_file = CODESS_PLUGIN_DIR . 'config.php';
+if ( file_exists( $codemedsss_config_file ) ) {
+    require_once $codemedsss_config_file;
 }
 
 // CODEMEDSSS_* constant aliases for test compatibility (if not already defined via config)
