@@ -20,7 +20,11 @@ if (Test-Path $EnvFile) {
 }
 
 $OutputDir = Join-Path $ProjectRoot "build"
-$OutputZip = Join-Path $OutputDir "code-medic-slow-site-scanner-${Mode}.zip"
+if ($Mode -eq "premium") {
+    $OutputZip = Join-Path $OutputDir "code-medic-slow-site-scanner-${Mode}.zip"
+} else {
+    $OutputZip = Join-Path $OutputDir "code-medic-slow-site-scanner.zip"
+}
 
 $ExcludeDirs = @("tests", "vendor", ".git", "premium")
 $ExcludeFiles = @(".gitignore", ".distignore", ".phpunit.result.cache", "composer-setup.php", ".phpunit.xml", "composer.json", "composer.lock", "README.md", ".env", ".env.example", "env-example")
@@ -63,7 +67,6 @@ if ($Mode -eq "premium") {
 } else {
     $PluginName = "CodeMedic Slow Site Scanner"
     $PluginSlug = "code-medic-slow-site-scanner"
-    Rename-Item -Path "$tempDir\code-medic-slow-site-scanner" -NewName $PluginSlug
     $ConfigPath = Join-Path $tempDir "$PluginSlug\config.php"
 }
 

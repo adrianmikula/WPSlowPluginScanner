@@ -249,12 +249,14 @@ Top of results:
 
 * Fully functional scanner
 * Unlimited plugins
-* Any URL/page selection
+* Homepage scanning (core feature)
 * Core scanning functionality
 
 ## Paid ($9–$19) - separate distribution:
 
 * All free features PLUS:
+* Page selection dropdown (scan any page on site)
+* Custom URL scanning
 * Anonymous telemetry
 * Advanced reporting
 * Export results

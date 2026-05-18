@@ -9,17 +9,7 @@
         init: function() {
             $('#codemedsss-scan-btn').on('click', this.startScan.bind(this));
             $('#codemedsss-cancel-btn').on('click', this.cancelScan.bind(this));
-            
-            // Only bind page select change handler if dropdown exists (premium version)
-            if ($('#codemedsss_page_select').length) {
-                $('#codemedsss_page_select').on('change', this.onPageSelectChange.bind(this));
-            }
-            
             $('#codemedsss_mu_consent').on('change', this.onConsentChange.bind(this));
-
-            if ( codemedsssData.homeUrl && $('#codemedsss_scan_url').val() === '' ) {
-                $('#codemedsss_scan_url').val(codemedsssData.homeUrl);
-            }
 
             if (codemedsssData.isScanning && codemedsssData.totalPlugins > 0) {
                 this.isScanning = true;
@@ -136,15 +126,6 @@
             this.showMessage(error || codemedsssData.errorText, 'error');
         },
 
-        onPageSelectChange: function() {
-            var selected = $('#codemedsss_page_select').val();
-            if (selected === 'custom') {
-                $('#codemedsss_scan_url').show().prop('disabled', false).focus();
-            } else {
-                $('#codemedsss_scan_url').hide().prop('disabled', true);
-            }
-        },
-
         onConsentChange: function() {
             var enabled = $('#codemedsss_mu_consent').is(':checked');
             var nonce = $('#codemedsss_mu_consent').data('nonce');
@@ -169,27 +150,13 @@
         },
 
         getScanUrl: function() {
-            // If dropdown exists (premium version), use it
-            if ($('#codemedsss_page_select').length) {
-                var pageSelect = $('#codemedsss_page_select').val();
-                if (pageSelect === 'custom') {
-                    return $('#codemedsss_scan_url').val();
-                }
-                return pageSelect || codemedsssData.homeUrl || '';
-            }
-            // Free version: always use the hidden scan URL field (homepage)
-            return $('#codemedsss_scan_url').val() || codemedsssData.homeUrl || '';
+            // Backend determines scan URL via filter, defaults to homepage
+            return '';
         },
 
         setControls: function(scanning) {
             $('#codemedsss-scan-btn').toggle(!scanning);
             $('#codemedsss-cancel-btn').toggle(scanning);
-            
-            // Only disable dropdown if it exists (premium version)
-            if ($('#codemedsss_page_select').length) {
-                $('#codemedsss_page_select').prop('disabled', scanning);
-            }
-            $('#codemedsss_scan_url').prop('disabled', scanning);
 
             if (scanning) {
                 $('#codemedsss-progress').show();

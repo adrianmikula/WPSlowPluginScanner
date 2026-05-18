@@ -14,12 +14,7 @@ function codemedsss_ajax_start_scan() {
         wp_send_json_error( array( 'message' => 'Permission denied' ) );
     }
 
-    $scan_url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : home_url();
-    if ( empty( $scan_url ) ) {
-        $scan_url = home_url();
-    }
-
-    $result = codemedsss_initiate_scan( $scan_url );
+    $result = codemedsss_initiate_scan();
 
     if ( isset( $result['error'] ) ) {
         wp_send_json_error( array( 'message' => $result['error'] ) );
@@ -104,12 +99,11 @@ function codemedsss_admin_menu() {
 
 function codemedsss_render_admin_page() {
     $results = codemedsss_get_last_scan_results();
-    $home_url = home_url();
     $mu_consent = get_option( 'codemedsss_mu_consent', false );
     ?>
     <div class="wrap">
         <h1><?php esc_html_e( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ); ?></h1>
-        <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on a specific page.', 'code-medic-slow-site-scanner' ); ?></p>
+        <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on your homepage.', 'code-medic-slow-site-scanner' ); ?></p>
 
         <!-- MU Plugin Consent -->
         <div class="notice notice-info" style="margin-top:10px;margin-bottom:10px;">
@@ -126,7 +120,6 @@ function codemedsss_render_admin_page() {
             <p>
                 <strong><?php esc_html_e( 'Page to scan:', 'code-medic-slow-site-scanner' ); ?></strong>
                 <?php esc_html_e( 'Homepage', 'code-medic-slow-site-scanner' ); ?>
-                <input type="hidden" id="codemedsss_scan_url" value="<?php echo esc_attr( $home_url ); ?>" />
             </p>
             <p>
                 <button type="button" id="codemedsss-scan-btn" class="button button-primary" <?php disabled( ! $mu_consent ); ?>><?php esc_html_e( 'Scan Plugins', 'code-medic-slow-site-scanner' ); ?></button>

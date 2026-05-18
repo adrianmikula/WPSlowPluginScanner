@@ -102,7 +102,7 @@ CODEMEDSSS_MODE=free
 ./scripts/build.sh
 ```
 
-**Output:** `build/code-medic-slow-site-scanner-free.zip`
+**Output:** `build/code-medic-slow-site-scanner.zip`
 - Excludes `premium/` folder
 - Plugin name: "CodeMedic Slow Site Scanner"
 - Plugin slug: "code-medic-slow-site-scanner"

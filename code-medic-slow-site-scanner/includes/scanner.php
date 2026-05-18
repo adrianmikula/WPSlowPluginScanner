@@ -25,7 +25,7 @@ function codemedsss_get_active_plugin_entries() {
     return $entries;
 }
 
-function codemedsss_initiate_scan( $url ) {
+function codemedsss_initiate_scan() {
     // User consent required
     if ( ! get_option( 'codemedsss_mu_consent', false ) ) {
         return array( 'error' => __( 'You must enable consent to create temporary files before scanning.', 'code-medic-slow-site-scanner' ) );
@@ -35,6 +35,8 @@ function codemedsss_initiate_scan( $url ) {
         return array( 'error' => 'Scan already in progress' );
     }
 
+    // Get scan URL via filter, default to homepage
+    $url = apply_filters( 'codemedsss_scan_url', home_url() );
     $url = esc_url_raw( $url );
     if ( empty( $url ) ) {
         $url = home_url();

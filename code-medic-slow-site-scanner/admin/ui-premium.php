@@ -14,12 +14,7 @@ function codemedsss_ajax_start_scan() {
         wp_send_json_error( array( 'message' => 'Permission denied' ) );
     }
 
-    $scan_url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : home_url();
-    if ( empty( $scan_url ) ) {
-        $scan_url = home_url();
-    }
-
-    $result = codemedsss_initiate_scan( $scan_url );
+    $result = codemedsss_initiate_scan();
 
     if ( isset( $result['error'] ) ) {
         wp_send_json_error( array( 'message' => $result['error'] ) );

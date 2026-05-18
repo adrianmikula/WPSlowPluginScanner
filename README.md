@@ -31,7 +31,7 @@ Run the build script from the project root:
 ./scripts/build.sh
 ```
 
-This creates `build/code-medic-slow-site-scanner-${MODE}.zip` with the configured mode baked in.
+This creates `build/code-medic-slow-site-scanner.zip` for free mode or `build/code-medic-slow-site-scanner-premium.zip` for premium mode with the configured mode baked in.
 
 - **Free version**: Set `CODEMEDSSS_MODE=free` in `.env` before building (fully functional)
 - **Premium version**: Set `CODEMEDSSS_MODE=premium` in `.env` before building (includes additional telemetry features)

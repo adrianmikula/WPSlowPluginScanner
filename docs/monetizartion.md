@@ -36,14 +36,14 @@ You have 3 main models:
 **The free version MUST be fully functional.** Premium features must be ADDITIONAL functionality, not locked free features.
 
 **Allowed:**
-- Free version: Core scanning functionality (unlimited plugins, any URL)
-- Premium version: Additional features like telemetry, advanced reporting, export capabilities
+- Free version: Core scanning functionality (unlimited plugins, homepage scanning)
+- Premium version: Additional features like page selection, telemetry, advanced reporting, export capabilities
 
 **NOT Allowed (WordPress.org will reject):**
 - Locking core features behind payment
 - Limiting plugin counts in free version
-- Restricting URL selection in free version
-- Any artificial restrictions on free version functionality
+- Artificial restrictions on free version functionality
+- Backend accepting parameters that free UI cannot access
 
 ---
 
@@ -101,12 +101,14 @@ function codemedsss_can_scan_all_plugins() {
 ### Free (WordPress.org):
 
 * Unlimited plugin scanning
-* Any URL/page selection
+* Homepage scanning (core feature)
 * Core scanning functionality
 
 ### Paid (separate distribution):
 
 * All free features PLUS:
+* Page selection dropdown (scan any page on site)
+* Custom URL scanning
 * Anonymous telemetry
 * Advanced reporting
 * Export capabilities

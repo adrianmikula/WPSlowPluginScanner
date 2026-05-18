@@ -15,7 +15,11 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 OUTPUT_DIR="$PROJECT_ROOT/build"
-OUTPUT_ZIP="$OUTPUT_DIR/code-medic-slow-site-scanner-${MODE}.zip"
+if [ "$MODE" = "premium" ]; then
+    OUTPUT_ZIP="$OUTPUT_DIR/code-medic-slow-site-scanner-${MODE}.zip"
+else
+    OUTPUT_ZIP="$OUTPUT_DIR/code-medic-slow-site-scanner.zip"
+fi
 
 EXCLUDE_DIRS="tests vendor .git premium"
 EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md .env .env.example env-example"
