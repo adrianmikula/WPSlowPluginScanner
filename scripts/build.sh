@@ -22,7 +22,7 @@ else
 fi
 
 EXCLUDE_DIRS="tests vendor .git premium"
-EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md .env .env.example env-example"
+EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md .env .env.example env-example admin/ui-premium.php"
 
 echo "Building WordPress plugin ZIP..."
 

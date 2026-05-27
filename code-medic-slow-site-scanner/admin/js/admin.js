@@ -25,8 +25,6 @@
         startScan: function(e) {
             e.preventDefault();
 
-            var url = this.getScanUrl();
-
             this.setControls(true);
             this.showMessage('', '');
 
@@ -36,8 +34,7 @@
                 dataType: 'json',
                 data: {
                     action: 'codemedsss_start_scan',
-                    nonce: codemedsssData.nonce,
-                    url: url
+                    nonce: codemedsssData.nonce
                 }
             }).done($.proxy(this.onScanStarted, this)).fail($.proxy(this.onError, this));
         },
@@ -147,11 +144,6 @@
         toggleScanButton: function() {
             var consent = $('#codemedsss_mu_consent').is(':checked');
             $('#codemedsss-scan-btn').prop('disabled', !consent);
-        },
-
-        getScanUrl: function() {
-            // Backend determines scan URL via filter, defaults to homepage
-            return '';
         },
 
         setControls: function(scanning) {

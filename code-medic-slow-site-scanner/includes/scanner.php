@@ -35,12 +35,8 @@ function codemedsss_initiate_scan() {
         return array( 'error' => 'Scan already in progress' );
     }
 
-    // Get scan URL via filter, default to homepage
-    $url = apply_filters( 'codemedsss_scan_url', home_url() );
-    $url = esc_url_raw( $url );
-    if ( empty( $url ) ) {
-        $url = home_url();
-    }
+    // Free version only scans homepage
+    $url = home_url();
 
     $baseline = codemedsss_run_test( $url );
     $active_entries = codemedsss_get_active_plugin_entries();

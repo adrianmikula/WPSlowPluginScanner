@@ -15,6 +15,7 @@
 /build/
 logs
 *.result.cache
+*.zip
 
 # Environment config (per-build)
 .env

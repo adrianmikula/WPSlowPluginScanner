@@ -27,7 +27,7 @@ if ($Mode -eq "premium") {
 }
 
 $ExcludeDirs = @("tests", "vendor", ".git", "premium")
-$ExcludeFiles = @(".gitignore", ".distignore", ".phpunit.result.cache", "composer-setup.php", ".phpunit.xml", "composer.json", "composer.lock", "README.md", ".env", ".env.example", "env-example")
+$ExcludeFiles = @(".gitignore", ".distignore", ".phpunit.result.cache", "composer-setup.php", ".phpunit.xml", "composer.json", "composer.lock", "README.md", ".env", ".env.example", "env-example", "admin/ui-premium.php")
 
 Write-Host "Building WordPress plugin ZIP..."
 
