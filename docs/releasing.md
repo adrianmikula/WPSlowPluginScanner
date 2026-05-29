@@ -29,7 +29,12 @@ The build script excludes:
 - `premium/` — entire folder (free build only)
 - `.env*`, `tests/`, `vendor/`, `composer-setup.php`, `docs/`
 
-If a `.env` file is present, non-`CODEMEDSSS_MODE` constants (e.g. Supabase keys) are baked into a `config.php` inside the premium ZIP only.
+If a `.env` file is present, the build script bakes non-`CODEMEDSSS_MODE` constants into a `config.php` inside each ZIP — with one important difference:
+
+- **Free ZIP:** `CODEMEDSSS_SUPABASE_URL`, `CODEMEDSSS_SUPABASE_ANON_KEY`, and `CODEMEDSSS_SUPABASE_TABLE` are **always stripped**, even if set in `.env`. These are premium-only and must never appear in the free build.
+- **Premium ZIP:** All non-`CODEMEDSSS_MODE` constants with non-empty values are included.
+
+`CODEMEDSSS_PREMIUM_URL` (the upsell notice link) follows the same write path — set it in `.env` to activate the notice in either build, leave it empty to suppress it.
 
 ---
 
@@ -60,10 +65,15 @@ grep -i "up to [0-9]* plugin" build/code-medic-slow-site-scanner/readme.txt
 Manual checks:
 - [ ] `includes/scanner.php` — `$url = home_url();` with no comment, no filter
 - [ ] `admin/ui.php` — no page-selection UI, no unused functions, no "Page to scan:" label
+- [ ] `admin/ui.php` — if upsell notice present, it uses additive language and links only to an external URL
 - [ ] `code-medic-slow-site-scanner.php` — no premium loader block, no "free version" comments
 - [ ] `uninstall.php` — no "premium" comments
 - [ ] `readme.txt` — steps and feature list match actual free-version behaviour
 - [ ] Plugin name and slug contain no "free"
+- [ ] **`config.php` inside free ZIP contains no Supabase or other premium-service constants** — verify with:
+  ```bash
+  unzip -p build/code-medic-slow-site-scanner.zip code-medic-slow-site-scanner/config.php
+  ```
 - [ ] Run Plugin Check plugin on a clean WP install with the free ZIP
 
 ---

@@ -45,11 +45,41 @@ build_plugin() {
     sed -i "s/=== CodeMedic Slow Site Scanner ===/=== $plugin_name ===/" "$temp_dir/$plugin_slug/readme.txt"
     sed -i "s/Plugin Name: CodeMedic Slow Site Scanner/Plugin Name: $plugin_name/" "$temp_dir/$plugin_slug/code-medic-slow-site-scanner.php"
 
+    if [ ! -f "$ENV_FILE" ]; then
+        echo "ERROR: .env file not found at $ENV_FILE"
+        exit 1
+    fi
+
+    local env_premium_url
+    env_premium_url=$(grep "^CODEMEDSSS_PREMIUM_URL=" "$ENV_FILE" | cut -d'=' -f2- | xargs)
+    local env_supabase_url
+    env_supabase_url=$(grep "^CODEMEDSSS_SUPABASE_URL=" "$ENV_FILE" | cut -d'=' -f2- | xargs)
+    local env_supabase_key
+    env_supabase_key=$(grep "^CODEMEDSSS_SUPABASE_ANON_KEY=" "$ENV_FILE" | cut -d'=' -f2- | xargs)
+
+    if [ "$mode" = "free" ] && [ -z "$env_premium_url" ]; then
+        echo "ERROR (free build): CODEMEDSSS_PREMIUM_URL is not set in .env — upsell notice would be suppressed."
+        exit 1
+    fi
+
+    if [ "$mode" = "premium" ] && [ -z "$env_supabase_url" ]; then
+        echo "ERROR (premium build): CODEMEDSSS_SUPABASE_URL is not set in .env"
+        exit 1
+    fi
+
+    if [ "$mode" = "premium" ] && [ -z "$env_supabase_key" ]; then
+        echo "ERROR (premium build): CODEMEDSSS_SUPABASE_ANON_KEY is not set in .env"
+        exit 1
+    fi
+
     if [ -f "$ENV_FILE" ]; then
         local config_content="<?php\nif ( ! defined( 'ABSPATH' ) ) { exit; }\n// Auto-generated config - do not commit to version control\n"
         while IFS='=' read -r key value; do
             key=$(echo "$key" | xargs)
             value=$(echo "$value" | xargs)
+            if [[ "$mode" == "free" && "$key" =~ ^CODEMEDSSS_(SUPABASE_URL|SUPABASE_ANON_KEY|SUPABASE_TABLE)$ ]]; then
+                continue
+            fi
             if [[ "$key" == CODEMEDSSS_* && "$key" != "CODEMEDSSS_MODE" && -n "$value" ]]; then
                 config_content+="define('$key', '$value');\n"
             fi
