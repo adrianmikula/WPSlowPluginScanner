@@ -1,6 +1,15 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+// Action link on Installed Plugins page
+add_filter( 'plugin_action_links_' . plugin_basename( CODESS_PLUGIN_FILE ), 'codemedsss_plugin_action_links' );
+
+function codemedsss_plugin_action_links( $links ) {
+    $scan_link = '<a href="' . esc_url( admin_url( 'admin.php?page=codemedsss-scan-plugins' ) ) . '">' . esc_html__( 'Scan', 'code-medic-slow-site-scanner' ) . '</a>';
+    array_unshift( $links, $scan_link );
+    return $links;
+}
+
 // AJAX handlers
 add_action( 'wp_ajax_codemedsss_start_scan', 'codemedsss_ajax_start_scan' );
 add_action( 'wp_ajax_codemedsss_poll_scan', 'codemedsss_ajax_poll_scan' );
@@ -160,5 +169,15 @@ function codemedsss_render_admin_page() {
                 </table>
             <?php endif; ?>
         </div>
+
+        <?php if ( defined( 'CODESS_PREMIUM_URL' ) && CODESS_PREMIUM_URL ) : ?>
+        <div class="notice notice-info" style="margin-top:20px;">
+            <p>
+                <?php esc_html_e( 'Want more? The Pro version adds page selection, custom URL scanning, and export.', 'code-medic-slow-site-scanner' ); ?>
+                <a href="<?php echo esc_url( CODESS_PREMIUM_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'code-medic-slow-site-scanner' ); ?> &rarr;</a>
+            </p>
+        </div>
+        <?php endif; ?>
+    </div>
     <?php
 }

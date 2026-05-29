@@ -29,6 +29,8 @@ if ( file_exists( $codemedsss_config_file ) ) {
     require_once $codemedsss_config_file;
 }
 
+define( 'CODESS_PREMIUM_URL', defined( 'CODEMEDSSS_PREMIUM_URL' ) ? CODEMEDSSS_PREMIUM_URL : '' );
+
 // CODEMEDSSS_* constant aliases for test compatibility (if not already defined via config)
 if ( ! defined( 'CODEMEDSSS_PLUGIN_FILE' ) ) {
     define( 'CODEMEDSSS_PLUGIN_FILE', CODESS_PLUGIN_FILE );

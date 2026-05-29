@@ -46,7 +46,8 @@ The free version is **self-contained and has no awareness of a premium version**
 - Full results display: impact, delta, status change, output change.
 - Cancel scan at any time.
 - AJAX-based progress display.
-- No upgrade prompts, no license checks, no references to premium.
+- No license checks, no references to locked or restricted features.
+- One non-intrusive upsell notice is permitted (Guideline 11) — it must link to an external URL and advertise additive features only. Controlled via the `CODESS_PREMIUM_URL` constant; absent from the WP.org ZIP when the constant is empty.
 
 **Distribution:** WordPress.org plugin directory, slug `code-medic-slow-site-scanner`.
 
@@ -260,9 +261,12 @@ DIR="build/code-medic-slow-site-scanner"
 grep -r "free version" "$DIR"
 grep -r "premium only" "$DIR"
 grep -r "premium module" "$DIR"
+# "upgrade" is allowed only if it appears in an external-link-only upsell notice
+# Verify manually that any match is a <a href> pointing outward, not a feature gate
 grep -r "upgrade" "$DIR"
 grep -r "locked" "$DIR"
 grep -r "pro version" "$DIR"
+# "Pro version" in upsell notice text is acceptable; grep below catches broader "premium" references
 grep -r "premium" "$DIR"   # broad catch-all for anything missed above
 
 # --- Extension point filters implying locked behaviour ---
@@ -299,6 +303,7 @@ Also verify manually:
 - [ ] `includes/scanner.php` — `$url = home_url();` with no comment and no filter
 - [ ] `admin/ui.php` — no `codemedsss_get_published_pages()` function, no "Page to scan:" label
 - [ ] `admin/ui.php` — description text does not reference homepage as a limitation
+- [ ] `admin/ui.php` — if upsell notice present, it links only to an external URL and uses additive language (no "unlock", "restricted", "limited")
 - [ ] `code-medic-slow-site-scanner.php` — no premium loader block, no "free version" comments
 - [ ] `uninstall.php` — no "premium" comments
 - [ ] `readme.txt` — how-it-works steps match actual free-version UI exactly
