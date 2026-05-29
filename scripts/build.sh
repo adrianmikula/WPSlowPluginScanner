@@ -4,78 +4,71 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 PLUGIN_DIR="$PROJECT_ROOT/code-medic-slow-site-scanner"
-
-ENV_FILE="$PROJECT_ROOT/code-medic-slow-site-scanner/.env"
-MODE="free"
-if [ -f "$ENV_FILE" ]; then
-    MODE=$(grep "^CODEMEDSSS_MODE=" "$ENV_FILE" | cut -d'=' -f2 | tr -d ' ')
-    if [ -z "$MODE" ]; then
-        MODE="free"
-    fi
-fi
-
+ENV_FILE="$PLUGIN_DIR/.env"
 OUTPUT_DIR="$PROJECT_ROOT/build"
-if [ "$MODE" = "premium" ]; then
-    OUTPUT_ZIP="$OUTPUT_DIR/code-medic-slow-site-scanner-${MODE}.zip"
-else
-    OUTPUT_ZIP="$OUTPUT_DIR/code-medic-slow-site-scanner.zip"
-fi
 
 EXCLUDE_DIRS="tests vendor .git premium"
 EXCLUDE_FILES=".gitignore .distignore .phpunit.result.cache composer-setup.php .phpunit.xml composer.json composer.lock README.md .env .env.example env-example admin/ui-premium.php"
 
-echo "Building WordPress plugin ZIP..."
-
 mkdir -p "$OUTPUT_DIR"
 
-temp_dir=$(mktemp -d)
-rm -rf "$temp_dir"/*
+build_plugin() {
+    local mode="$1"
+    local temp_dir
+    temp_dir=$(mktemp -d)
 
-trap "rm -rf $temp_dir" EXIT
+    cp -r "$PLUGIN_DIR/." "$temp_dir/code-medic-slow-site-scanner/"
 
-cp -r "$PLUGIN_DIR/." "$temp_dir/code-medic-slow-site-scanner/"
+    for dir in $EXCLUDE_DIRS; do
+        rm -rf "$temp_dir/code-medic-slow-site-scanner/$dir"
+    done
 
-for dir in $EXCLUDE_DIRS; do
-    rm -rf "$temp_dir/code-medic-slow-site-scanner/$dir"
-done
+    for file in $EXCLUDE_FILES; do
+        rm -f "$temp_dir/code-medic-slow-site-scanner/$file"
+    done
 
-for file in $EXCLUDE_FILES; do
-    rm -f "$temp_dir/code-medic-slow-site-scanner/$file"
-done
+    if [ "$mode" = "premium" ]; then
+        local plugin_name="CodeMedic Slow Site Scanner Premium"
+        local plugin_slug="code-medic-slow-site-scanner-premium"
+        local output_zip="$OUTPUT_DIR/code-medic-slow-site-scanner-premium.zip"
+        mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$plugin_slug"
+        # Copy premium module back for premium build
+        cp -r "$PLUGIN_DIR/premium" "$temp_dir/$plugin_slug/"
+    else
+        local plugin_name="CodeMedic Slow Site Scanner"
+        local plugin_slug="code-medic-slow-site-scanner"
+        local output_zip="$OUTPUT_DIR/code-medic-slow-site-scanner.zip"
+    fi
 
-if [ "$MODE" = "premium" ]; then
-    PLUGIN_NAME="CodeMedic Slow Site Scanner Premium"
-    PLUGIN_SLUG="code-medic-slow-site-scanner-premium"
-    mv "$temp_dir/code-medic-slow-site-scanner" "$temp_dir/$PLUGIN_SLUG"
-    CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
-    # Copy premium module back for premium build
-    cp -r "$PLUGIN_DIR/premium" "$temp_dir/$PLUGIN_SLUG/"
-else
-    PLUGIN_NAME="CodeMedic Slow Site Scanner"
-    PLUGIN_SLUG="code-medic-slow-site-scanner"
-    CONFIG_PATH="$temp_dir/$PLUGIN_SLUG/config.php"
-fi
+    local config_path="$temp_dir/$plugin_slug/config.php"
 
-sed -i "s/=== CodeMedic Slow Site Scanner ===/=== $PLUGIN_NAME ===/" "$temp_dir/$PLUGIN_SLUG/readme.txt"
+    sed -i "s/=== CodeMedic Slow Site Scanner ===/=== $plugin_name ===/" "$temp_dir/$plugin_slug/readme.txt"
+    sed -i "s/Plugin Name: CodeMedic Slow Site Scanner/Plugin Name: $plugin_name/" "$temp_dir/$plugin_slug/code-medic-slow-site-scanner.php"
 
-sed -i "s/Plugin Name: CodeMedic Slow Site Scanner/Plugin Name: $PLUGIN_NAME/" "$temp_dir/$PLUGIN_SLUG/code-medic-slow-site-scanner.php"
+    if [ -f "$ENV_FILE" ]; then
+        local config_content="<?php\nif ( ! defined( 'ABSPATH' ) ) { exit; }\n// Auto-generated config - do not commit to version control\n"
+        while IFS='=' read -r key value; do
+            key=$(echo "$key" | xargs)
+            value=$(echo "$value" | xargs)
+            if [[ "$key" == CODEMEDSSS_* && "$key" != "CODEMEDSSS_MODE" && -n "$value" ]]; then
+                config_content+="define('$key', '$value');\n"
+            fi
+        done < "$ENV_FILE"
+        echo -e "$config_content" > "$config_path"
+    fi
 
-if [ -f "$ENV_FILE" ]; then
-    CONFIG_CONTENT="<?php\nif ( ! defined( 'ABSPATH' ) ) { exit; }\n// Auto-generated config - do not commit to version control\n"
-    while IFS='=' read -r key value; do
-        key=$(echo "$key" | xargs)
-        value=$(echo "$value" | xargs)
-        if [[ "$key" == CODEMEDSSS_* && -n "$value" ]]; then
-            CONFIG_CONTENT+="define('$key', '$value');\n"
-        fi
-    done < "$ENV_FILE"
-    echo -e "$CONFIG_CONTENT" > "$CONFIG_PATH"
-fi
+    (
+        cd "$temp_dir"
+        zip -r "$output_zip" . -q
+    )
 
-(
-    cd "$temp_dir"
-    zip -r "$OUTPUT_ZIP" . -q
-)
+    rm -rf "$temp_dir"
 
-echo "Built: $OUTPUT_ZIP"
-ls -lh "$OUTPUT_ZIP"
+    echo "Built: $output_zip"
+    ls -lh "$output_zip"
+}
+
+echo "Building WordPress plugin ZIPs..."
+
+build_plugin "free"
+build_plugin "premium"

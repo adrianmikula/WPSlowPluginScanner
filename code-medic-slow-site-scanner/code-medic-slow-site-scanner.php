@@ -3,7 +3,7 @@
  * Plugin Name: CodeMedic Slow Site Scanner
  * Plugin URI:  https://github.com/adrianmikula/WPSlowPluginScanner
  * Description: Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.
- * Version:     0.1.0
+ * Version:     0.1.1
  * Author:      Adrian M
  * Author URI:  https://github.com/adrianmikula
  * License:     GPLv2 or later
@@ -21,7 +21,7 @@ define( 'CODESS_SCAN_LOCK_KEY', 'codemedsss_scan_lock' );
 define( 'CODESS_RESULTS_OPTION', 'codemedsss_last_scan' );
 define( 'CODESS_PROGRESS_KEY', 'codemedsss_scan_progress' );
 define( 'CODESS_CANCEL_KEY', 'codemedsss_scan_cancel' );
-define( 'CODESS_SCANNER_ENGINE_VERSION', '0.1.0' );
+define( 'CODESS_SCANNER_ENGINE_VERSION', '0.1.1' );
 
 // Load config if present (defines CODEMEDSSS_* constants)
 $codemedsss_config_file = CODESS_PLUGIN_DIR . 'config.php';
@@ -75,8 +75,8 @@ function codemedsss_admin_assets( $hook ) {
         return;
     }
 
-    wp_enqueue_style( 'codemedsss-admin-style', plugins_url( 'admin/css/admin.css', __FILE__ ), array(), '0.1.0' );
-    wp_enqueue_script( 'codemedsss-admin-script', plugins_url( 'admin/js/admin.js', __FILE__ ), array( 'jquery' ), '0.1.0', true );
+    wp_enqueue_style( 'codemedsss-admin-style', plugins_url( 'admin/css/admin.css', __FILE__ ), array(), '0.1.1' );
+    wp_enqueue_script( 'codemedsss-admin-script', plugins_url( 'admin/js/admin.js', __FILE__ ), array( 'jquery' ), '0.1.1', true );
 
     $is_scanning = codemedsss_scan_is_locked();
     $progress = $is_scanning ? codemedsss_get_scan_progress() : null;

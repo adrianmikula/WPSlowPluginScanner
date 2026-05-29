@@ -12,29 +12,17 @@ WordPress plugin to detect the single plugin causing slowdown or breakage on a s
 
 ### Building Free/Premium Versions
 
-This plugin supports building separate free and premium ZIPs from the same source code. The build mode is configured via the `.env` file in the plugin directory.
-
-#### Configuration
-
-Edit the `.env` file in the `code-medic-slow-site-scanner/` directory:
-
-```ini
-# Build mode: "free" or "premium"
-CODEMEDSSS_MODE=free
-```
-
-#### Building the ZIP
-
-Run the build script from the project root:
+A single script run builds both ZIPs:
 
 ```bash
 ./scripts/build.sh
 ```
 
-This creates `build/code-medic-slow-site-scanner.zip` for free mode or `build/code-medic-slow-site-scanner-premium.zip` for premium mode with the configured mode baked in.
+Outputs:
+- `build/code-medic-slow-site-scanner.zip` — free version
+- `build/code-medic-slow-site-scanner-premium.zip` — premium version
 
-- **Free version**: Set `CODEMEDSSS_MODE=free` in `.env` before building (fully functional)
-- **Premium version**: Set `CODEMEDSSS_MODE=premium` in `.env` before building (includes additional telemetry features)
+For full release steps (version bumping, pre-submission checklist, distribution), see [docs/releasing.md](docs/releasing.md).
 
 ### Anonymous Telemetry (Premium Feature)
 
@@ -67,14 +55,9 @@ For detailed information about WordPress.org requirements and our free/premium a
 
 ## Configuration
 
-Settings are configured via a `.env` file in the plugin directory:
+Premium Supabase telemetry is configured via a `.env` file in the plugin directory (see `.env.example`):
 
 ```ini
-# Build mode: "free" or "premium"
-# - free: Fully functional scanner without telemetry
-# - premium: Includes anonymous telemetry features
-CODEMEDSSS_MODE=free
-
 # Supabase configuration for anonymous telemetry (premium only, optional)
 CODEMEDSSS_SUPABASE_URL=         # Your Supabase project URL (e.g., https://xxxxx.supabase.co)
 CODEMEDSSS_SUPABASE_ANON_KEY=    # Your Supabase anon/public key
