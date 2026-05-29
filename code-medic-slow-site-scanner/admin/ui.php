@@ -76,17 +76,6 @@ function codemedsss_save_mu_consent() {
     wp_send_json_success();
 }
 
-function codemedsss_get_published_pages() {
-    $pages = get_posts(
-        array(
-            'post_type'   => 'page',
-            'post_status' => 'publish',
-            'numberposts' => -1,
-        )
-    );
-    return $pages ? $pages : array();
-}
-
 function codemedsss_admin_menu() {
     add_plugins_page(
         __( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ),
@@ -103,7 +92,7 @@ function codemedsss_render_admin_page() {
     ?>
     <div class="wrap">
         <h1><?php esc_html_e( 'CodeMedic Slow Site Scanner', 'code-medic-slow-site-scanner' ); ?></h1>
-        <p><?php esc_html_e( 'Run a safe loopback scan to identify the single plugin causing slowdown or breakage on your homepage.', 'code-medic-slow-site-scanner' ); ?></p>
+        <p><?php esc_html_e( 'Run a safe loopback scan to identify the plugin causing slowdown or breakage on your site.', 'code-medic-slow-site-scanner' ); ?></p>
 
         <!-- MU Plugin Consent -->
         <div class="notice notice-info" style="margin-top:10px;margin-bottom:10px;">
@@ -117,10 +106,6 @@ function codemedsss_render_admin_page() {
         </div>
 
         <div id="codemedsss-scan-controls">
-            <p>
-                <strong><?php esc_html_e( 'Page to scan:', 'code-medic-slow-site-scanner' ); ?></strong>
-                <?php esc_html_e( 'Homepage', 'code-medic-slow-site-scanner' ); ?>
-            </p>
             <p>
                 <button type="button" id="codemedsss-scan-btn" class="button button-primary" <?php disabled( ! $mu_consent ); ?>><?php esc_html_e( 'Scan Plugins', 'code-medic-slow-site-scanner' ); ?></button>
                 <button type="button" id="codemedsss-cancel-btn" class="button" style="display:none;"><?php esc_html_e( 'Cancel', 'code-medic-slow-site-scanner' ); ?></button>
@@ -173,9 +158,6 @@ function codemedsss_render_admin_page() {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php if ( ! empty( $results['truncated'] ) ) : ?>
-                    <p><?php esc_html_e( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'code-medic-slow-site-scanner' ); ?></p>
-                <?php endif; ?>
             <?php endif; ?>
         </div>
     <?php

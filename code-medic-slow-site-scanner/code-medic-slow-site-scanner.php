@@ -19,7 +19,6 @@ define( 'CODESS_PLUGIN_SLUG', basename( dirname( __FILE__ ) ) );
 define( 'CODESS_TEMP_MU_PLUGIN', WPMU_PLUGIN_DIR . '/codemedsss-temp-disable.php' );
 define( 'CODESS_SCAN_LOCK_KEY', 'codemedsss_scan_lock' );
 define( 'CODESS_RESULTS_OPTION', 'codemedsss_last_scan' );
-define( 'CODESS_MAX_TEST_PLUGINS', 6 );
 define( 'CODESS_PROGRESS_KEY', 'codemedsss_scan_progress' );
 define( 'CODESS_CANCEL_KEY', 'codemedsss_scan_cancel' );
 define( 'CODESS_SCANNER_ENGINE_VERSION', '0.1.0' );
@@ -49,9 +48,6 @@ if ( ! defined( 'CODEMEDSSS_SCAN_LOCK_KEY' ) ) {
 if ( ! defined( 'CODEMEDSSS_RESULTS_OPTION' ) ) {
     define( 'CODEMEDSSS_RESULTS_OPTION', CODESS_RESULTS_OPTION );
 }
-if ( ! defined( 'CODEMEDSSS_MAX_TEST_PLUGINS' ) ) {
-    define( 'CODEMEDSSS_MAX_TEST_PLUGINS', CODESS_MAX_TEST_PLUGINS );
-}
 if ( ! defined( 'CODEMEDSSS_PROGRESS_KEY' ) ) {
     define( 'CODEMEDSSS_PROGRESS_KEY', CODESS_PROGRESS_KEY );
 }
@@ -62,17 +58,11 @@ if ( ! defined( 'CODEMEDSSS_SCANNER_ENGINE_VERSION' ) ) {
     define( 'CODEMEDSSS_SCANNER_ENGINE_VERSION', CODESS_SCANNER_ENGINE_VERSION );
 }
 
-// Load premium module if present (additional features only)
-if ( file_exists( CODESS_PLUGIN_DIR . 'premium/loader.php' ) ) {
-    require_once CODESS_PLUGIN_DIR . 'premium/loader.php';
-}
-
 // Include core files
 require_once CODESS_PLUGIN_DIR . 'includes/results.php';
 require_once CODESS_PLUGIN_DIR . 'includes/loopback.php';
 require_once CODESS_PLUGIN_DIR . 'includes/scanner.php';
 require_once CODESS_PLUGIN_DIR . 'includes/toggle.php';
-// Telemetry moved to separate premium module, not loaded in free version
 require_once CODESS_PLUGIN_DIR . 'admin/ui.php';
 
 // Hook into admin
@@ -97,7 +87,6 @@ function codemedsss_admin_assets( $hook ) {
         array(
             'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
             'nonce'          => wp_create_nonce( 'codemedsss_scan_nonce' ),
-            'homeUrl'        => home_url(),
             'isScanning'     => $is_scanning,
             'totalPlugins'   => $progress ? count( $progress['plugin_files'] ) : 0,
             'scannedCount'   => $progress ? $progress['scanned'] : 0,
@@ -121,7 +110,6 @@ function codemedsss_admin_assets( $hook ) {
             'errorCol'       => __( 'Error', 'code-medic-slow-site-scanner' ),
             'yesLabel'       => __( 'Yes', 'code-medic-slow-site-scanner' ),
             'noLabel'        => __( 'No', 'code-medic-slow-site-scanner' ),
-            'truncatedText'  => __( 'The plugin list was limited for speed. Only the first few active plugins were tested.', 'code-medic-slow-site-scanner' ),
         )
     );
 }

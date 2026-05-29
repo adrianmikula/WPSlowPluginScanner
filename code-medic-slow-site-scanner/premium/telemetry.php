@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 if ( ! defined( 'CODEMEDSSS_TELEMETRY_QUEUE' ) ) {
     define( 'CODEMEDSSS_TELEMETRY_QUEUE', 'codemedsss_telemetry_queue' );
@@ -17,7 +15,7 @@ if ( ! defined( 'CODEMEDSSS_SITE_UUID_OPTION' ) ) {
 }
 
 function codemedsss_is_telemetry_enabled() {
-    return (bool) get_option( CODEMEDSSS_TELEMETRY_ENABLED, true );
+    return (bool) get_option( CODEMEDSSS_TELEMETRY_ENABLED, false );
 }
 
 function codemedsss_set_telemetry_enabled( $enabled ) {
@@ -254,7 +252,7 @@ function codemedsss_unschedule_telemetry_cron() {
 
 add_action( CODEMEDSSS_TELEMETRY_CRON_HOOK, 'codemedsss_process_telemetry_queue' );
 
-register_activation_hook( __FILE__, 'codemedsss_activate_telemetry' );
+register_activation_hook( CODESS_PLUGIN_FILE, 'codemedsss_activate_telemetry' );
 
 function codemedsss_activate_telemetry() {
     if ( codemedsss_is_telemetry_enabled() ) {
@@ -262,4 +260,4 @@ function codemedsss_activate_telemetry() {
     }
 }
 
-register_deactivation_hook( __FILE__, 'codemedsss_unschedule_telemetry_cron' );
+register_deactivation_hook( CODESS_PLUGIN_FILE, 'codemedsss_unschedule_telemetry_cron' );

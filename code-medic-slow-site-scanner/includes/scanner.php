@@ -35,7 +35,6 @@ function codemedsss_initiate_scan() {
         return array( 'error' => 'Scan already in progress' );
     }
 
-    // Free version only scans homepage
     $url = home_url();
 
     $baseline = codemedsss_run_test( $url );
@@ -52,7 +51,6 @@ function codemedsss_initiate_scan() {
         'baseline'      => $baseline,
         'plugin_files'  => array_values( $plugin_files ),
         'active_count'  => count( $active_entries ),
-        'truncated'     => false,
         'plugin_results'=> array(),
         'scanned'       => 0,
     );
@@ -129,7 +127,7 @@ function codemedsss_scan_next_plugin() {
 
     $progress['plugin_results'][] = $plugin_result;
 
-    // No telemetry in free version
+    do_action( 'codemedsss_plugin_scanned', $plugin_result, $progress['plugin_files'], $progress['baseline']['time'] );
 
     $progress['scanned']++;
     codemedsss_set_scan_progress( $progress );
@@ -158,7 +156,6 @@ function codemedsss_complete_scan() {
         'plugins'              => $progress['plugin_results'],
         'scanned'              => $progress['scanned'],
         'active_count'         => $progress['active_count'],
-        'truncated'            => $progress['truncated'],
         'scanner_engine_version' => CODESS_SCANNER_ENGINE_VERSION,
         'errors'               => isset( $progress['errors'] ) ? $progress['errors'] : array(),
     );

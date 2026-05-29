@@ -24,4 +24,4 @@ README.md
 vendor/
 
 # Premium add-ons (separate distribution)
-premium/.env
+premium/

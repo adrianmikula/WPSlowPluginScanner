@@ -1,46 +1,32 @@
 <?php
-/**
- * Premium Module Loader
- * 
- * This file loads premium-specific features when present.
- * Premium features are ADDITIONAL functionality, not locked free features.
- * The free version works 100% without this folder present.
- */
+if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
-// Load premium telemetry module
 if ( file_exists( dirname( __FILE__ ) . '/telemetry.php' ) ) {
     require_once dirname( __FILE__ ) . '/telemetry.php';
 }
 
-// Load premium UI with page selection dropdown
-if ( file_exists( dirname( __FILE__ ) . '/../admin/ui-premium.php' ) ) {
-    require_once dirname( __FILE__ ) . '/../admin/ui-premium.php';
-    
-    // Override admin menu to use premium UI
-    remove_action( 'admin_menu', 'codemedsss_admin_menu' );
-    add_action( 'admin_menu', 'codemedsss_admin_menu' );
-}
+add_action( 'codemedsss_plugin_scanned', 'codemedsss_premium_queue_telemetry', 10, 3 );
 
-// Hook into scan URL filter to provide custom URLs from premium module
-add_filter( 'codemedsss_scan_url', 'codemedsss_premium_scan_url', 10, 1 );
-
-function codemedsss_premium_scan_url( $default_url ) {
-    // Check if a custom URL was posted via AJAX
-    if ( isset( $_POST['url'] ) && ! empty( $_POST['url'] ) ) {
-        return esc_url_raw( wp_unslash( $_POST['url'] ) );
+function codemedsss_premium_queue_telemetry( $plugin_result, $all_plugin_files, $baseline_time ) {
+    if ( ! function_exists( 'codemedsss_is_telemetry_enabled' ) || ! codemedsss_is_telemetry_enabled() ) {
+        return;
     }
-    return $default_url;
+    if ( ! function_exists( 'codemedsss_prepare_telemetry_data' ) || ! function_exists( 'codemedsss_add_to_telemetry_queue' ) ) {
+        return;
+    }
+    $data = codemedsss_prepare_telemetry_data( $plugin_result, $all_plugin_files, $baseline_time );
+    codemedsss_add_to_telemetry_queue( $data );
 }
 
-// Load premium JavaScript for page selection
 add_action( 'admin_enqueue_scripts', 'codemedsss_premium_admin_assets' );
 
 function codemedsss_premium_admin_assets( $hook ) {
     if ( 'plugins_page_codemedsss-scan-plugins' !== $hook ) {
+        return;
+    }
+
+    $js_file = dirname( __FILE__ ) . '/js/admin-premium.js';
+    if ( ! file_exists( $js_file ) ) {
         return;
     }
 
@@ -52,6 +38,3 @@ function codemedsss_premium_admin_assets( $hook ) {
         true
     );
 }
-
-// Add other premium features here as needed
-// Examples: advanced reporting, export capabilities, etc.

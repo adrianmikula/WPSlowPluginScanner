@@ -211,10 +211,6 @@
 
             html += '</tbody></table>';
 
-            if (results.truncated) {
-                html += '<p>' + codemedsssData.truncatedText + '</p>';
-            }
-
             $('#codemedsss-results-area').html(html).show();
         },
 

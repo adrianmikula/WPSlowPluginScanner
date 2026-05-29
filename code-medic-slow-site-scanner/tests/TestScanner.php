@@ -108,59 +108,6 @@ class TestScanner extends TestCase
     }
 
     /**
-     * Test URL validation logic.
-     */
-    public function testUrlValidationLogic()
-    {
-        // Test that esc_url_raw is called on URL.
-        $testUrl = 'http://example.com/page?param=value';
-        $sanitized = esc_url_raw( $testUrl );
-        
-        $this->assertNotEmpty( $sanitized );
-    }
-
-    /**
-     * Test default URL when empty.
-     */
-    public function testDefaultUrlWhenEmpty()
-    {
-        // When URL is empty, it should default to home_url().
-        $url = '';
-        
-        if ( empty( $url ) ) {
-            $url = home_url();
-        }
-        
-        $this->assertStringContainsString( 'example.com', $url );
-    }
-
-    /**
-     * Test max plugin limit logic.
-     */
-    public function testMaxPluginLimitLogic()
-    {
-        $maxPlugins = CODEMEDSSS_MAX_TEST_PLUGINS;
-        $allPlugins = array(
-            'plugin-1/plugin-1.php',
-            'plugin-2/plugin-2.php',
-            'plugin-3/plugin-3.php',
-            'plugin-4/plugin-4.php',
-            'plugin-5/plugin-5.php',
-            'plugin-6/plugin-6.php',
-            'plugin-7/plugin-7.php',
-            'plugin-8/plugin-8.php',
-        );
-
-        $truncated = count( $allPlugins ) > $maxPlugins;
-        
-        $this->assertTrue( $truncated );
-        
-        $limitedPlugins = array_slice( $allPlugins, 0, $maxPlugins );
-        
-        $this->assertCount( $maxPlugins, $limitedPlugins );
-    }
-
-    /**
      * Test delta calculation.
      */
     public function testDeltaCalculation()

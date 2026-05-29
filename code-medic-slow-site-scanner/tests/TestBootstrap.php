@@ -25,7 +25,6 @@ class TestBootstrap extends TestCase
         $this->assertDefined( 'CODEMEDSSS_TEMP_MU_PLUGIN' );
         $this->assertDefined( 'CODEMEDSSS_SCAN_LOCK_KEY' );
         $this->assertDefined( 'CODEMEDSSS_RESULTS_OPTION' );
-        $this->assertDefined( 'CODEMEDSSS_MAX_TEST_PLUGINS' );
     }
 
     /**
@@ -37,14 +36,6 @@ class TestBootstrap extends TestCase
             defined( $name ),
             "Constant $name should be defined"
         );
-    }
-
-    /**
-     * Test that CODEMEDSSS_MAX_TEST_PLUGINS is set correctly.
-     */
-    public function testMaxTestPluginsValue()
-    {
-        $this->assertEquals( 6, CODEMEDSSS_MAX_TEST_PLUGINS );
     }
 
     /**

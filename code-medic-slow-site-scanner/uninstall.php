@@ -41,8 +41,6 @@ function codemedsss_uninstall_cleanup_mu_plugin() {
 function codemedsss_uninstall_cleanup_options() {
     delete_option( CODESS_RESULTS_OPTION );
     delete_option( 'codemedsss_mu_consent' );
-    
-    // Clean up premium telemetry options if they exist
     delete_option( 'codemedsss_telemetry_enabled' );
     delete_option( 'codemedsss_site_uuid' );
     delete_option( 'codemedsss_telemetry_queue' );

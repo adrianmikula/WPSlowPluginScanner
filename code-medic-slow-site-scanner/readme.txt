@@ -2,7 +2,7 @@
 Contributors: adrianmikula
 Tags: slow wordpress, plugin performance, plugin conflict, debug wordpress, wordpress speed
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -31,11 +31,10 @@ Get actionable insights to speed up your WordPress site.
 
 = How it works =
 
-1. Enter the URL of the page you want to test
-2. Click "Scan Plugins" to start the scan
-3. The scanner runs a baseline test with all plugins enabled
-4. Then it tests each plugin individually by temporarily disabling it
-5. Results show the impact (time delta, status changes, output changes) for each plugin
+1. Click "Scan Plugins" to start the scan
+2. The scanner runs a baseline test with all plugins enabled on your homepage
+3. Then it tests each plugin individually by temporarily disabling it
+4. Results show the impact (time delta, status changes, output changes) for each plugin
 
 = Features =
 
@@ -61,7 +60,7 @@ Yes, the scanner uses loopback requests internally and doesn't affect what visit
 
 = How long does a scan take? =
 
-The scan time depends on the number of plugins and your site's response time. By default, it tests up to 6 plugins plus the baseline, so approximately 7 requests. Each request has an 8-second timeout.
+The scan time depends on the number of active plugins and your site's response time. Each plugin is tested individually plus one baseline request, each with an 8-second timeout.
 
 = Will this disable my plugins permanently? =
 
