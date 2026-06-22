@@ -70,9 +70,21 @@ CODEMEDSSS_SUPABASE_TABLE=       # Table name (default: telemetry)
 2. Run the SQL scripts in the `sql/` folder (in order):
    - `sql/01-create-tables.sql` - Creates the telemetry table
    - `sql/02-create-indexes.sql` - Creates indexes for performance
-   - `sql/03-set-rls-policies.sql` - Enables RLS with secure policies
-   - `sql/04-create-views.sql` - Creates analysis views
+   - `sql/03-set-rls-policies.sql` - Enables RLS with insert-only for anon
+   - `sql/04-create-views.sql` - Creates analysis views (SECURITY INVOKER)
+   - `sql/05-add-test-type-column.sql` - Adds test_type column
+   - `sql/06-add-anonymous-insert-rls.sql` - Anon insert-only policy
+   - `sql/07-add-scanner-version-columns.sql` - Scanner version columns
 3. Add your Supabase URL and anon key to the `.env` file
+
+**Security model**: The telemetry table uses a strict insert-only architecture.
+The Supabase anon key allows INSERT only — SELECT, UPDATE, and DELETE are
+denied for anonymous users. All views use `security_invoker = on` to respect
+RLS on the underlying table. Only authenticated/service_role roles can read data.
+
+If upgrading an existing deployment, also run:
+   - `sql/08-security-hardening.sql` - Fixes existing deployments with
+     permissive anon SELECT policies or SECURITY DEFINER views
 
 For detailed documentation on the database schema and views, see the SQL scripts in the `sql/` folder.
 

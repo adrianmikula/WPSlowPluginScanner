@@ -1,7 +1,8 @@
 -- Views for telemetry data analysis
+-- All views use security_invoker = on so they respect RLS on the underlying telemetry table
 
 -- Plugin performance ranking (slowest to fastest)
-CREATE OR REPLACE VIEW plugin_performance_ranking AS
+CREATE OR REPLACE VIEW plugin_performance_ranking WITH (security_invoker = on) AS
 SELECT 
     plugin_tested AS plugin,
     COUNT(*) AS scan_count,
@@ -20,7 +21,7 @@ GROUP BY plugin_tested
 ORDER BY avg_delta DESC;
 
 -- Error analysis by plugin
-CREATE OR REPLACE VIEW plugin_error_analysis AS
+CREATE OR REPLACE VIEW plugin_error_analysis WITH (security_invoker = on) AS
 SELECT 
     plugin_tested AS plugin,
     COUNT(*) AS total_scans,
@@ -36,7 +37,7 @@ FROM telemetry
 GROUP BY plugin_tested;
 
 -- Plugin co-occurrence (which plugins are installed together)
-CREATE OR REPLACE VIEW plugin_cooccurrence AS
+CREATE OR REPLACE VIEW plugin_cooccurrence WITH (security_invoker = on) AS
 SELECT 
     p1 AS plugin_a,
     p2 AS plugin_b,
@@ -49,7 +50,7 @@ GROUP BY p1, p2
 ORDER BY pair_count DESC;
 
 -- Performance by PHP version
-CREATE OR REPLACE VIEW plugin_delta_by_php AS
+CREATE OR REPLACE VIEW plugin_delta_by_php WITH (security_invoker = on) AS
 SELECT 
     plugin_tested AS plugin,
     env->>'php_version' AS php_version,

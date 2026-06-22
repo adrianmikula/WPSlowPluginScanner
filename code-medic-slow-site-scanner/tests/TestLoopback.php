@@ -19,11 +19,11 @@ class TestLoopback extends TestCase
      */
     public function testBuildTestUrlWithNoPlugin()
     {
-        $url = 'http://example.com/page';
-        $result = codemedsss_build_test_url( $url );
+        $result = codemedsss_build_test_url();
 
         $this->assertStringContainsString( 'codemedsss_test=1', $result );
         $this->assertStringContainsString( 'codemedsss_scan=1', $result );
+        $this->assertStringContainsString( 'home', $result );
         $this->assertStringNotContainsString( 'codemedsss_disable', $result );
     }
 
@@ -32,12 +32,12 @@ class TestLoopback extends TestCase
      */
     public function testBuildTestUrlWithPlugin()
     {
-        $url = 'http://example.com/page';
         $plugin = 'test-plugin/test-plugin.php';
-        $result = codemedsss_build_test_url( $url, $plugin );
+        $result = codemedsss_build_test_url( $plugin );
 
         $this->assertStringContainsString( 'codemedsss_test=1', $result );
         $this->assertStringContainsString( 'codemedsss_scan=1', $result );
+        $this->assertStringContainsString( 'home', $result );
         $this->assertStringContainsString( 'codemedsss_disable=' . urlencode( $plugin ), $result );
     }
 

@@ -173,7 +173,7 @@ function codemedsss_render_admin_page() {
         <?php if ( defined( 'CODESS_PREMIUM_URL' ) && CODESS_PREMIUM_URL ) : ?>
         <div class="notice notice-info" style="margin-top:20px;">
             <p>
-                <?php esc_html_e( 'Want more? The Pro version adds page selection, custom URL scanning, and export.', 'code-medic-slow-site-scanner' ); ?>
+                <?php esc_html_e( 'Want more? Adds advanced plugin performance features.', 'code-medic-slow-site-scanner' ); ?>
                 <a href="<?php echo esc_url( CODESS_PREMIUM_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'code-medic-slow-site-scanner' ); ?> &rarr;</a>
             </p>
         </div>

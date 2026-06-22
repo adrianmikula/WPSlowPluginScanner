@@ -1,13 +1,11 @@
--- Allow anonymous inserts to telemetry table
+-- Allow anonymous inserts to telemetry table only (no SELECT/UPDATE/DELETE for anon)
 
--- Drop existing insert policy if exists
+-- Drop any existing insert/select policies for anon (regardless of naming variant)
+DROP POLICY IF EXISTS "Allow anon insert" ON telemetry;
 DROP POLICY IF EXISTS "Allow anonymous inserts" ON telemetry;
-
--- Create RLS policy for anonymous inserts
-CREATE POLICY "Allow anonymous inserts" ON telemetry
-FOR INSERT WITH CHECK (true);
-
--- Also allow anonymous selects for debugging
 DROP POLICY IF EXISTS "Allow anonymous selects" ON telemetry;
-CREATE POLICY "Allow anonymous selects" ON telemetry
-FOR SELECT USING (true);
+
+-- Create RLS policy for anonymous inserts only
+-- No FOR SELECT policy means reads are denied for anon
+CREATE POLICY "Allow anon insert" ON telemetry
+FOR INSERT TO anon WITH CHECK (true);

@@ -37,7 +37,7 @@ function codemedsss_initiate_scan() {
 
     $url = home_url();
 
-    $baseline = codemedsss_run_test( $url );
+    $baseline = codemedsss_run_test();
     $active_entries = codemedsss_get_active_plugin_entries();
     $own_plugin_file = plugin_basename( CODESS_PLUGIN_FILE );
 
@@ -93,7 +93,7 @@ function codemedsss_scan_next_plugin() {
     $active_entries = codemedsss_get_active_plugin_entries();
     $plugin_name = isset( $active_entries[ $plugin_file ] ) ? $active_entries[ $plugin_file ]['name'] : $plugin_file;
 
-    $test_result = codemedsss_run_test( $progress['url'], $plugin_file );
+    $test_result = codemedsss_run_test( $plugin_file );
     $baseline = $progress['baseline'];
 
     $delta = $test_result['time'] - $baseline['time'];
