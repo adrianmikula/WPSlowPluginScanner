@@ -3,7 +3,7 @@
  * Plugin Name: CodeMedic Slow Site Scanner
  * Plugin URI:  https://github.com/adrianmikula/WPSlowPluginScanner
  * Description: Find which WordPress plugin is slowing down your site. Test plugin performance safely, detect conflicts, and identify speed bottlenecks in seconds.
- * Version:     0.1.1
+ * Version:     0.1.2
  * Author:      Adrian M
  * Author URI:  https://github.com/adrianmikula
  * License:     GPLv2 or later
@@ -21,7 +21,7 @@ define( 'CODESS_SCAN_LOCK_KEY', 'codemedsss_scan_lock' );
 define( 'CODESS_RESULTS_OPTION', 'codemedsss_last_scan' );
 define( 'CODESS_PROGRESS_KEY', 'codemedsss_scan_progress' );
 define( 'CODESS_CANCEL_KEY', 'codemedsss_scan_cancel' );
-define( 'CODESS_SCANNER_ENGINE_VERSION', '0.1.1' );
+// CODESS_SCANNER_ENGINE_VERSION is defined after config.php is loaded below
 
 // Load config if present (defines CODEMEDSSS_* constants)
 $codemedsss_config_file = CODESS_PLUGIN_DIR . 'config.php';
@@ -30,6 +30,8 @@ if ( file_exists( $codemedsss_config_file ) ) {
 }
 
 define( 'CODESS_PREMIUM_URL', defined( 'CODEMEDSSS_PREMIUM_URL' ) ? CODEMEDSSS_PREMIUM_URL : '' );
+define( 'CODESS_PREMIUM_DESCRIPTION', defined( 'CODEMEDSSS_PREMIUM_DESCRIPTION' ) ? CODEMEDSSS_PREMIUM_DESCRIPTION : '' );
+define( 'CODESS_SCANNER_ENGINE_VERSION', defined( 'CODEMEDSSS_PLUGIN_VERSION' ) && CODEMEDSSS_PLUGIN_VERSION ? CODEMEDSSS_PLUGIN_VERSION : '0.1.2' );
 
 // CODEMEDSSS_* constant aliases for test compatibility (if not already defined via config)
 if ( ! defined( 'CODEMEDSSS_PLUGIN_FILE' ) ) {
@@ -56,8 +58,12 @@ if ( ! defined( 'CODEMEDSSS_PROGRESS_KEY' ) ) {
 if ( ! defined( 'CODEMEDSSS_CANCEL_KEY' ) ) {
     define( 'CODEMEDSSS_CANCEL_KEY', CODESS_CANCEL_KEY );
 }
+// CODEMEDSSS_SCANNER_ENGINE_VERSION uses the same value as CODESS_SCANNER_ENGINE_VERSION (already set above)
 if ( ! defined( 'CODEMEDSSS_SCANNER_ENGINE_VERSION' ) ) {
     define( 'CODEMEDSSS_SCANNER_ENGINE_VERSION', CODESS_SCANNER_ENGINE_VERSION );
+}
+if ( ! defined( 'CODEMEDSSS_PREMIUM_DESCRIPTION' ) ) {
+    define( 'CODEMEDSSS_PREMIUM_DESCRIPTION', CODESS_PREMIUM_DESCRIPTION );
 }
 
 // Include core files
@@ -77,8 +83,8 @@ function codemedsss_admin_assets( $hook ) {
         return;
     }
 
-    wp_enqueue_style( 'codemedsss-admin-style', plugins_url( 'admin/css/admin.css', __FILE__ ), array(), '0.1.1' );
-    wp_enqueue_script( 'codemedsss-admin-script', plugins_url( 'admin/js/admin.js', __FILE__ ), array( 'jquery' ), '0.1.1', true );
+    wp_enqueue_style( 'codemedsss-admin-style', plugins_url( 'admin/css/admin.css', __FILE__ ), array(), CODESS_SCANNER_ENGINE_VERSION );
+    wp_enqueue_script( 'codemedsss-admin-script', plugins_url( 'admin/js/admin.js', __FILE__ ), array( 'jquery' ), CODESS_SCANNER_ENGINE_VERSION, true );
 
     $is_scanning = codemedsss_scan_is_locked();
     $progress = $is_scanning ? codemedsss_get_scan_progress() : null;

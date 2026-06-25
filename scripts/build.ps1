@@ -100,6 +100,25 @@ if (Test-Path $EnvFile) {
     $configLines | Set-Content $ConfigPath
 }
 
+# Extract version from .env for header syncing
+$envPluginVersion = ""
+foreach ($line in $envContent) {
+    if ($line -match '^CODEMEDSSS_PLUGIN_VERSION=(.*)$') {
+        $envPluginVersion = $Matches[1].Trim()
+        break
+    }
+}
+
+# Sync plugin header version from .env
+if ($envPluginVersion) {
+    if (Test-Path $mainPluginPath) {
+        (Get-Content $mainPluginPath) -replace '^ \* Version:.*', " * Version:     $envPluginVersion" | Set-Content $mainPluginPath
+    }
+    if (Test-Path $readmePath) {
+        (Get-Content $readmePath) -replace '^Stable tag:.*', "Stable tag: $envPluginVersion" | Set-Content $readmePath
+    }
+}
+
 # Create ZIP archive
 # Use Compress-Archive (PowerShell built-in)
 $tempZip = Join-Path $tempDir "plugin.zip"

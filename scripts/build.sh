@@ -52,6 +52,8 @@ build_plugin() {
 
     local env_premium_url
     env_premium_url=$(grep "^CODEMEDSSS_PREMIUM_URL=" "$ENV_FILE" | cut -d'=' -f2- | xargs)
+    local env_plugin_version
+    env_plugin_version=$(grep "^CODEMEDSSS_PLUGIN_VERSION=" "$ENV_FILE" | cut -d'=' -f2- | xargs)
     local env_supabase_url
     env_supabase_url=$(grep "^CODEMEDSSS_SUPABASE_URL=" "$ENV_FILE" | cut -d'=' -f2- | xargs)
     local env_supabase_key
@@ -85,6 +87,12 @@ build_plugin() {
             fi
         done < "$ENV_FILE"
         echo -e "$config_content" > "$config_path"
+    fi
+
+    # Sync plugin header version from .env
+    if [ -n "$env_plugin_version" ]; then
+        sed -i "s/^ \* Version:.*/ * Version:     $env_plugin_version/" "$temp_dir/$plugin_slug/code-medic-slow-site-scanner.php"
+        sed -i "s/^Stable tag:.*/Stable tag: $env_plugin_version/" "$temp_dir/$plugin_slug/readme.txt"
     fi
 
     (

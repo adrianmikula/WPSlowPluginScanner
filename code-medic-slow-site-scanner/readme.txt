@@ -3,7 +3,7 @@ Contributors: adrianmikula
 Tags: slow wordpress, plugin performance, plugin conflict, debug wordpress, wordpress speed
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,9 @@ Yes, click the "Cancel" button to stop the scan. The temporary files will be cle
 
 == Changelog ==
 
+= 0.1.2 =
+* Premium upsell notice fix
+
 = 0.1.1 =
 * Version bump
 
@@ -88,6 +91,9 @@ Yes, click the "Cancel" button to stop the scan. The temporary files will be cle
 * Cancel functionality
 
 == Upgrade Notice ==
+
+= 0.1.2 =
+Premium upsell notice fix.
 
 = 0.1.1 =
 Version bump.

@@ -173,8 +173,8 @@ function codemedsss_render_admin_page() {
         <?php if ( defined( 'CODESS_PREMIUM_URL' ) && CODESS_PREMIUM_URL ) : ?>
         <div class="notice notice-info" style="margin-top:20px;">
             <p>
-                <?php esc_html_e( 'Want more? Get advanced plugin performance features', 'code-medic-slow-site-scanner' ); ?>
-                <a href="<?php echo esc_url( CODESS_PREMIUM_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get Premium', 'code-medic-slow-site-scanner' ); ?> &rarr;</a>
+                <?php echo esc_html( defined( 'CODESS_PREMIUM_DESCRIPTION' ) && CODESS_PREMIUM_DESCRIPTION ? CODESS_PREMIUM_DESCRIPTION : __( 'Get premium features', 'code-medic-slow-site-scanner' ) ); ?>
+                <a href="<?php echo esc_url( CODESS_PREMIUM_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'code-medic-slow-site-scanner' ); ?> &rarr;</a>
             </p>
         </div>
         <?php endif; ?>
