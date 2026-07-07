@@ -3,6 +3,8 @@
 .gitignore
 .distignore
 .phpunit.result.cache
+.env
+.env.example
 env-example
 
 # Tests - run outside WordPress context, can't use WP_Filesystem
@@ -18,7 +20,15 @@ composer-setup.php
 .phpunit.xml
 composer.json
 composer.lock
-README.md
+
+# Documentation - not included in plugin zip
+*.md
+docs/
+
+# Scripts and SQL - development/deployment only
+*.sh
+*.ps1
+*.sql
 
 # Vendor dependencies (WP tests use their own)
 vendor/
